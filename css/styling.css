@@ -1,0 +1,16 @@
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+input, div {
+  font-size: 48px;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid black;
+  padding: 5px;
+}
