@@ -1,6 +1,6 @@
 const m = require('mithril');
 
-const API_URL = 'http://0.0.0.0:3000';
+const API_URL = 'https://kanjiapi.dev';
 
 function KanjiInfo() {
     return {
