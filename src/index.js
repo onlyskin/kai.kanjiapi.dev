@@ -10,6 +10,10 @@ function isReading(data) {
     return data.reading !== undefined;
 }
 
+function subjectText(subject) {
+    return isKanji(subject) ? subject.kanji : subject.reading;
+}
+
 const Meaning = {
     view: ({attrs: {meaning}}) => {
         return m('.meaning', meaning);
@@ -106,6 +110,7 @@ const model = {
         return this.subject;
     },
     setSubject: function(text) {
+        this.subject = null;
         return this.loadKanji(text[0])
             .then(response => {
                 this.subject = response;
@@ -157,11 +162,12 @@ const Page = {
     view: function() {
         return m('.page', [
             m('input[text]#kanji-input', {
+                value: subjectText(model.getSubject()),
                 onchange: e => {
                     if (event.target.value.length === 0) return;
 
                     return model.setSubject(event.target.value);
-                }
+                },
             }),
             m(Info, {subject: model.getSubject()}),
         ]);
