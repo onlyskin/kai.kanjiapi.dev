@@ -3,14 +3,20 @@ const m = require('mithril');
 const API_URL = 'https://kanjiapi.dev';
 
 function isKanji(data) {
+    if (!data) return false;
+
     return data.kanji !== undefined;
 }
 
 function isReading(data) {
+    if (!data) return false;
+
     return data.reading !== undefined;
 }
 
 function subjectText(subject) {
+    if (!subject) return '';
+
     return isKanji(subject) ? subject.kanji : subject.reading;
 }
 
@@ -107,18 +113,21 @@ const model = {
         name_readings: [],
     },
     getSubject: function() {
-        return this.subject;
+        return m.route.param('search') || this.defaultKanji;
     },
     setSubject: function(text) {
         this.subject = null;
+
         return this.loadKanji(text[0])
             .then(response => {
                 this.subject = response;
+                m.route.set(m.route.get(), null, {state: {search: response}});
             })
             .catch(exception => {
                 return this.loadReading(text)
                     .then(response => {
                         this.subject = response;
+                        m.route.set(m.route.get(), null, {state: {search: response}});
                     })
                     .catch(exception => {
                         this.subject = this.defaultKanji;
@@ -127,12 +136,7 @@ const model = {
     },
     init: function() {
         this.subject = this.defaultKanji;
-
-        this.loadKanji('尽')
-            .then(kanji => {
-                this.subject = kanji;
-                this.defaultKanji = kanji;
-            });
+        this.setSubject('尽');
     },
     loadKanji: function(character) {
         return m.request({
@@ -175,8 +179,10 @@ const Page = {
 };
 
 function init() {
-    m.mount(document.body, Page);
+    m.route(document.body, '/', {
+        '/': Page,
+    });
 }
 
-model.init();
 init();
+model.init();
