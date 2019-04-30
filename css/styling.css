@@ -1,16 +1,97 @@
 body {
-  display: flex;
-  flex-direction: column;
+  font-family: 'Kosugi Maru', sans-serif;
 }
 
-input, div {
-  font-size: 48px;
-}
 
-div {
+.page {
+  font-size: 1em;
+  padding: 2em;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-  border: 1px solid black;
+input#kanji-input {
+  font-size: 1em;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: auto auto;
+  flex-direction: column;
+  width: 100%;
+
   padding: 5px;
+}
+
+.info > div {
+  border-bottom: 1px solid black;
+  padding: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.field {
+  font-size: 1.1em;
+}
+
+.field-value {
+  font-size: 1em;
+  justify-content: flex-start;
+}
+
+.meaning, .kun-reading, .on-reading, .name-reading, .reading, .kanji {
+  margin: 4px;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.kun-reading:hover, .on-reading:hover, .name-reading:hover, .kanji:hover {
+  box-shadow: 0px 0px 10px 2px #cccccc;
+}
+
+.meaning {
+  background: moccasin;
+  border: 1px solid tan;
+}
+
+.kun-reading {
+  background: lightpink;
+  border: 1px solid palevioletred;
+}
+
+.on-reading {
+  background: powderblue;
+  border: 1px solid steelblue;
+}
+
+.name-reading {
+  background: lightgreen;
+  border: 1px solid seagreen;
+}
+
+.kanji {
+  background: lemonchiffon;
+  border: 1px solid gold;
+}
+
+.reading {
+  background: thistle;
+  border: 1px solid darkorchid;
+}
+
+@media (min-width: 500px), (min-device-width: 500px) {
+  .page {
+    font-size: 3em;
+  }
+
+  .field {
+    font-size: 0.9em;
+  }
+
+  .field-value {
+    font-size: 0.5em;
+  }
 }
