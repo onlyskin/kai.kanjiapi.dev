@@ -102,7 +102,6 @@ const ReadingInfo = {
 };
 
 const model = {
-    subject: null,
     defaultKanji: {
         kanji: '',
         grade: null,
@@ -112,31 +111,26 @@ const model = {
         on_readings: [],
         name_readings: [],
     },
+    searches: {},
+    init: function() {
+        this.setSubject('字');
+    },
     getSubject: function() {
-        return m.route.param('search') || this.defaultKanji;
+        return this.searches[m.route.param('search')] || this.defaultKanji;
     },
     setSubject: function(text) {
-        this.subject = null;
-
         return this.loadKanji(text[0])
             .then(response => {
-                this.subject = response;
-                m.route.set(m.route.get(), null, {state: {search: response}});
+                this.searches[text] = response;
+                m.route.set(`/${text[0]}`, null, {state: {search: text}});
             })
             .catch(exception => {
                 return this.loadReading(text)
                     .then(response => {
-                        this.subject = response;
-                        m.route.set(m.route.get(), null, {state: {search: response}});
+                        this.searches[text] = response;
+                        m.route.set(`/${text}`, null, {state: {search: text}});
                     })
-                    .catch(exception => {
-                        this.subject = this.defaultKanji;
-                    });
             });
-    },
-    init: function() {
-        this.subject = this.defaultKanji;
-        this.setSubject('字');
     },
     loadKanji: function(character) {
         return m.request({
@@ -179,8 +173,8 @@ const Page = {
 };
 
 function init() {
-    m.route(document.body, '/', {
-        '/': Page,
+    m.route(document.body, '/字', {
+        '/:search': Page,
     });
 }
 
