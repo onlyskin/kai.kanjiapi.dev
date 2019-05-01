@@ -136,7 +136,7 @@ const model = {
     },
     init: function() {
         this.subject = this.defaultKanji;
-        this.setSubject('尽');
+        this.setSubject('字');
     },
     loadKanji: function(character) {
         return m.request({
