@@ -18,7 +18,7 @@ input#kanji-input {
 
 .info {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto 1fr;
   flex-direction: column;
   width: 100%;
 
@@ -27,7 +27,7 @@ input#kanji-input {
 
 .info > div {
   border-bottom: 1px solid black;
-  padding: 4px;
+  padding: 8px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -35,6 +35,7 @@ input#kanji-input {
 
 .field {
   font-size: 1.1em;
+  font-family: 'Noto Serif JP', serif;
 }
 
 .field-value {
@@ -88,7 +89,7 @@ input#kanji-input {
   }
 
   .field {
-    font-size: 0.9em;
+    font-size: 0.5em;
   }
 
   .field-value {
