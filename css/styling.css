@@ -43,17 +43,31 @@ input#kanji-input {
   justify-content: flex-start;
 }
 
-.meaning, .kun-reading, .on-reading, .name-reading, .reading, .kanji {
+.meaning, .kun-reading, .on-reading, .name-reading, .reading, .kanji, #romaji-toggle {
   margin: 4px;
   padding: 4px;
   border-radius: 8px;
 }
 
-.kun-reading:hover, .on-reading:hover, .name-reading:hover, .kanji:hover {
+#romaji-toggle {
+  background: #353535;
+  border: black;
+  color: white;
+  align-self: flex-start;
+  font-size: 0.7em;
+  padding: 6px 10px;
+}
+
+.romanized {
+  font-family: 'Lato', sans-serif;
+}
+
+.kun-reading:hover, .on-reading:hover, .name-reading:hover, .kanji:hover, #romaji-toggle:hover {
   box-shadow: 0px 0px 10px 2px #cccccc;
 }
 
 .meaning {
+  font-family: 'Lato', sans-serif;
   background: moccasin;
   border: 1px solid tan;
 }
