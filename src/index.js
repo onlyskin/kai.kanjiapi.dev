@@ -1,6 +1,36 @@
 const m = require('mithril');
+const { romanize } = require('japanese');
+const { isKatakana } = require('wanakana');
 
 const API_URL = 'https://kanjiapi.dev';
+
+const config = {
+    isRomaji: true,
+    toggleRomaji: function() {
+        this.isRomaji = !this.isRomaji;
+        return Promise.resolve();
+    },
+};
+
+function romanizeWithPunctuation(reading) {
+    reading = reading
+        .replace('.', '。')
+        .replace('-', '－')
+        .replace('-', '－')
+        .replace('ー', '－');
+
+    const romanized = romanize(reading, 'nihon');
+
+    return isKatakana(reading) ? romanized.toUpperCase() : romanized;
+}
+
+function formatReading(reading) {
+    if (!reading) {
+        return reading;
+    }
+
+    return config.isRomaji ? romanizeWithPunctuation(reading) : reading;
+}
 
 function isKanji(data) {
     if (!data) return false;
@@ -28,25 +58,50 @@ const Meaning = {
 
 const KunReading = {
     view: ({attrs: {reading}}) => {
-        return m('.kun-reading', { onclick: () => model.setSearch(reading) }, reading);
+        return m(
+            '.kun-reading',
+            {
+                class: config.isRomaji ? 'romanized' : '',
+                onclick: () => model.setSearch(reading),
+            },
+            formatReading(reading),
+        );
     },
 };
 
 const OnReading = {
     view: ({attrs: {reading}}) => {
-        return m('.on-reading', { onclick: () => model.setSearch(reading) }, reading);
+        return m(
+            '.on-reading',
+            {
+                class: config.isRomaji ? 'romanized' : '',
+                onclick: () => model.setSearch(reading),
+            },
+            formatReading(reading),
+        );
     },
 };
 
 const NameReading = {
     view: ({attrs: {reading}}) => {
-        return m('.name-reading', { onclick: () => model.setSearch(reading) }, reading);
+        return m(
+            '.name-reading',
+            {
+                class: config.isRomaji ? 'romanized' : '',
+                onclick: () => model.setSearch(reading),
+            },
+            formatReading(reading),
+        );
     },
 };
 
 const Kanji = {
     view: ({attrs: {kanji}}) => {
-        return m('.kanji', { onclick: () => model.setSearch(kanji) }, kanji);
+        return m(
+            '.kanji',
+            { onclick: () => model.setSearch(kanji) },
+            kanji,
+        );
     },
 };
 
@@ -92,7 +147,11 @@ const ReadingInfo = {
     view: ({attrs: {reading}}) => {
         return m('.info', [
             m('.field', 'Reading'),
-            m('.field-value', m('.reading', reading.reading)),
+            m('.field-value', m(
+                '.reading',
+                { class: config.isRomaji ? 'romanized' : '' },
+                formatReading(reading.reading),
+            )),
             m('.field', 'Main Kanji'),
             m('.field-value', reading.main_kanji.map(kanji => m(Kanji, {kanji}))),
             m('.field', 'Name Kanji'),
@@ -114,9 +173,6 @@ const model = {
     searches: {},
     failedKanjiSearches: [],
     failedTextSearches: [],
-    init: function() {
-        this.setSearch('字');
-    },
     getSearchResult: function() {
         return this.searches[m.route.param('search')] || this.defaultKanji;
     },
@@ -205,9 +261,27 @@ const Info = {
     },
 };
 
+const RomajiToggle = {
+    view: function() {
+        return m(
+            '#romaji-toggle',
+            {
+                onclick: _ => config.toggleRomaji(),
+            },
+            'あ/a'
+        );
+    },
+};
+
 const Page = {
+    oninit: function({attrs}) {
+        if (attrs.search) {
+            model.setSearch(attrs.search);
+        }
+    },
     view: function() {
         return m('.page', [
+            m(RomajiToggle),
             m('input[text]#kanji-input', {
                 value: subjectText(model.getSearchResult()),
                 onchange: e => {
@@ -228,4 +302,3 @@ function init() {
 }
 
 init();
-model.init();

@@ -5,6 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "browserify": "^16.2.3",
-    "mithril": "^1.1.6"
+    "japanese": "^1.2.0",
+    "mithril": "^1.1.6",
+    "wanakana": "^4.0.2"
   }
 }
