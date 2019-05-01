@@ -56,38 +56,12 @@ const Meaning = {
     },
 };
 
-const KunReading = {
-    view: ({attrs: {reading}}) => {
+const Reading = {
+    view: ({attrs: {type, reading}}) => {
         return m(
-            '.kun-reading',
+            '',
             {
-                class: config.isRomaji ? 'romanized' : '',
-                onclick: () => model.setSearch(reading),
-            },
-            formatReading(reading),
-        );
-    },
-};
-
-const OnReading = {
-    view: ({attrs: {reading}}) => {
-        return m(
-            '.on-reading',
-            {
-                class: config.isRomaji ? 'romanized' : '',
-                onclick: () => model.setSearch(reading),
-            },
-            formatReading(reading),
-        );
-    },
-};
-
-const NameReading = {
-    view: ({attrs: {reading}}) => {
-        return m(
-            '.name-reading',
-            {
-                class: config.isRomaji ? 'romanized' : '',
+                class: [config.isRomaji ? 'romanized' : '', type].join(' '),
                 onclick: () => model.setSearch(reading),
             },
             formatReading(reading),
@@ -130,14 +104,20 @@ const KanjiInfo = {
             m('.field', 'Meanings'),
             m('.field-value', kanji.meanings.map(meaning => m(Meaning, {meaning}))),
             m('.field', 'Kun'),
-            m('.field-value', kanji.kun_readings.map(reading => m(KunReading, {reading}))),
+            m('.field-value', kanji.kun_readings.map(reading => {
+                return m(Reading, {type: 'kun-reading', reading});
+            })),
             m('.field', 'On'),
-            m('.field-value', kanji.on_readings.map(reading => m(OnReading, {reading}))),
+            m('.field-value', kanji.on_readings.map(reading => {
+                return m(Reading, {type: 'on-reading', reading});
+            })),
             m('.field', {style: {border: 'none'}}, 'Nanori'),
             m(
                 '.field-value',
                 {style: {border: 'none'}},
-                kanji.name_readings.map(reading => m(NameReading, {reading})),
+                kanji.name_readings.map(reading => {
+                    return m(Reading, {type: 'name-reading', reading});
+                }),
             ),
         ]);
     },
@@ -147,11 +127,7 @@ const ReadingInfo = {
     view: ({attrs: {reading}}) => {
         return m('.info', [
             m('.field', 'Reading'),
-            m('.field-value', m(
-                '.reading',
-                { class: config.isRomaji ? 'romanized' : '' },
-                formatReading(reading.reading),
-            )),
+            m('.field-value', m(Reading, {type: 'reading', reading: reading.reading})),
             m('.field', 'Main Kanji'),
             m('.field-value', reading.main_kanji.map(kanji => m(Kanji, {kanji}))),
             m('.field', 'Name Kanji'),
@@ -176,15 +152,18 @@ const model = {
     getSearchResult: function() {
         return this.searches[m.route.param('search')] || this.defaultKanji;
     },
+    searched: function(search) {
+        const searched = Object.keys(this.searches);
+        return searched.includes(search);
+    },
     setSearch: function(searchTerm) {
         const maybeKanji = searchTerm[0];
-        const searched = Object.keys(this.searches);
 
-        if (searched.includes(maybeKanji)) {
+        if (this.searched(maybeKanji)) {
             return Promise.resolve().then(this.routeTo.bind(null, maybeKanji));
         }
 
-        if (searched.includes(searchTerm)) {
+        if (this.searched(searchTerm)) {
             return Promise.resolve().then(this.routeTo.bind(null, searchTerm));
         }
 
@@ -273,6 +252,29 @@ const RomajiToggle = {
     },
 };
 
+const Header = {
+    view: function() {
+        return m('header.vertical-flex', [
+            m('h1', '漢字解'),
+            m('h1.romanized', 'KanjiKai'),
+        ]);
+    },
+};
+
+const About = {
+    view: function() {
+        return [
+            m('h2.center-text.romanized', 'About'),
+            m('#about.center-text.romanized', [
+                m('p', [
+                    'This site is powered by ',
+                    m('a[href=https://kanjiapi.dev]', 'kanjiapi.dev'),
+                ]),
+            ])
+        ];
+    },
+};
+
 const Page = {
     oninit: function({attrs}) {
         if (attrs.search) {
@@ -280,17 +282,21 @@ const Page = {
         }
     },
     view: function() {
-        return m('.page', [
-            m(RomajiToggle),
-            m('input[text]#kanji-input', {
-                value: subjectText(model.getSearchResult()),
-                onchange: e => {
-                    if (event.target.value.length === 0) return;
+        return m('.vertical-flex', [
+            m(Header),
+            m('.page.vertical-flex', [
+                m(RomajiToggle),
+                m('input[text]#kanji-input', {
+                    value: subjectText(model.getSearchResult()),
+                    onchange: e => {
+                        if (event.target.value.length === 0) return;
 
-                    return model.setSearch(event.target.value);
-                },
-            }),
-            m(Info, {subject: model.getSearchResult()}),
+                        return model.setSearch(event.target.value);
+                    },
+                }),
+                m(Info, {subject: model.getSearchResult()}),
+                m(About),
+            ]),
         ]);
     },
 };
