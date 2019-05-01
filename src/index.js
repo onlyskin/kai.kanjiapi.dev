@@ -28,25 +28,25 @@ const Meaning = {
 
 const KunReading = {
     view: ({attrs: {reading}}) => {
-        return m('.kun-reading', { onclick: () => model.setSubject(reading) }, reading);
+        return m('.kun-reading', { onclick: () => model.setSearch(reading) }, reading);
     },
 };
 
 const OnReading = {
     view: ({attrs: {reading}}) => {
-        return m('.on-reading', { onclick: () => model.setSubject(reading) }, reading);
+        return m('.on-reading', { onclick: () => model.setSearch(reading) }, reading);
     },
 };
 
 const NameReading = {
     view: ({attrs: {reading}}) => {
-        return m('.name-reading', { onclick: () => model.setSubject(reading) }, reading);
+        return m('.name-reading', { onclick: () => model.setSearch(reading) }, reading);
     },
 };
 
 const Kanji = {
     view: ({attrs: {kanji}}) => {
-        return m('.kanji', { onclick: () => model.setSubject(kanji) }, kanji);
+        return m('.kanji', { onclick: () => model.setSearch(kanji) }, kanji);
     },
 };
 
@@ -112,25 +112,74 @@ const model = {
         name_readings: [],
     },
     searches: {},
+    failedKanjiSearches: [],
+    failedTextSearches: [],
     init: function() {
-        this.setSubject('字');
+        this.setSearch('字');
     },
-    getSubject: function() {
+    getSearchResult: function() {
         return this.searches[m.route.param('search')] || this.defaultKanji;
     },
-    setSubject: function(text) {
-        return this.loadKanji(text[0])
+    setSearch: function(searchTerm) {
+        const maybeKanji = searchTerm[0];
+        const searched = Object.keys(this.searches);
+
+        if (searched.includes(maybeKanji)) {
+            return Promise.resolve().then(this.routeTo.bind(null, maybeKanji));
+        }
+
+        if (searched.includes(searchTerm)) {
+            return Promise.resolve().then(this.routeTo.bind(null, searchTerm));
+        }
+
+        const isFailedKanji = this.failedKanjiSearches.includes(maybeKanji);
+        const isFailedTextSearch = this.failedTextSearches.includes(searchTerm)
+
+        if (isFailedTextSearch && isFailedKanji) {
+            return Promise.resolve();
+        }
+
+        if (isFailedKanji) {
+            return this.loadReading(searchTerm)
+                .then(response => {
+                    this.searches[searchTerm] = response;
+                    this.routeTo(searchTerm);
+                })
+                .catch(_ => this.failText(searchTerm));
+        }
+
+        if (isFailedTextSearch) {
+            return this.loadKanji(maybeKanji)
+                .then(response => {
+                    this.searches[maybeKanji] = response;
+                    this.routeTo(maybeKanji);
+                })
+                .catch(_ => this.failKanji(maybeKanji));
+        }
+
+        return this.loadKanji(maybeKanji)
             .then(response => {
-                this.searches[text] = response;
-                m.route.set(`/${text[0]}`, null, {state: {search: text}});
+                this.searches[maybeKanji] = response;
+                this.routeTo(maybeKanji);
             })
             .catch(exception => {
-                return this.loadReading(text)
+                this.failKanji(maybeKanji);
+                return this.loadReading(searchTerm)
                     .then(response => {
-                        this.searches[text] = response;
-                        m.route.set(`/${text}`, null, {state: {search: text}});
+                        this.searches[searchTerm] = response;
+                        this.routeTo(searchTerm);
                     })
+                    .catch(_ => this.failText(searchTerm));
             });
+    },
+    failKanji: function(character) {
+        this.failedKanjiSearches.push(character);
+    },
+    failText: function(searchTerm) {
+        this.failedTextSearches.push(searchTerm);
+    },
+    routeTo: function(searchTerm) {
+        m.route.set(`/${searchTerm}`, null, {state: {search: searchTerm}});
     },
     loadKanji: function(character) {
         return m.request({
@@ -160,14 +209,14 @@ const Page = {
     view: function() {
         return m('.page', [
             m('input[text]#kanji-input', {
-                value: subjectText(model.getSubject()),
+                value: subjectText(model.getSearchResult()),
                 onchange: e => {
                     if (event.target.value.length === 0) return;
 
-                    return model.setSubject(event.target.value);
+                    return model.setSearch(event.target.value);
                 },
             }),
-            m(Info, {subject: model.getSubject()}),
+            m(Info, {subject: model.getSearchResult()}),
         ]);
     },
 };
