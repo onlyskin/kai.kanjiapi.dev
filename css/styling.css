@@ -2,14 +2,53 @@ body {
   font-family: 'Kosugi Maru', sans-serif;
 }
 
+.vertical-flex {
+  display: flex;
+  flex-direction: column;
+}
 
 .page {
   font-size: 1em;
-  padding: 2em;
-  display: flex;
-  flex-direction: column;
+  padding: 0.1em 2em;
   justify-content: center;
+}
+
+header {
+  color: white;
+  background-color: #2f1758;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
   align-items: center;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin: 4px;
+}
+
+h2 {
+  font-size: 0.6em;
+  margin: 4px;
+}
+
+.center-text {
+  margin: 10px 0px;
+  align-self: center;
+}
+
+.left-text {
+  margin: 5px 0px;
+  align-self: start;
+}
+
+#about {
+  line-height: 1.3;
+  font-size: 0.4em;
+}
+
+#about > p {
+  padding: 6px 0px;
 }
 
 input#kanji-input {
