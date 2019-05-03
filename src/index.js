@@ -56,6 +56,22 @@ const Meaning = {
     },
 };
 
+const Word = {
+    view: ({attrs: {word}}) => {
+        return m('.word', [...word].map(character => {
+            return m(
+                'span',
+                {
+                    onclick: e => {
+                        model.setSearch(e.target.textContent);
+                    },
+                },
+                character,
+            );
+        }));
+    },
+};
+
 const Reading = {
     view: ({attrs: {type, reading}}) => {
         return m(
@@ -78,6 +94,14 @@ const Kanji = {
         );
     },
 };
+
+function words(kanji) {
+    if (kanji.words.length === 0) {
+        return kanji.rare_words.slice(0, 20);
+    } else {
+        return kanji.words.slice();
+    }
+}
 
 const KanjiInfo = {
     grade: ({grade}) => {
@@ -103,6 +127,8 @@ const KanjiInfo = {
             m('.field-value', this.unicode(kanji)),
             m('.field', 'Meanings'),
             m('.field-value', kanji.meanings.map(meaning => m(Meaning, {meaning}))),
+            m('.field', 'Words'),
+            m('.field-value', words(kanji).map(word => m(Word, {word}))),
             m('.field', 'Kun'),
             m('.field-value', kanji.kun_readings.map(reading => {
                 return m(Reading, {type: 'kun-reading', reading});
@@ -145,6 +171,8 @@ const model = {
         kun_readings: [],
         on_readings: [],
         name_readings: [],
+        words: [],
+        rare_words: [],
     },
     searches: {},
     failedKanjiSearches: [],
