@@ -82,7 +82,7 @@ input#kanji-input {
   justify-content: flex-start;
 }
 
-.meaning, .kun-reading, .on-reading, .name-reading, .reading, .kanji, #romaji-toggle {
+.word, .meaning, .kun-reading, .on-reading, .name-reading, .reading, .kanji, #romaji-toggle {
   margin: 4px;
   padding: 4px;
   border-radius: 8px;
@@ -109,6 +109,15 @@ input#kanji-input {
   font-family: 'Lato', sans-serif;
   background: moccasin;
   border: 1px solid tan;
+}
+
+.word {
+  background: thistle;
+  border: 1px solid mediumorchid;
+}
+
+.word > span:hover {
+  text-shadow: 0px 0px 4px #ffffff;
 }
 
 .kun-reading {
