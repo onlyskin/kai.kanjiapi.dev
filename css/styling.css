@@ -7,9 +7,17 @@ body {
   flex-direction: column;
 }
 
+.flex-row {
+  display: flex;
+}
+
+.flex-right {
+  justify-content: flex-end;
+}
+
 .page {
   font-size: 1em;
-  padding: 0.1em 2em;
+  padding: 0.1em 0.1em;
   justify-content: center;
 }
 
@@ -72,9 +80,17 @@ input#kanji-input {
   align-items: center;
 }
 
-.field {
-  font-size: 1.1em;
+.words {
+  display: grid !important;
+  grid-template-columns: auto auto auto;
+}
+
+.serif {
   font-family: 'Noto Serif JP', serif;
+}
+
+.field {
+  font-size: 0.6em;
 }
 
 .field-value {
@@ -116,7 +132,7 @@ input#kanji-input {
   border: 1px solid mediumorchid;
 }
 
-.word > span:hover {
+.hover-shadow:hover {
   text-shadow: 0px 0px 4px #ffffff;
 }
 
@@ -145,9 +161,14 @@ input#kanji-input {
   border: 1px solid darkorchid;
 }
 
+.word-reading, .word-meaning {
+  font-size: 0.5em;
+}
+
 @media (min-width: 500px), (min-device-width: 500px) {
   .page {
     font-size: 3em;
+    padding: 0.1em 2em;
   }
 
   .field {
@@ -155,6 +176,10 @@ input#kanji-input {
   }
 
   .field-value {
+    font-size: 0.5em;
+  }
+
+  .word-reading, .word-meaning {
     font-size: 0.5em;
   }
 }
