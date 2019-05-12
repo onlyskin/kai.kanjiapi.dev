@@ -2,7 +2,7 @@ const m = require('mithril');
 const { romanize } = require('japanese');
 const { isKatakana } = require('wanakana');
 
-const API_URL = 'https://kanjiapi.dev';
+const API_URL = 'http://0.0.0.0:4000';
 
 const config = {
     isRomaji: true,
@@ -58,17 +58,27 @@ const Meaning = {
 
 const Word = {
     view: ({attrs: {word}}) => {
-        return m('.word', [...word].map(character => {
-            return m(
-                'span',
-                {
-                    onclick: e => {
-                        model.setSearch(e.target.textContent);
-                    },
-                },
-                character,
-            );
-        }));
+        return [
+            m(
+                '.flex-row.flex-right',
+                m(
+                    '.word',
+                    [...word.kanji].map(character => {
+                        return m(
+                            'span.hover-shadow',
+                            {
+                                onclick: e => {
+                                    model.setSearch(e.target.textContent);
+                                },
+                            },
+                            character,
+                        );
+                    }),
+                ),
+            ),
+            m('.word-reading', word.readings.map(formatReading).join(', ')),
+            m('.word-meaning.serif', word.meanings.map(meaning => meaning.glosses.join(', ')).join('|')),
+        ];
     },
 };
 
@@ -96,11 +106,15 @@ const Kanji = {
 };
 
 function words(kanji) {
-    if (kanji.words.length === 0) {
-        return kanji.rare_words.slice(0, 20);
-    } else {
-        return kanji.words.slice();
-    }
+    return kanji.words.map(word => {
+        return {
+            kanji: word.kanji[0].form,
+            readings: word.readings.map(reading => reading.reading),
+            meanings: word.meanings,
+        }
+    }).sort((a, b) => a.kanji.length - b.kanji.length);
+    const priority_words = kanji.words.filter(word => word.priorities.length > 0);
+    return priority_words.length > 0 ? priority_words : kanji.words;
 }
 
 const KanjiInfo = {
@@ -115,35 +129,38 @@ const KanjiInfo = {
     },
     view: function ({attrs: {kanji}}) {
         return m('.info', [
-            m('.field', 'Kanji'),
+            m('.field.serif', 'Kanji'),
             m('.field-value', m(Kanji, {kanji: kanji.kanji})),
-            m('.field', 'Grade'),
+            m('.field.serif', 'Grade'),
             m('.field-value', this.grade(kanji)),
-            m('.field', 'JLPT'),
+            m('.field.serif', 'JLPT'),
             m('.field-value', this.jlpt(kanji)),
-            m('.field', 'Strokes'),
+            m('.field.serif', 'Strokes'),
             m('.field-value', kanji.stroke_count),
-            m('.field', 'Unicode'),
+            m('.field.serif', 'Unicode'),
             m('.field-value', this.unicode(kanji)),
-            m('.field', 'Meanings'),
+            m('.field.serif', 'Meanings'),
             m('.field-value', kanji.meanings.map(meaning => m(Meaning, {meaning}))),
-            m('.field', 'Words'),
-            m('.field-value', words(kanji).map(word => m(Word, {word}))),
-            m('.field', 'Kun'),
+            m('.field.serif', 'Kun'),
             m('.field-value', kanji.kun_readings.map(reading => {
                 return m(Reading, {type: 'kun-reading', reading});
             })),
-            m('.field', 'On'),
+            m('.field.serif', 'On'),
             m('.field-value', kanji.on_readings.map(reading => {
                 return m(Reading, {type: 'on-reading', reading});
             })),
-            m('.field', {style: {border: 'none'}}, 'Nanori'),
+            m('.field.serif', 'Nanori'),
             m(
                 '.field-value',
-                {style: {border: 'none'}},
                 kanji.name_readings.map(reading => {
                     return m(Reading, {type: 'name-reading', reading});
                 }),
+            ),
+            m('.field.serif', {style: {border: 'none'}}, 'Words'),
+            m(
+                '.words.field-value',
+                {style: {border: 'none'}},
+                words(kanji).map(word => m(Word, {word})),
             ),
         ]);
     },
@@ -152,11 +169,11 @@ const KanjiInfo = {
 const ReadingInfo = {
     view: ({attrs: {reading}}) => {
         return m('.info', [
-            m('.field', 'Reading'),
+            m('.field.serif', 'Reading'),
             m('.field-value', m(Reading, {type: 'reading', reading: reading.reading})),
-            m('.field', 'Main Kanji'),
+            m('.field.serif', 'Main Kanji'),
             m('.field-value', reading.main_kanji.map(kanji => m(Kanji, {kanji}))),
-            m('.field', 'Name Kanji'),
+            m('.field.serif', 'Name Kanji'),
             m('.field-value', reading.name_kanji.map(kanji => m(Kanji, {kanji}))),
         ]);
     },
@@ -172,7 +189,6 @@ const model = {
         on_readings: [],
         name_readings: [],
         words: [],
-        rare_words: [],
     },
     searches: {},
     failedKanjiSearches: [],
@@ -242,7 +258,7 @@ const model = {
         this.failedTextSearches.push(searchTerm);
     },
     routeTo: function(searchTerm) {
-        m.route.set(`/${searchTerm}`, null, {state: {search: searchTerm}});
+        m.route.set(`/${searchTerm}`, null);
     },
     loadKanji: function(character) {
         return m.request({
