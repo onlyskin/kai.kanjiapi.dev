@@ -2,6 +2,7 @@ const m = require('mithril');
 const { romanize } = require('japanese');
 const { isKatakana } = require('wanakana');
 const { Api } = require('./api');
+const { Dictionary } = require('./dictionary');
 
 const API_URL = 'http://0.0.0.0:4000';
 
@@ -69,7 +70,7 @@ const Word = {
                             'span.hover-shadow',
                             {
                                 onclick: e => {
-                                    model.setSearch(e.target.textContent);
+                                    m.route.set(`/${e.target.textContent}`, null);
                                 },
                             },
                             character,
@@ -93,7 +94,7 @@ const Reading = {
             '',
             {
                 class: [config.isRomaji ? 'romanized' : '', type].join(' '),
-                onclick: () => model.setSearch(reading),
+                onclick: () => m.route.set(`/${reading}`, null),
             },
             formatReading(reading),
         );
@@ -104,7 +105,7 @@ const Kanji = {
     view: ({attrs: {kanji}}) => {
         return m(
             '.kanji',
-            { onclick: () => model.setSearch(kanji) },
+            { onclick: () => m.route.set(`/${kanji}`, null) },
             kanji,
         );
     },
@@ -198,42 +199,6 @@ const ReadingInfo = {
     },
 };
 
-const model = {
-    defaultKanji: {
-        kanji: '',
-        grade: 7,
-        stroke_count: null,
-        meanings: [],
-        kun_readings: [],
-        on_readings: [],
-        name_readings: [],
-        words: [],
-    },
-    _searching: {},
-    _searched: {},
-    searchApi: function(searchTerm) {
-        if (!this._searching[searchTerm]) {
-            this._searching[searchTerm] = true;
-
-            api.search(searchTerm)
-                .then(response => {
-                    this._searched[searchTerm] = response;
-                    m.redraw();
-                })
-                .catch(error => {
-                    this._searching[searchTerm] = undefined;
-                });
-        }
-        return this._searched[searchTerm];
-    },
-    getSearchResult: function() {
-        return this.searchApi(m.route.param('search')) || this.defaultKanji;
-    },
-    setSearch: function(searchTerm) {
-        m.route.set(`/${searchTerm}`, null);
-    },
-};
-
 const Info = {
     view: function({attrs: {subject}}) {
         if (isKanji(subject)) {
@@ -279,21 +244,27 @@ const About = {
     },
 };
 
-const Page = {
+const Loading = {
     view: function() {
+        return m('.loader');
+    },
+};
+
+const Page = {
+    view: function({attrs}) {
+        const searchResult = dictionary.lookup(attrs.search);
+
         return m('.vertical-flex', [
             m(Header),
             m('.page.vertical-flex', [
                 m(RomajiToggle),
                 m('input[text]#kanji-input', {
-                    value: subjectText(model.getSearchResult()),
+                    value: attrs.search,
                     onchange: e => {
-                        if (event.target.value.length === 0) return;
-
-                        return model.setSearch(event.target.value);
+                        m.route.set(`/${e.target.value}`, null);
                     },
                 }),
-                m(Info, {subject: model.getSearchResult()}),
+                searchResult ? m(Info, {subject: searchResult}) : m(Loading),
                 m(About),
             ]),
         ]);
@@ -307,4 +278,6 @@ function init() {
 }
 
 const api = new Api(m.request);
+const dictionary = new Dictionary(api, m.redraw);
+
 init();
