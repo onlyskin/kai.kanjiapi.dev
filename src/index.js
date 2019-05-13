@@ -1,11 +1,12 @@
 const m = require('mithril');
 const { romanize } = require('japanese');
 const { isKatakana } = require('wanakana');
+const { Api } = require('./api');
 
 const API_URL = 'http://0.0.0.0:4000';
 
 const config = {
-    isRomaji: true,
+    isRomaji: false,
     toggleRomaji: function() {
         this.isRomaji = !this.isRomaji;
         return Promise.resolve();
@@ -77,7 +78,11 @@ const Word = {
                 ),
             ),
             m('.word-reading', word.readings.map(formatReading).join(', ')),
-            m('.word-meaning.serif', word.meanings.map(meaning => meaning.glosses.join(', ')).join('|')),
+            m(
+                '.word-meaning.serif',
+                word.meanings
+                .map(meaning => m('p', meaning.glosses.join(', '))),
+            ),
         ];
     },
 };
@@ -113,7 +118,9 @@ function words(kanji) {
             meanings: word.meanings,
         }
     }).sort((a, b) => a.kanji.length - b.kanji.length);
-    const priority_words = kanji.words.filter(word => word.priorities.length > 0);
+    const priority_words = kanji
+        .words
+        .filter(word => word.priorities.length > 0);
     return priority_words.length > 0 ? priority_words : kanji.words;
 }
 
@@ -140,7 +147,10 @@ const KanjiInfo = {
             m('.field.serif', 'Unicode'),
             m('.field-value', this.unicode(kanji)),
             m('.field.serif', 'Meanings'),
-            m('.field-value', kanji.meanings.map(meaning => m(Meaning, {meaning}))),
+            m(
+                '.field-value',
+                kanji.meanings.map(meaning => m(Meaning, {meaning})),
+            ),
             m('.field.serif', 'Kun'),
             m('.field-value', kanji.kun_readings.map(reading => {
                 return m(Reading, {type: 'kun-reading', reading});
@@ -170,11 +180,20 @@ const ReadingInfo = {
     view: ({attrs: {reading}}) => {
         return m('.info', [
             m('.field.serif', 'Reading'),
-            m('.field-value', m(Reading, {type: 'reading', reading: reading.reading})),
+            m('.field-value', m(
+                Reading,
+                {type: 'reading', reading: reading.reading},
+            )),
             m('.field.serif', 'Main Kanji'),
-            m('.field-value', reading.main_kanji.map(kanji => m(Kanji, {kanji}))),
+            m(
+                '.field-value',
+                reading.main_kanji.map(kanji => m(Kanji, {kanji})),
+            ),
             m('.field.serif', 'Name Kanji'),
-            m('.field-value', reading.name_kanji.map(kanji => m(Kanji, {kanji}))),
+            m(
+                '.field-value',
+                reading.name_kanji.map(kanji => m(Kanji, {kanji})),
+            ),
         ]);
     },
 };
@@ -182,7 +201,7 @@ const ReadingInfo = {
 const model = {
     defaultKanji: {
         kanji: '',
-        grade: null,
+        grade: 7,
         stroke_count: null,
         meanings: [],
         kun_readings: [],
@@ -190,87 +209,28 @@ const model = {
         name_readings: [],
         words: [],
     },
-    searches: {},
-    failedKanjiSearches: [],
-    failedTextSearches: [],
-    getSearchResult: function() {
-        return this.searches[m.route.param('search')] || this.defaultKanji;
+    _searching: {},
+    _searched: {},
+    searchApi: function(searchTerm) {
+        if (!this._searching[searchTerm]) {
+            this._searching[searchTerm] = true;
+
+            api.search(searchTerm)
+                .then(response => {
+                    this._searched[searchTerm] = response;
+                    m.redraw();
+                })
+                .catch(error => {
+                    this._searching[searchTerm] = undefined;
+                });
+        }
+        return this._searched[searchTerm];
     },
-    searched: function(search) {
-        const searched = Object.keys(this.searches);
-        return searched.includes(search);
+    getSearchResult: function() {
+        return this.searchApi(m.route.param('search')) || this.defaultKanji;
     },
     setSearch: function(searchTerm) {
-        const maybeKanji = searchTerm[0];
-
-        if (this.searched(maybeKanji)) {
-            return Promise.resolve().then(this.routeTo.bind(null, maybeKanji));
-        }
-
-        if (this.searched(searchTerm)) {
-            return Promise.resolve().then(this.routeTo.bind(null, searchTerm));
-        }
-
-        const isFailedKanji = this.failedKanjiSearches.includes(maybeKanji);
-        const isFailedTextSearch = this.failedTextSearches.includes(searchTerm)
-
-        if (isFailedTextSearch && isFailedKanji) {
-            return Promise.resolve();
-        }
-
-        if (isFailedKanji) {
-            return this.loadReading(searchTerm)
-                .then(response => {
-                    this.searches[searchTerm] = response;
-                    this.routeTo(searchTerm);
-                })
-                .catch(_ => this.failText(searchTerm));
-        }
-
-        if (isFailedTextSearch) {
-            return this.loadKanji(maybeKanji)
-                .then(response => {
-                    this.searches[maybeKanji] = response;
-                    this.routeTo(maybeKanji);
-                })
-                .catch(_ => this.failKanji(maybeKanji));
-        }
-
-        return this.loadKanji(maybeKanji)
-            .then(response => {
-                this.searches[maybeKanji] = response;
-                this.routeTo(maybeKanji);
-            })
-            .catch(exception => {
-                this.failKanji(maybeKanji);
-                return this.loadReading(searchTerm)
-                    .then(response => {
-                        this.searches[searchTerm] = response;
-                        this.routeTo(searchTerm);
-                    })
-                    .catch(_ => this.failText(searchTerm));
-            });
-    },
-    failKanji: function(character) {
-        this.failedKanjiSearches.push(character);
-    },
-    failText: function(searchTerm) {
-        this.failedTextSearches.push(searchTerm);
-    },
-    routeTo: function(searchTerm) {
         m.route.set(`/${searchTerm}`, null);
-    },
-    loadKanji: function(character) {
-        return m.request({
-            method: 'GET',
-            url: `${API_URL}/v1/kanji/${character}`,
-        });
-    },
-    loadReading: function(text) {
-        return m.request({
-            method: 'GET',
-            url: `${API_URL}/v1/reading/${text}`,
-        });
     },
 };
 
@@ -320,11 +280,6 @@ const About = {
 };
 
 const Page = {
-    oninit: function({attrs}) {
-        if (attrs.search) {
-            model.setSearch(attrs.search);
-        }
-    },
     view: function() {
         return m('.vertical-flex', [
             m(Header),
@@ -351,4 +306,5 @@ function init() {
     });
 }
 
+const api = new Api(m.request);
 init();
