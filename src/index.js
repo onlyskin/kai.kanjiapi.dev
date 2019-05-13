@@ -1,6 +1,6 @@
 const m = require('mithril');
 const { romanize } = require('japanese');
-const { isKatakana } = require('wanakana');
+const { isKatakana, isKana } = require('wanakana');
 const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
 
@@ -60,15 +60,19 @@ const Meaning = {
 
 const Word = {
     view: ({attrs: {word}}) => {
-        return [
+        return m(
+            '.flex-row.word-card',
             m(
                 '.flex-row.flex-right',
                 m(
                     '.word',
-                    [...word.kanji].map(character => {
+                    [...word.variant.written].map(character => {
                         return m(
-                            'span.hover-shadow',
+                            'span',
+                            isKana(character) ?
+                            {} : 
                             {
+                                class: 'hover-shadow',
                                 onclick: e => {
                                     m.route.set(`/${e.target.textContent}`, null);
                                 },
@@ -78,13 +82,23 @@ const Word = {
                     }),
                 ),
             ),
-            m('.word-reading', word.readings.map(formatReading).join(', ')),
             m(
-                '.word-meaning.serif',
-                word.meanings
-                .map(meaning => m('p', meaning.glosses.join(', '))),
+                '.vertical-flex',
+                [
+                    m('.word-reading', formatReading(word.variant.pronounced)),
+                    m(
+                        '.word-meaning.serif',
+                        word.meanings
+                        .map((meaning, index, arr) => {
+                            return m(
+                                'p',
+                                arr.length < 2 ? meaning.glosses.join(', ') : `${index + 1}. ${meaning.glosses.join(', ')}`,
+                            );
+                        }),
+                    ),
+                ],
             ),
-        ];
+        );
     },
 };
 
@@ -112,17 +126,24 @@ const Kanji = {
 };
 
 function words(kanji) {
-    return kanji.words.map(word => {
-        return {
-            kanji: word.kanji[0].form,
-            readings: word.readings.map(reading => reading.reading),
-            meanings: word.meanings,
-        }
-    }).sort((a, b) => a.kanji.length - b.kanji.length);
-    const priority_words = kanji
-        .words
-        .filter(word => word.priorities.length > 0);
-    return priority_words.length > 0 ? priority_words : kanji.words;
+    const main_words = kanji.words
+        .filter(word => {
+            return word.variants[0].written.includes(kanji.kanji);
+        })
+        .map(word => {
+            return {
+                variant: word.variants[0],
+                meanings: word.meanings,
+            };
+        })
+        .sort((a, b) => a.variant.written.length - b.variant.written.length);
+
+    const priority_words = main_words
+        .filter(word => {
+            return word.variant.priorities.length > 0;
+        })
+
+    return priority_words.length > 0 ? priority_words : main_words;
 }
 
 const KanjiInfo = {
@@ -169,7 +190,7 @@ const KanjiInfo = {
             ),
             m('.field.serif', {style: {border: 'none'}}, 'Words'),
             m(
-                '.words.field-value',
+                '.flex-row.field-value.words',
                 {style: {border: 'none'}},
                 words(kanji).map(word => m(Word, {word})),
             ),
@@ -223,7 +244,7 @@ const RomajiToggle = {
 
 const Header = {
     view: function() {
-        return m('header.vertical-flex', [
+        return m('header.align-center', [
             m('h1', '漢字解'),
             m('h1.romanized', 'KanjiKai'),
         ]);
@@ -254,9 +275,10 @@ const Page = {
     view: function({attrs}) {
         const searchResult = dictionary.lookup(attrs.search);
 
-        return m('.vertical-flex', [
+        return m('.page.vertical-flex', [
             m(Header),
-            m('.page.vertical-flex', [
+            m(
+                '.content.vertical-flex',
                 m(RomajiToggle),
                 m('input[text]#kanji-input', {
                     value: attrs.search,
@@ -265,8 +287,8 @@ const Page = {
                     },
                 }),
                 searchResult ? m(Info, {subject: searchResult}) : m(Loading),
-                m(About),
-            ]),
+            ),
+            m('footer.vertical-flex', m(About)),
         ]);
     },
 };
