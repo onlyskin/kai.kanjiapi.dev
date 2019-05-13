@@ -10,3 +10,5 @@ Requirements: `yarn/npm`
 Install with `yarn`
 
 Build with `./build`
+
+Test with `yarn test`
