@@ -8,13 +8,27 @@ class Api {
         this._failedReadingSearches = [];
     }
 
+    async getJoyo() {
+        return this._request({
+            method: 'GET',
+            url: `${API_URL}/v1/kanji/joyo`,
+        });
+    }
+
+    async getJinmeiyo() {
+        return this._request({
+            method: 'GET',
+            url: `${API_URL}/v1/kanji/jinmeiyo`,
+        });
+    }
+
     async search(searchTerm) {
         try {
-            const kanji_data = await this._try_search_kanji(searchTerm[0]);
+            const kanji_data = await this._trySearchKanji(searchTerm[0]);
             return kanji_data;
         } catch(e) {
             try {
-                const reading_data = await this._try_search_reading(searchTerm);
+                const reading_data = await this._trySearchReading(searchTerm);
                 return reading_data;
             } catch(e) {
                 return Promise.reject(new Error('not found'));
@@ -22,7 +36,7 @@ class Api {
         }
     }
 
-    async _try_search_reading(searchTerm) {
+    async _trySearchReading(searchTerm) {
         if (this._failedReadingSearches.includes(searchTerm)) {
             return Promise.reject();
         }
@@ -43,7 +57,7 @@ class Api {
         }
     }
 
-    async _try_search_kanji(maybeKanji) {
+    async _trySearchKanji(maybeKanji) {
         if (this._failedKanjiSearches.includes(maybeKanji)) {
             return Promise.reject();
         }
