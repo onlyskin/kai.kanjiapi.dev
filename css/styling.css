@@ -24,6 +24,10 @@ body {
   text-align: center;
 }
 
+.medium-padding {
+  padding: 6px 0px;
+}
+
 .content {
   padding: 0.4rem 0.2rem;
   font-size: 1.2rem;

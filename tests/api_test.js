@@ -9,7 +9,7 @@ function not_found() {
 
 function kanji_request_fake() {
     return o.spy((request_config) => {
-        if (request_config.url.includes('kanji')) {
+        if (request_config.url.includes('/kanji/')) {
             return Promise.resolve('kanji result');
         }
         return Promise.reject(not_found());
@@ -18,7 +18,7 @@ function kanji_request_fake() {
 
 function reading_request_fake() {
     return o.spy((request_config) => {
-        if (request_config.url.includes('kanji')) {
+        if (request_config.url.includes('/kanji/')) {
             return Promise.reject(not_found());
         }
         return Promise.resolve('reading result');
@@ -40,7 +40,7 @@ o.spec('search', () => {
 
         o(request_fake.args[0]).deepEquals({
             method: 'GET',
-            url: 'http://0.0.0.0:4000/v1/kanji/山',
+            url: 'https://kanjiapi.dev/v1/kanji/山',
         });
         o(result).equals('kanji result');
     });
@@ -53,11 +53,11 @@ o.spec('search', () => {
 
         o(request_fake.calls[0].args[0]).deepEquals({
             method: 'GET',
-            url: 'http://0.0.0.0:4000/v1/kanji/や',
+            url: 'https://kanjiapi.dev/v1/kanji/や',
         });
         o(request_fake.calls[1].args[0]).deepEquals({
             method: 'GET',
-            url: 'http://0.0.0.0:4000/v1/reading/やま',
+            url: 'https://kanjiapi.dev/v1/reading/やま',
         });
         o(result).equals('reading result');
     });
@@ -84,11 +84,11 @@ o.spec('search', () => {
         o(request_fake.calls.length).equals(2);
         o(request_fake.calls[0].args[0]).deepEquals({
             method: 'GET',
-            url: 'http://0.0.0.0:4000/v1/kanji/や',
+            url: 'https://kanjiapi.dev/v1/kanji/や',
         });
         o(request_fake.calls[1].args[0]).deepEquals({
             method: 'GET',
-            url: 'http://0.0.0.0:4000/v1/reading/やま',
+            url: 'https://kanjiapi.dev/v1/reading/やま',
         });
         o(result1).equals('reading result');
         o(result2).equals('reading result');
