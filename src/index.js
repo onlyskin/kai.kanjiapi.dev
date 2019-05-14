@@ -4,8 +4,6 @@ const { isKatakana, isKana } = require('wanakana');
 const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
 
-const API_URL = 'http://0.0.0.0:4000';
-
 const config = {
     isRomaji: false,
     toggleRomaji: function() {
@@ -118,6 +116,10 @@ const Reading = {
 const Kanji = {
     view: ({attrs: {kanji}}) => {
         return m(
+            dictionary.joyo().includes(kanji) ?
+            '.joyo.kanji' :
+            dictionary.jinmeiyo().includes(kanji) ?
+            '.jinmeiyo.kanji' :
             '.kanji',
             { onclick: () => m.route.set(`/${kanji}`, null) },
             kanji,

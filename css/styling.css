@@ -138,6 +138,7 @@ input#kanji-input {
 
 .kun-reading:hover, .on-reading:hover, .name-reading:hover, .kanji:hover, #romaji-toggle:hover {
   box-shadow: 0px 0px 10px 2px #cccccc;
+  cursor: pointer;
 }
 
 .meaning {
@@ -148,6 +149,7 @@ input#kanji-input {
 
 .hover-shadow:hover {
   text-shadow: 0px 0px 4px #ffffff;
+  cursor: pointer;
 }
 
 .kun-reading {
@@ -166,8 +168,18 @@ input#kanji-input {
 }
 
 .kanji {
+  background: hsla(150, 31%, 98%, 1);
+  border: 1px solid hsla(160, 31%, 75%, 1);
+}
+
+.joyo {
   background: lemonchiffon;
   border: 1px solid gold;
+}
+
+.jinmeiyo {
+  background: mistyrose;
+  border: 1px solid plum;
 }
 
 .reading {
