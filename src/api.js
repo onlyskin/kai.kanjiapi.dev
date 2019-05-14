@@ -1,4 +1,4 @@
-const API_URL = 'http://0.0.0.0:4000';
+const API_URL = 'https://kanjiapi.dev';
 
 class Api {
     constructor(request) {
@@ -6,6 +6,13 @@ class Api {
         this._searches = {};
         this._failedKanjiSearches = [];
         this._failedReadingSearches = [];
+    }
+
+    async wordsFor(character) {
+        return this._request({
+            method: 'GET',
+            url: `${API_URL}/v1/words/${character}`,
+        });
     }
 
     async getJoyo() {

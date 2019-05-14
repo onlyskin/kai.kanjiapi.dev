@@ -3,6 +3,7 @@ const { romanize } = require('japanese');
 const { isKatakana, isKana } = require('wanakana');
 const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
+const Kanji = require('./kanji');
 
 const config = {
     isRomaji: false,
@@ -113,7 +114,7 @@ const Reading = {
     },
 };
 
-const Kanji = {
+const KanjiLiteral = {
     view: ({attrs: {kanji}}) => {
         return m(
             dictionary.joyo().includes(kanji) ?
@@ -127,49 +128,19 @@ const Kanji = {
     },
 };
 
-function words(kanji) {
-    const main_words = kanji.words
-        .filter(word => {
-            return word.variants[0].written.includes(kanji.kanji);
-        })
-        .map(word => {
-            return {
-                variant: word.variants[0],
-                meanings: word.meanings,
-            };
-        })
-        .sort((a, b) => a.variant.written.length - b.variant.written.length);
-
-    const priority_words = main_words
-        .filter(word => {
-            return word.variant.priorities.length > 0;
-        })
-
-    return priority_words.length > 0 ? priority_words : main_words;
-}
-
 const KanjiInfo = {
-    grade: ({grade}) => {
-        return grade ? grade : '';
-    },
-    jlpt: ({jlpt}) => {
-        return jlpt ? jlpt : '';
-    },
-    unicode: ({unicode}) => {
-        return unicode ? `U+${unicode.toUpperCase()}` : '';
-    },
-    view: function ({attrs: {kanji}}) {
+    view: function ({attrs: {kanji, words}}) {
         return m('.info', [
             m('.field.serif', 'Kanji'),
-            m('.field-value', m(Kanji, {kanji: kanji.kanji})),
+            m('.field-value', m(KanjiLiteral, {kanji: kanji.kanji})),
             m('.field.serif', 'Grade'),
-            m('.field-value', this.grade(kanji)),
+            m('.field-value', Kanji.grade(kanji)),
             m('.field.serif', 'JLPT'),
-            m('.field-value', this.jlpt(kanji)),
+            m('.field-value', Kanji.jlpt(kanji)),
             m('.field.serif', 'Strokes'),
             m('.field-value', kanji.stroke_count),
             m('.field.serif', 'Unicode'),
-            m('.field-value', this.unicode(kanji)),
+            m('.field-value', Kanji.unicode(kanji)),
             m('.field.serif', 'Meanings'),
             m(
                 '.field-value',
@@ -194,7 +165,10 @@ const KanjiInfo = {
             m(
                 '.flex-row.field-value.words',
                 {style: {border: 'none'}},
-                words(kanji).map(word => m(Word, {word})),
+                words ?
+                Kanji.wordsForKanji(kanji.kanji, words)
+                  .map(word => m(Word, {word})) :
+                m(Loading),
             ),
         ]);
     },
@@ -211,12 +185,12 @@ const ReadingInfo = {
             m('.field.serif', 'Main Kanji'),
             m(
                 '.field-value',
-                reading.main_kanji.map(kanji => m(Kanji, {kanji})),
+                reading.main_kanji.map(kanji => m(KanjiLiteral, {kanji})),
             ),
             m('.field.serif', 'Name Kanji'),
             m(
                 '.field-value',
-                reading.name_kanji.map(kanji => m(Kanji, {kanji})),
+                reading.name_kanji.map(kanji => m(KanjiLiteral, {kanji})),
             ),
         ]);
     },
@@ -225,7 +199,11 @@ const ReadingInfo = {
 const Info = {
     view: function({attrs: {subject}}) {
         if (isKanji(subject)) {
-            return m(KanjiInfo, {kanji: subject});
+            return m(
+                KanjiInfo, {
+                    kanji: subject,
+                    words: dictionary.wordsFor(subject),
+                });
         } else if (isReading(subject)) {
             return m(ReadingInfo, {reading: subject});
         }
@@ -273,6 +251,12 @@ const Loading = {
     },
 };
 
+const BadSearch = {
+    view: function() {
+        return m('.align-center.medium-padding', 'Not Found');
+    },
+};
+
 const Page = {
     view: function({attrs}) {
         const searchResult = dictionary.lookup(attrs.search);
@@ -288,7 +272,11 @@ const Page = {
                         m.route.set(`/${e.target.value}`, null);
                     },
                 }),
-                searchResult ? m(Info, {subject: searchResult}) : m(Loading),
+                searchResult._status === 'ok' ?
+                m(Info, {subject: searchResult.result}) :
+                searchResult._status === 'pending' ?
+                m(Loading) :
+                m(BadSearch),
             ),
             m('footer.vertical-flex', m(About)),
         ]);

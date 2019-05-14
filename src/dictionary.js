@@ -4,6 +4,9 @@ class Dictionary {
         this._redraw = redraw;
         this._searching = {};
         this._searched = {};
+        this._searchingWords = {};
+        this._searchedWords = {};
+        this._failedSearches = {}
 
         this._joyo_kanji = [];
         api.getJoyo()
@@ -15,7 +18,44 @@ class Dictionary {
     }
 
     lookup(searchTerm) {
-        return this._searchApi(searchTerm) || null;
+        if (this._failedSearches[searchTerm]) {
+            return {
+                _status: 'failed',
+            };
+        }
+
+        const searchResult = this._searchApi(searchTerm);
+        if (searchResult) {
+            return {
+                _status: 'ok',
+                result: searchResult,
+            };
+        }
+
+        return {
+            _status: 'pending',
+        };
+    }
+
+    wordsFor(kanji) {
+        return this._wordsFromApi(kanji) || null
+    }
+
+    _wordsFromApi(kanji) {
+        const literal = kanji.kanji;
+        if (!this._searchingWords[literal]) {
+            this._searchingWords[literal] = true;
+
+            this._api.wordsFor(literal)
+                .then(response => {
+                    this._searchedWords[literal] = response;
+                    this._redraw();
+                })
+                .catch(error => {
+                    this._searchingWords[literal] = undefined;
+                });
+        }
+        return this._searchedWords[literal];
     }
 
     joyo() {
@@ -37,6 +77,8 @@ class Dictionary {
                 })
                 .catch(error => {
                     this._searching[searchTerm] = undefined;
+                    this._failedSearches[searchTerm] = true;
+                    this._redraw();
                 });
         }
         return this._searched[searchTerm];
