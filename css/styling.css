@@ -101,8 +101,7 @@ input#kanji-input {
 
 .word-card {
   align-items: center;
-  background: thistle;
-  border: 0.5px solid mediumorchid;
+  border: 0.5px solid hsla(286, 65%, 77%, 1);
   border-radius: 22px;
   margin: 1px;
   padding: 4px 6px 4px 4px;

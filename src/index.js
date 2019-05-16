@@ -54,10 +54,26 @@ const WordMeanings = {
     },
 };
 
+function randomFactor() {
+    const variation = 0.04;
+    const factor =  1 + Math.random() * variation * 2 - variation;
+    console.log(factor);
+    return factor;
+}
+
+function wordCardBackground() {
+    return `hsla(${286*randomFactor()}, ${65*randomFactor()}%, ${90*randomFactor()}%, 1)`;
+}
+
 const Word = {
     view: ({attrs: {word}}) => {
         return m(
             '.flex-row.word-card',
+            {
+                style: {
+                    background: wordCardBackground(),
+                },
+            },
             m(
                 '.flex-row.flex-right',
                 m(
