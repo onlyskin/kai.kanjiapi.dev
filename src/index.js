@@ -1,37 +1,10 @@
 const m = require('mithril');
-const { romanize } = require('japanese');
-const { isKatakana, isKana } = require('wanakana');
+const { isKana } = require('wanakana');
 const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
 const Kanji = require('./kanji');
-
-const config = {
-    isRomaji: false,
-    toggleRomaji: function() {
-        this.isRomaji = !this.isRomaji;
-        return Promise.resolve();
-    },
-};
-
-function romanizeWithPunctuation(reading) {
-    reading = reading
-        .replace('.', '。')
-        .replace('-', '－')
-        .replace('-', '－')
-        .replace('ー', '－');
-
-    const romanized = romanize(reading, 'nihon');
-
-    return isKatakana(reading) ? romanized.toUpperCase() : romanized;
-}
-
-function formatReading(reading) {
-    if (!reading) {
-        return reading;
-    }
-
-    return config.isRomaji ? romanizeWithPunctuation(reading) : reading;
-}
+const Kana = require('./kana');
+const { config } = require('./config');
 
 function isKanji(data) {
     if (!data) return false;
@@ -45,15 +18,39 @@ function isReading(data) {
     return data.reading !== undefined;
 }
 
-function subjectText(subject) {
-    if (!subject) return '';
-
-    return isKanji(subject) ? subject.kanji : subject.reading;
-}
-
 const Meaning = {
     view: ({attrs: {meaning}}) => {
         return m('.meaning', meaning);
+    },
+};
+
+const WordChar = {
+    view: ({attrs: {character}}) => {
+        return m(
+            'span',
+            isKana(character) ?
+            {} : 
+            {
+                class: 'hover-shadow',
+                onclick: e => {
+                    m.route.set(`/${e.target.textContent}`, null);
+                },
+            },
+            character,
+        );
+    },
+};
+
+const WordMeanings = {
+    view: ({attrs: {meanings}}) => {
+        return meanings.map((meaning, index, arr) => {
+            return m(
+                'p',
+                arr.length < 2 ?
+                meaning.glosses.join(', ') :
+                `${index + 1}. ${meaning.glosses.join(', ')}`,
+            );
+        });
     },
 };
 
@@ -65,35 +62,20 @@ const Word = {
                 '.flex-row.flex-right',
                 m(
                     '.word',
-                    [...word.variant.written].map(character => {
-                        return m(
-                            'span',
-                            isKana(character) ?
-                            {} : 
-                            {
-                                class: 'hover-shadow',
-                                onclick: e => {
-                                    m.route.set(`/${e.target.textContent}`, null);
-                                },
-                            },
-                            character,
-                        );
-                    }),
+                    [...word.variant.written]
+                      .map(character => m(WordChar, {character})),
                 ),
             ),
             m(
                 '.vertical-flex',
                 [
-                    m('.word-reading', formatReading(word.variant.pronounced)),
+                    m(
+                        '.word-reading',
+                        Kana.formatReading(word.variant.pronounced),
+                    ),
                     m(
                         '.word-meaning.serif',
-                        word.meanings
-                        .map((meaning, index, arr) => {
-                            return m(
-                                'p',
-                                arr.length < 2 ? meaning.glosses.join(', ') : `${index + 1}. ${meaning.glosses.join(', ')}`,
-                            );
-                        }),
+                        m(WordMeanings, {meanings: word.meanings}),
                     ),
                 ],
             ),
@@ -109,7 +91,7 @@ const Reading = {
                 class: [config.isRomaji ? 'romanized' : '', type].join(' '),
                 onclick: () => m.route.set(`/${reading}`, null),
             },
-            formatReading(reading),
+            Kana.formatReading(reading),
         );
     },
 };
