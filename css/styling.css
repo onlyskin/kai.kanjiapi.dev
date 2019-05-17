@@ -86,6 +86,11 @@ input#kanji-input {
   grid-template-columns: auto 1fr;
   flex-direction: column;
   width: auto;
+  overflow: scroll;
+}
+
+.info::-webkit-scrollbar {
+  display: none;
 }
 
 .info > div {
