@@ -221,7 +221,7 @@ const Header = {
     view: function() {
         return m('header.align-center', [
             m('h1', '漢字解'),
-            m('h1.romanized', 'KanjiKai'),
+            m('h1.romanized', 'kanjikai'),
         ]);
     },
 };
@@ -232,8 +232,10 @@ const About = {
             m('h2.center-text.romanized', 'About'),
             m('#about.center-text.romanized', [
                 m('p', [
-                    'This site is powered by ',
+                    'kanjikai is powered by ',
                     m('a[href=https://kanjiapi.dev]', 'kanjiapi.dev'),
+                    ' and ',
+                    m('a[href=https://mithril.js.org]', 'mithril.js'),
                 ]),
             ])
         ];
