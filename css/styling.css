@@ -77,6 +77,7 @@ h2 {
 }
 
 input#kanji-input {
+  font-family: 'Kosugi Maru', sans-serif;
   font-size: 2rem;
 }
 
