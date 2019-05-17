@@ -5,6 +5,7 @@ const { Dictionary } = require('./dictionary');
 const Kanji = require('./kanji');
 const Kana = require('./kana');
 const { config } = require('./config');
+const Random = require('./random');
 
 function isKanji(data) {
     if (!data) return false;
@@ -54,15 +55,11 @@ const WordMeanings = {
     },
 };
 
-function randomFactor() {
-    const variation = 0.04;
-    const factor =  1 + Math.random() * variation * 2 - variation;
-    console.log(factor);
-    return factor;
-}
-
 function wordCardBackground() {
-    return `hsla(${286*randomFactor()}, ${65*randomFactor()}%, ${90*randomFactor()}%, 1)`;
+    const jitteredHue = 286 * random.jitter(0.04);
+    const jitteredSaturation = 65 * random.jitter(0.04);
+    const jitteredLightness = 90 * random.jitter(0.04);
+    return `hsla(${jitteredHue}, ${jitteredSaturation}%, ${jitteredLightness}%, 1)`;
 }
 
 const Word = {
@@ -289,5 +286,6 @@ function init() {
 
 const api = new Api(m.request);
 const dictionary = new Dictionary(api, m.redraw);
+const random = new Random();
 
 init();
