@@ -1,6 +1,7 @@
 const { config } = require('./config');
 const { romanize } = require('japanese');
 const { isKatakana } = require('wanakana');
+const { ON, KUN } = require('./constant');
 
 function formatReading(reading) {
     if (!reading) {
@@ -22,6 +23,11 @@ function romanizeWithPunctuation(reading) {
     return isKatakana(reading) ? romanized.toUpperCase() : romanized;
 }
 
+function readingType(reading) {
+    return isKatakana(reading) ? ON : KUN;
+}
+
 module.exports = {
-    formatReading
+    formatReading,
+    readingType,
 };
