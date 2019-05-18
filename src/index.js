@@ -254,6 +254,19 @@ const BadSearch = {
     },
 };
 
+const RandomKanji = {
+    view: function() {
+        const joyo = dictionary.joyo()
+        const choice = Math.floor(Math.random() * joyo.length)
+        const kanji = joyo[choice] || m.route.param('search');
+        return m(
+            '',
+            { onclick: e => m.route.set(`/${kanji}`, null), },
+            'Random',
+        );
+    },
+};
+
 const Page = {
     view: function({attrs}) {
         const searchResult = dictionary.lookup(attrs.search);
@@ -263,6 +276,7 @@ const Page = {
             m(
                 '.content.vertical-flex',
                 m(RomajiToggle),
+                m(RandomKanji),
                 m('input[text]#kanji-input', {
                     value: attrs.search,
                     onchange: e => {
