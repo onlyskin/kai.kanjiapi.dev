@@ -1,0 +1,47 @@
+.bg-pale-red {
+  background: lightpink;
+}
+
+.b--pale-red {
+  border: 1px solid palevioletred;
+}
+
+.bg-pale-blue {
+  background: powderblue;
+}
+
+.b--pale-blue {
+  border: 1px solid steelblue;
+}
+
+.bg-pale-green {
+  background: lightgreen;
+}
+
+.b--pale-green {
+  border: 1px solid seagreen;
+}
+
+.bg-pale-orange {
+  background: moccasin;
+}
+
+.b--pale-orange {
+  border: 1px solid tan;
+}
+
+.b--pale-purple {
+  border: 1px solid hsla(286, 65%, 77%, 1)
+}
+
+.kosugi-maru {
+  font-family: 'Kosugi Maru', sans-serif;
+}
+
+.bg-dark-purple {
+  background-color: #2F1758;
+}
+
+.br-5 {
+  border-radius: 2rem;
+}
