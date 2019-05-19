@@ -23,7 +23,7 @@ function isReading(data) {
 const Meaning = {
     view: ({attrs: {meaning}}) => {
         return m(
-            '.lh-solid.pa1.mh1.br3.f4.ba.avenir.bg-pale-orange.b--pale-orange',
+            '.lh-solid.pa1.ma1.br3.f4.ba.avenir.bg-pale-orange.b--pale-orange',
             meaning,
         );
     },
@@ -54,8 +54,8 @@ const WordMeanings = {
             return m(
                 '',
                 arr.length < 2 ?
-                meaning.glosses.join(', ') :
-                `${index + 1}. ${meaning.glosses.join(', ')}`,
+                meaning.glosses.join('; ') :
+                `${index + 1}. ${meaning.glosses.join('; ')}`,
             );
         });
     },
@@ -92,7 +92,7 @@ const Word = {
                         Kana.formatReading(word.variant.pronounced),
                     ),
                     m(
-                        '.avenir',
+                        '.measure-narrow.avenir',
                         m(WordMeanings, {meanings: word.meanings}),
                     ),
                 ],
@@ -169,11 +169,20 @@ const KanjiLiteral = {
 
 const Row = {
     view: function({attrs: {left, right}}) {
-        return m('.db.flex.bb', [
-            m('.flex.flex-wrap.items-center.justify-end.w-20.pa1.avenir', left),
+        return m('.db.flex.justify-center.justify-start-ns', [
+            m('.fw6.flex.flex-wrap.items-center.justify-end.w-20-ns.pa1.avenir', left),
             m('.flex.flex-wrap.items-center.justify-start.pa1', right),
         ]);
     },
+};
+
+const CollapsibleRow = {
+    view: function({attrs: {left, right}}) {
+        return m('.db.flex.flex-column.flex-row-ns', [
+            m('.fw6.flex.flex-wrap.justify-center.items-center-ns.justify-end-ns.w-20-ns.pa1.pb0.pa1-ns.avenir', left),
+            m('.flex.flex-wrap.justify-center.items-center-ns.justify-start-ns.pa1.pt0.pa1-ns', right),
+        ]);
+    }
 };
 
 const KanjiInfo = {
@@ -181,43 +190,41 @@ const KanjiInfo = {
         return m('', [
             m(Row, {left: 'Kanji', right: m(KanjiLiteral, {kanji: kanji.kanji})}),
             m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}),
-            m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}),
+            Kanji.jlpt(kanji) ? m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}) : null,
             m(Row, {left: 'Strokes', right: m('.avenir', kanji.stroke_count)}),
             m(Row, {left: 'Unicode', right: m('.avenir', Kanji.unicode(kanji))}),
-            m(Row, {
+            m(CollapsibleRow, {
                 left: 'Meanings',
                 right: kanji.meanings.map(meaning => {
                     return m(Meaning, {meaning});
                 }),
             }),
-            m(Row, {
+            m(CollapsibleRow, {
                 left: 'Kun',
                 right: kanji.kun_readings.map(reading => {
                     return m(Reading, {type: KUN, reading, size: 'f4'});
                 }),
             }),
-            m(Row, {
+            m(CollapsibleRow, {
                 left: 'On',
                 right: kanji.on_readings.map(reading => {
                     return m(Reading, {type: ON, reading, size: 'f4'});
                 }),
             }),
-            m(Row, {
+            m(CollapsibleRow, {
                 left: 'Nanori',
                 right: kanji.name_readings.map(reading => {
                     return m(Reading, {type: NAME, reading, size: 'f4'});
                 }),
             }),
-            m('.db.flex.flex-column.', [
+            m('.db.flex.flex-column', [
                 m(
-                    '.flex.justify-center.fl.pa2.avenir',
-                    {style: {border: 'none'}},
-                    'Words',
+                    '.fw6.flex.justify-end.w-20.flex-wrap.self-start-ns.pa1.pb0.pa1-ns.avenir',
+                    'Words'
                 ),
                 m(
                     '.fl.pa2.words.flex.flex-wrap.justify-center',
-                    {style: {border: 'none'}},
-                    words ?  m(Words, {kanji, words, wordlimit}) : m(Loading),
+                    words ? m(Words, {kanji, words, wordlimit}) : m(Loading),
                 ),
             ]),
         ]);
