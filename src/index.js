@@ -124,7 +124,7 @@ const KanjiLiteral = {
 };
 
 const KanjiInfo = {
-    view: function ({attrs: {kanji, words}}) {
+    view: function ({attrs: {kanji, words, wordlimit}}) {
         return m('.info', [
             m('.field.serif', 'Kanji'),
             m('.field-value', m(KanjiLiteral, {kanji: kanji.kanji})),
@@ -160,12 +160,24 @@ const KanjiInfo = {
             m(
                 '.flex-row.field-value.words',
                 {style: {border: 'none'}},
-                words ?
-                Kanji.wordsForKanji(kanji.kanji, words)
-                  .map(word => m(Word, {word})) :
-                m(Loading),
+                words ?  m(Words, {kanji, words, wordlimit}) : m(Loading),
             ),
         ]);
+    },
+};
+
+const Words = {
+    view: ({attrs: {kanji, words, wordlimit}}) => {
+        return [
+            Kanji.wordsForKanji(kanji.kanji, words)
+            .slice(0, wordlimit)
+            .map(word => m(Word, {word})),
+            words.length > wordlimit ? m('', {
+                onclick : e => {
+                    m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
+                },
+            }, '...') : '',
+        ];
     },
 };
 
@@ -198,6 +210,7 @@ const Info = {
                 KanjiInfo, {
                     kanji: subject,
                     words: dictionary.wordsFor(subject),
+                    wordlimit: m.route.param('wordlimit') || 20,
                 });
         } else if (isReading(subject)) {
             return m(ReadingInfo, {reading: subject});
