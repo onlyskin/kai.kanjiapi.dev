@@ -1,5 +1,15 @@
+const { config } = require('./config');
+
 function grade({grade}) {
-    return grade ? grade : '';
+    if (grade === 9) {
+        return config.isRomaji ? 'Jinmeiyō' : '人名用';
+    } else if (grade === 8) {
+        return config.isRomaji ? 'Jōyō' : '常用';
+    } else if (grade) {
+        return `${config.isRomaji ? 'Kyōiku' : '教育'}: ${grade}`;
+    } else {
+        return '';
+    }
 }
 
 function jlpt({jlpt}) {
