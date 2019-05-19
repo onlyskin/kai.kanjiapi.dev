@@ -32,7 +32,7 @@ const Meaning = {
 const WordChar = {
     view: ({attrs: {character}}) => {
         return m(
-            '.dib',
+            '.di',
             isKana(character) ?
             {
                 class: '',
@@ -79,13 +79,13 @@ const Word = {
             m(
                 '.flex.flex-column.justify-center',
                 m(
-                    '.kosugi-maru.pa1.ma1.f3.f2-ns',
+                    '.kosugi-maru.mr2.f3.f2-ns',
                     [...word.variant.written]
                       .map(character => m(WordChar, {character})),
                 ),
             ),
             m(
-                '.flex.flex-column.justify-center',
+                '.flex.flex-column.justify-center.mr2.mr0-ns',
                 [
                     m(
                         '.kosugi-maru',
@@ -208,7 +208,7 @@ const KanjiInfo = {
                     return m(Reading, {type: NAME, reading, size: 'f4'});
                 }),
             }),
-            m('.db.flex', [
+            m('.db.flex.flex-column.', [
                 m(
                     '.flex.items-start.justify-end.fl.w-20.pa2.avenir',
                     {style: {border: 'none'}},
@@ -287,7 +287,7 @@ const Info = {
 const RomajiToggle = {
     view: function() {
         return m(
-            '.bg-near-black.white.pa2.br-pill.kosugi-maru.flex-none',
+            '.bg-near-black.white.mh1.pa2.br-pill.kosugi-maru.flex-none',
             {
                 onclick: _ => config.toggleRomaji(),
             },
@@ -345,7 +345,7 @@ const RandomKanji = {
         const choice = Math.floor(Math.random() * joyo.length)
         const kanji = joyo[choice] || m.route.param('search');
         return m(
-            '.bg-near-black.white.pa2.br-pill.kosugi-maru.flex-none',
+            '.bg-near-black.white.pa2.mh1.br-pill.kosugi-maru.flex-none',
             { onclick: e => m.route.set(`/${kanji}`, null), },
             'Random',
         );
