@@ -210,12 +210,12 @@ const KanjiInfo = {
             }),
             m('.db.flex.flex-column.', [
                 m(
-                    '.flex.items-start.justify-end.fl.w-20.pa2.avenir',
+                    '.flex.justify-center.fl.pa2.avenir',
                     {style: {border: 'none'}},
                     'Words',
                 ),
                 m(
-                    '.fl.w-80.pa2.words.flex.flex-wrap',
+                    '.fl.pa2.words.flex.flex-wrap.justify-center',
                     {style: {border: 'none'}},
                     words ?  m(Words, {kanji, words, wordlimit}) : m(Loading),
                 ),
