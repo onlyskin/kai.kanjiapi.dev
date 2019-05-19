@@ -6,6 +6,7 @@ const Kanji = require('./kanji');
 const Kana = require('./kana');
 const { config } = require('./config');
 const Random = require('./random');
+const { ON, KUN, NAME } = require('./constant');
 
 function isKanji(data) {
     if (!data) return false;
@@ -21,18 +22,23 @@ function isReading(data) {
 
 const Meaning = {
     view: ({attrs: {meaning}}) => {
-        return m('.meaning', meaning);
+        return m(
+            '.lh-solid.pa1.mh1.br3.f4.ba.avenir.bg-pale-orange.b--pale-orange',
+            meaning,
+        );
     },
 };
 
 const WordChar = {
     view: ({attrs: {character}}) => {
         return m(
-            'span',
+            '.dib.f2',
             isKana(character) ?
-            {} : 
             {
-                class: 'hover-shadow',
+                class: '',
+            } :
+            {
+                class: 'pointer grow',
                 onclick: e => {
                     m.route.set(`/${e.target.textContent}`, null);
                 },
@@ -46,7 +52,7 @@ const WordMeanings = {
     view: ({attrs: {meanings}}) => {
         return meanings.map((meaning, index, arr) => {
             return m(
-                'p',
+                '',
                 arr.length < 2 ?
                 meaning.glosses.join(', ') :
                 `${index + 1}. ${meaning.glosses.join(', ')}`,
@@ -65,29 +71,29 @@ function wordCardBackground() {
 const Word = {
     view: ({attrs: {word}}) => {
         return m(
-            '.flex-row.word-card',
+            '.ma1.fl.br-5.shadow-4.flex..pv2.ph3.b--pale-purple',
             {
                 style: {
                     background: wordCardBackground(),
                 },
             },
             m(
-                '.flex-row.flex-right',
+                '.flex.flex-column.justify-center',
                 m(
-                    '.word',
+                    '.kosugi-maru.pa1.ma1',
                     [...word.variant.written]
                       .map(character => m(WordChar, {character})),
                 ),
             ),
             m(
-                '.vertical-flex',
+                '.flex.flex-column.justify-center',
                 [
                     m(
-                        '.word-reading',
+                        '.kosugi-maru',
                         Kana.formatReading(word.variant.pronounced),
                     ),
                     m(
-                        '.word-meaning.serif',
+                        '.avenir',
                         m(WordMeanings, {meanings: word.meanings}),
                     ),
                 ],
@@ -97,11 +103,32 @@ const Word = {
 };
 
 const Reading = {
-    view: ({attrs: {type, reading}}) => {
+    _borderClass: (type) => {
+        if (type === KUN) {
+            return 'b--pale-red';
+        } else if (type === ON) {
+            return 'b--pale-blue';
+        }
+        return 'b--pale-green';
+    },
+    _backgroundClass: (type) => {
+        if (type === KUN) {
+            return 'bg-pale-red';
+        } else if (type === ON) {
+            return 'bg-pale-blue';
+        }
+        return 'bg-pale-green';
+    },
+    view: function({attrs: {type, reading, size}}) {
         return m(
-            '',
+            '.lh-solid.pa1.mh1.br3.ba.pointer.grow',
             {
-                class: [config.isRomaji ? 'romanized' : '', type].join(' '),
+                class: [
+                    size,
+                    config.isRomaji ? 'avenir' : 'kosugi-maru',
+                    this._borderClass(type),
+                    this._backgroundClass(type),
+                ].join(' '),
                 onclick: () => m.route.set(`/${reading}`, null),
             },
             Kana.formatReading(reading),
@@ -110,58 +137,90 @@ const Reading = {
 };
 
 const KanjiLiteral = {
-    view: ({attrs: {kanji}}) => {
+    _backgroundClass: (kanji) => {
+        if (dictionary.joyo().includes(kanji)) {
+            return 'bg-washed-yellow';
+        } else if (dictionary.jinmeiyo().includes(kanji)) {
+            return 'bg-washed-red';
+        }
+        return 'bg-washed-blue';
+    },
+    _borderClass: (kanji) => {
+        if (dictionary.joyo().includes(kanji)) {
+            return 'b--light-yellow';
+        } else if (dictionary.jinmeiyo().includes(kanji)) {
+            return 'b--light-red';
+        }
+        return 'b--lightest-blue';
+    },
+    view: function({attrs: {kanji}}) {
         return m(
-            dictionary.joyo().includes(kanji) ?
-            '.joyo.kanji' :
-            dictionary.jinmeiyo().includes(kanji) ?
-            '.jinmeiyo.kanji' :
-            '.kanji',
-            { onclick: () => m.route.set(`/${kanji}`, null) },
+            '.pointer.grow.ma1.lh-solid.pa1.br3.f1.ba.kosugi-maru',
+            {
+                class: [
+                    this._backgroundClass(kanji),
+                    this._borderClass(kanji),
+                ].join(' '),
+                onclick: () => m.route.set(`/${kanji}`, null)
+            },
             kanji,
         );
     },
 };
 
+const Row = {
+    view: function({attrs: {left, right}}) {
+        return m('.db.flex.bb', [
+            m('.flex.items-center.justify-end.w-20.pa1.avenir', left),
+            m('.flex.items-center.justify-start.pa1', right),
+        ]);
+    },
+};
+
 const KanjiInfo = {
     view: function ({attrs: {kanji, words, wordlimit}}) {
-        return m('.info', [
-            m('.field.serif', 'Kanji'),
-            m('.field-value', m(KanjiLiteral, {kanji: kanji.kanji})),
-            m('.field.serif', 'Grade'),
-            m('.field-value', Kanji.grade(kanji)),
-            m('.field.serif', 'JLPT'),
-            m('.field-value', Kanji.jlpt(kanji)),
-            m('.field.serif', 'Strokes'),
-            m('.field-value', kanji.stroke_count),
-            m('.field.serif', 'Unicode'),
-            m('.field-value', Kanji.unicode(kanji)),
-            m('.field.serif', 'Meanings'),
-            m(
-                '.field-value',
-                kanji.meanings.map(meaning => m(Meaning, {meaning})),
-            ),
-            m('.field.serif', 'Kun'),
-            m('.field-value', kanji.kun_readings.map(reading => {
-                return m(Reading, {type: 'kun-reading', reading});
-            })),
-            m('.field.serif', 'On'),
-            m('.field-value', kanji.on_readings.map(reading => {
-                return m(Reading, {type: 'on-reading', reading});
-            })),
-            m('.field.serif', 'Nanori'),
-            m(
-                '.field-value',
-                kanji.name_readings.map(reading => {
-                    return m(Reading, {type: 'name-reading', reading});
+        return m('', [
+            m(Row, {left: 'Kanji', right: m(KanjiLiteral, {kanji: kanji.kanji})}),
+            m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}),
+            m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}),
+            m(Row, {left: 'Strokes', right: m('.avenir', kanji.stroke_count)}),
+            m(Row, {left: 'Unicode', right: m('.avenir', Kanji.unicode(kanji))}),
+            m(Row, {
+                left: 'Meanings',
+                right: kanji.meanings.map(meaning => {
+                    return m(Meaning, {meaning});
                 }),
-            ),
-            m('.field.serif', {style: {border: 'none'}}, 'Words'),
-            m(
-                '.flex-row.field-value.words',
-                {style: {border: 'none'}},
-                words ?  m(Words, {kanji, words, wordlimit}) : m(Loading),
-            ),
+            }),
+            m(Row, {
+                left: 'Kun',
+                right: kanji.kun_readings.map(reading => {
+                    return m(Reading, {type: KUN, reading, size: 'f4'});
+                }),
+            }),
+            m(Row, {
+                left: 'On',
+                right: kanji.on_readings.map(reading => {
+                    return m(Reading, {type: ON, reading, size: 'f4'});
+                }),
+            }),
+            m(Row, {
+                left: 'Nanori',
+                right: kanji.name_readings.map(reading => {
+                    return m(Reading, {type: NAME, reading, size: 'f4'});
+                }),
+            }),
+            m('.db.flex', [
+                m(
+                    '.flex.items-start.justify-end.fl.w-20.pa2.avenir',
+                    {style: {border: 'none'}},
+                    'Words',
+                ),
+                m(
+                    '.fl.w-80.pa2.words.flex.flex-wrap',
+                    {style: {border: 'none'}},
+                    words ?  m(Words, {kanji, words, wordlimit}) : m(Loading),
+                ),
+            ]),
         ]);
     },
 };
@@ -172,7 +231,7 @@ const Words = {
             Kanji.wordsForKanji(kanji.kanji, words)
             .slice(0, wordlimit)
             .map(word => m(Word, {word})),
-            words.length > wordlimit ? m('', {
+            words.length > wordlimit ? m('.f1', {
                 onclick : e => {
                     m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
                 },
@@ -183,22 +242,30 @@ const Words = {
 
 const ReadingInfo = {
     view: ({attrs: {reading}}) => {
-        return m('.info', [
-            m('.field.serif', 'Reading'),
-            m('.field-value', m(
-                Reading,
-                {type: 'reading', reading: reading.reading},
-            )),
-            m('.field.serif', 'Main Kanji'),
-            m(
-                '.field-value',
-                reading.main_kanji.map(kanji => m(KanjiLiteral, {kanji})),
-            ),
-            m('.field.serif', 'Name Kanji'),
-            m(
-                '.field-value',
-                reading.name_kanji.map(kanji => m(KanjiLiteral, {kanji})),
-            ),
+        return m('', [
+            m(Row, {
+                left: 'Reading',
+                right: m(
+                    Reading,
+                    {
+                        type: Kana.readingType(reading.reading),
+                        reading: reading.reading,
+                        size: 'f1',
+                    },
+                ),
+            }),
+            m(Row, {
+                left: 'Main Kanji',
+                right: m('.flex.flex-wrap', reading.main_kanji.map(kanji => {
+                    return m(KanjiLiteral, {kanji});
+                })),
+            }),
+            m(Row, {
+                left:  'Name Kanji',
+                right: m('.flex.flex-wrap', reading.name_kanji.map(kanji => {
+                    return m(KanjiLiteral, {kanji});
+                })),
+            }),
         ]);
     },
 };
@@ -221,7 +288,7 @@ const Info = {
 const RomajiToggle = {
     view: function() {
         return m(
-            '#romaji-toggle',
+            '.bg-near-black.white.pa2.br-pill.kosugi-maru.flex-none',
             {
                 onclick: _ => config.toggleRomaji(),
             },
@@ -232,9 +299,9 @@ const RomajiToggle = {
 
 const Header = {
     view: function() {
-        return m('header.align-center', [
-            m('h1', '漢字解'),
-            m('h1.romanized', 'kanjikai'),
+        return m('header.white.bg-dark-purple.pa1.self-stretch', [
+            m('h1.mv3.f1.tc.kosugi-maru', '漢字解'),
+            m('h1.mv2.f2.tc.avenir', 'kanjikai'),
         ]);
     },
 };
@@ -242,13 +309,19 @@ const Header = {
 const About = {
     view: function() {
         return [
-            m('h2.center-text.romanized', 'About'),
-            m('#about.center-text.romanized', [
+            m('h2.tc.avenir', 'About'),
+            m('.tc.avenir', [
                 m('p', [
                     'kanjikai is powered by ',
-                    m('a[href=https://kanjiapi.dev]', 'kanjiapi.dev'),
+                    m(
+                        'a[href=https://kanjiapi.dev].link.dim.white-80',
+                        'kanjiapi.dev',
+                    ),
                     ' and ',
-                    m('a[href=https://mithril.js.org]', 'mithril.js'),
+                    m(
+                        'a[href=https://mithril.js.org].link.dim.white-80',
+                        'mithril.js',
+                    ),
                 ]),
             ])
         ];
@@ -263,7 +336,7 @@ const Loading = {
 
 const BadSearch = {
     view: function() {
-        return m('.align-center.medium-padding', 'Not Found');
+        return m('', 'Not Found');
     },
 };
 
@@ -273,7 +346,7 @@ const RandomKanji = {
         const choice = Math.floor(Math.random() * joyo.length)
         const kanji = joyo[choice] || m.route.param('search');
         return m(
-            '',
+            '.bg-near-black.white.pa2.br-pill.kosugi-maru.flex-none',
             { onclick: e => m.route.set(`/${kanji}`, null), },
             'Random',
         );
@@ -284,25 +357,28 @@ const Page = {
     view: function({attrs}) {
         const searchResult = dictionary.lookup(attrs.search);
 
-        return m('.page.vertical-flex', [
+        return m('.bg-white.flex.flex-column.items-center', [
             m(Header),
             m(
-                '.content.vertical-flex',
-                m(RomajiToggle),
-                m(RandomKanji),
-                m('input[text]#kanji-input', {
-                    value: attrs.search,
-                    onchange: e => {
-                        m.route.set(`/${e.target.value}`, null);
-                    },
-                }),
+                '.pa2.w-80-m.w-60-l',
+                m(
+                    '.flex',
+                    m('input[text].kosugi-maru.flex-auto', {
+                        value: attrs.search,
+                        onchange: e => {
+                            m.route.set(`/${e.target.value}`, null);
+                        },
+                    }),
+                    m(RomajiToggle),
+                    m(RandomKanji),
+                ),
                 searchResult._status === 'ok' ?
                 m(Info, {subject: searchResult.result}) :
                 searchResult._status === 'pending' ?
                 m(Loading) :
                 m(BadSearch),
             ),
-            m('footer.vertical-flex', m(About)),
+            m('footer.white.bg-dark-purple.pa1.self-stretch', m(About)),
         ]);
     },
 };
