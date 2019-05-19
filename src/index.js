@@ -32,7 +32,7 @@ const Meaning = {
 const WordChar = {
     view: ({attrs: {character}}) => {
         return m(
-            '.dib.f2',
+            '.dib',
             isKana(character) ?
             {
                 class: '',
@@ -61,26 +61,25 @@ const WordMeanings = {
     },
 };
 
-function wordCardBackground() {
-    const jitteredHue = 286 * random.jitter(0.04);
-    const jitteredSaturation = 65 * random.jitter(0.04);
-    const jitteredLightness = 90 * random.jitter(0.04);
-    return `hsla(${jitteredHue}, ${jitteredSaturation}%, ${jitteredLightness}%, 1)`;
-}
-
 const Word = {
-    view: ({attrs: {word}}) => {
+    _wordCardBackground: () => {
+        const jitteredHue = 286 * random.jitter(0.04);
+        const jitteredSaturation = 65 * random.jitter(0.04);
+        const jitteredLightness = 90 * random.jitter(0.04);
+        return `hsla(${jitteredHue}, ${jitteredSaturation}%, ${jitteredLightness}%, 1)`;
+    },
+    view: function ({attrs: {word}}) {
         return m(
-            '.ma1.fl.br-5.shadow-4.flex..pv2.ph3.b--pale-purple',
+            '.ma1.fl.br-5.shadow-4.flex.pv1.ph2.pv2-ns.ph3-ns.b--pale-purple',
             {
                 style: {
-                    background: wordCardBackground(),
+                    background: this._wordCardBackground(),
                 },
             },
             m(
                 '.flex.flex-column.justify-center',
                 m(
-                    '.kosugi-maru.pa1.ma1',
+                    '.kosugi-maru.pa1.ma1.f3.f2-ns',
                     [...word.variant.written]
                       .map(character => m(WordChar, {character})),
                 ),
@@ -121,7 +120,7 @@ const Reading = {
     },
     view: function({attrs: {type, reading, size}}) {
         return m(
-            '.lh-solid.pa1.mh1.br3.ba.pointer.grow',
+            '.lh-solid.pa1.ma1.br3.ba.pointer.grow',
             {
                 class: [
                     size,
@@ -171,8 +170,8 @@ const KanjiLiteral = {
 const Row = {
     view: function({attrs: {left, right}}) {
         return m('.db.flex.bb', [
-            m('.flex.items-center.justify-end.w-20.pa1.avenir', left),
-            m('.flex.items-center.justify-start.pa1', right),
+            m('.flex.flex-wrap.items-center.justify-end.w-20.pa1.avenir', left),
+            m('.flex.flex-wrap.items-center.justify-start.pa1', right),
         ]);
     },
 };
