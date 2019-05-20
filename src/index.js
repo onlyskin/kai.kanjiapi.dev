@@ -294,7 +294,7 @@ const Info = {
 const RomajiToggle = {
     view: function() {
         return m(
-            '.bg-near-black.white.mh1.pa2.br-pill.kosugi-maru.flex-none',
+            '.bg-dark-gray.white.mh1.pa2.br-pill.kosugi-maru.flex-none',
             {
                 onclick: _ => config.toggleRomaji(),
             },
@@ -352,7 +352,7 @@ const RandomKanji = {
         const choice = Math.floor(Math.random() * joyo.length)
         const kanji = joyo[choice] || m.route.param('search');
         return m(
-            '.bg-near-black.white.pa2.mh1.br-pill.kosugi-maru.flex-none',
+            '.bg-dark-gray.white.pa2.mh1.br-pill.kosugi-maru.flex-none',
             { onclick: e => m.route.set(`/${kanji}`, null), },
             'Random',
         );
