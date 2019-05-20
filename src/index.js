@@ -363,29 +363,32 @@ const Page = {
     view: function({attrs}) {
         const searchResult = dictionary.lookup(attrs.search);
 
-        return m('.bg-white.flex.flex-column.items-center', [
+        return [
             m(Header),
             m(
-                '.pa2.w-80-m.w-60-l',
+                '.flex-auto.flex.flex-column.items-center.bg-white.pa2.w-100',
                 m(
-                    '.flex',
-                    m('input[text].kosugi-maru.flex-auto', {
-                        value: attrs.search,
-                        onchange: e => {
-                            m.route.set(`/${e.target.value}`, null);
-                        },
-                    }),
-                    m(RomajiToggle),
-                    m(RandomKanji),
+                    '.w-80-m.w-60-l',
+                    m(
+                        '.flex',
+                        m('input[text].kosugi-maru.flex-auto', {
+                            value: attrs.search,
+                            onchange: e => {
+                                m.route.set(`/${e.target.value}`, null);
+                            },
+                        }),
+                        m(RomajiToggle),
+                        m(RandomKanji),
+                    ),
+                    searchResult._status === 'ok' ?
+                    m(Info, {subject: searchResult.result}) :
+                    searchResult._status === 'pending' ?
+                    m(Loading) :
+                    m(BadSearch),
                 ),
-                searchResult._status === 'ok' ?
-                m(Info, {subject: searchResult.result}) :
-                searchResult._status === 'pending' ?
-                m(Loading) :
-                m(BadSearch),
             ),
             m('footer.white.bg-dark-purple.pa1.self-stretch', m(About)),
-        ]);
+        ];
     },
 };
 
