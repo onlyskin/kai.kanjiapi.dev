@@ -1,7 +1,7 @@
 const { config } = require('./config');
 
 function grade({grade}) {
-    if (grade === 9) {
+    if (grade === 9 || grade === 10) {
         return config.isRomaji ? 'Jinmeiyō' : '人名用';
     } else if (grade === 8) {
         return config.isRomaji ? 'Jōyō' : '常用';
