@@ -32,7 +32,7 @@ const Meaning = {
 const WordChar = {
     view: ({attrs: {character}}) => {
         return m(
-            '.di',
+            '.di.dib-ns',
             isKana(character) ?
             {
                 class: '',
@@ -188,38 +188,38 @@ const CollapsibleRow = {
 const KanjiInfo = {
     view: function ({attrs: {kanji, words, wordlimit}}) {
         return m('', [
-            m(Row, {left: 'Kanji', right: m(KanjiLiteral, {kanji: kanji.kanji})}),
-            m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}),
+            m(CollapsibleRow, {left: 'Kanji', right: m(KanjiLiteral, {kanji: kanji.kanji})}),
+            Kanji.grade(kanji) ? m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}) : null,
             Kanji.jlpt(kanji) ? m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}) : null,
             m(Row, {left: 'Strokes', right: m('.avenir', kanji.stroke_count)}),
             m(Row, {left: 'Unicode', right: m('.avenir', Kanji.unicode(kanji))}),
-            m(CollapsibleRow, {
-                left: 'Meanings',
-                right: kanji.meanings.map(meaning => {
-                    return m(Meaning, {meaning});
-                }),
-            }),
-            m(CollapsibleRow, {
+            kanji.kun_readings.length ? m(CollapsibleRow, {
                 left: 'Kun',
                 right: kanji.kun_readings.map(reading => {
                     return m(Reading, {type: KUN, reading, size: 'f4'});
                 }),
-            }),
-            m(CollapsibleRow, {
+            }) : null,
+            kanji.on_readings.length ? m(CollapsibleRow, {
                 left: 'On',
                 right: kanji.on_readings.map(reading => {
                     return m(Reading, {type: ON, reading, size: 'f4'});
                 }),
-            }),
-            m(CollapsibleRow, {
+            }) : null,
+            kanji.name_readings.length ? m(CollapsibleRow, {
                 left: 'Nanori',
                 right: kanji.name_readings.map(reading => {
                     return m(Reading, {type: NAME, reading, size: 'f4'});
                 }),
-            }),
+            }) : null,
+            kanji.meanings.length ? m(CollapsibleRow, {
+                left: 'Meanings',
+                right: kanji.meanings.map(meaning => {
+                    return m(Meaning, {meaning});
+                }),
+            }) : null,
             m('.db.flex.flex-column', [
                 m(
-                    '.fw6.flex.justify-end.w-20.flex-wrap.self-start-ns.pa1.pb0.pa1-ns.avenir',
+                    '.fw6.flex.self-center.justify-end-ns.w-20.flex-wrap.self-start-ns.pa1.pb0.pa1-ns.avenir',
                     'Words'
                 ),
                 m(
@@ -249,7 +249,7 @@ const Words = {
 const ReadingInfo = {
     view: ({attrs: {reading}}) => {
         return m('', [
-            m(Row, {
+            m(CollapsibleRow, {
                 left: 'Reading',
                 right: m(
                     Reading,
@@ -260,18 +260,18 @@ const ReadingInfo = {
                     },
                 ),
             }),
-            m(Row, {
+            reading.main_kanji.length ? m(CollapsibleRow, {
                 left: 'Main Kanji',
-                right: m('.flex.flex-wrap', reading.main_kanji.map(kanji => {
+                right: m('.flex.flex-wrap.justify-center', reading.main_kanji.map(kanji => {
                     return m(KanjiLiteral, {kanji});
                 })),
-            }),
-            m(Row, {
+            }) : null,
+            reading.name_kanji.length ? m(CollapsibleRow, {
                 left:  'Name Kanji',
-                right: m('.flex.flex-wrap', reading.name_kanji.map(kanji => {
+                right: m('.flex.flex-wrap.justify-center', reading.name_kanji.map(kanji => {
                     return m(KanjiLiteral, {kanji});
                 })),
-            }),
+            }) : null,
         ]);
     },
 };
@@ -306,8 +306,8 @@ const RomajiToggle = {
 const Header = {
     view: function() {
         return m('header.white.bg-dark-purple.pa1.self-stretch', [
-            m('h1.mv3.f1.tc.kosugi-maru', '漢字解'),
-            m('h1.mv2.f2.tc.avenir', 'kanjikai'),
+            m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
+            m('h1.fw5.mv2.f2.tc.avenir', 'kanjikai'),
         ]);
     },
 };
@@ -315,7 +315,7 @@ const Header = {
 const About = {
     view: function() {
         return [
-            m('h2.tc.avenir', 'About'),
+            m('h2.fw3.tc.avenir', 'About'),
             m('.tc.avenir', [
                 m('p', [
                     'kanjikai is powered by ',
