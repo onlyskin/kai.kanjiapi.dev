@@ -7,6 +7,7 @@ const Kana = require('./kana');
 const Random = require('./random');
 const { ON, KUN, NAME } = require('./constant');
 const { Reading } = require('./reading');
+const { config } = require('./config');
 
 const random = new Random();
 
@@ -19,16 +20,25 @@ const Meaning = {
     },
 };
 
+const CHAR_BORDER = '0.1rem dashed hsla(286, 65%, 85%, 1)';
+const CHAR_PADDING = '0.25rem';
+
 const WordChar = {
-    view: ({attrs: {character}}) => {
+    view: ({attrs: {character, index, length}}) => {
         return m(
-            '.di.dib-ns',
-            isKana(character) ?
+            '.dib.db.br3.bg-pale-purple.b--pale-purple.lh-solid',
             {
-                class: '',
-            } :
-            {
-                class: 'pointer grow',
+                class: isKana(character) ? '' : 'pointer grow bt bb',
+                style: isKana(character) ? {} : {
+                    borderRight: index === length - 1 ? CHAR_BORDER : undefined,
+                    borderLeft: index === 0 ? CHAR_BORDER : undefined,
+                    borderTop: CHAR_BORDER,
+                    borderBottom: CHAR_BORDER,
+                    paddingRight: index === length - 1 ? CHAR_PADDING : '0rem',
+                    paddingLeft: index === 0 ? CHAR_PADDING : '0rem',
+                    paddingTop: CHAR_PADDING,
+                    paddingBottom: CHAR_PADDING,
+                },
                 onclick: e => {
                     m.route.set(`/${e.target.textContent}`, null);
                 },
@@ -42,7 +52,7 @@ const WordMeanings = {
     view: ({attrs: {meanings}}) => {
         return meanings.map((meaning, index, arr) => {
             return m(
-                '',
+                arr.length < 2 ? '' : '.mv2',
                 arr.length < 2 ?
                 meaning.glosses.join('; ') :
                 `${index + 1}. ${meaning.glosses.join('; ')}`,
@@ -52,37 +62,30 @@ const WordMeanings = {
 };
 
 const Word = {
-    _wordCardBackground: () => {
-        const jitteredHue = 286 * random.jitter(0.04);
-        const jitteredSaturation = 65 * random.jitter(0.04);
-        const jitteredLightness = 90 * random.jitter(0.04);
-        return `hsla(${jitteredHue}, ${jitteredSaturation}%, ${jitteredLightness}%, 1)`;
-    },
     view: function ({attrs: {word}}) {
         return m(
-            '.ma1.fl.br-5.shadow-4.flex.pv1.ph2.pv2-ns.ph3-ns.b--pale-purple',
-            {
-                style: {
-                    background: this._wordCardBackground(),
-                },
-            },
+            '.fl.flex.pv1.pv2-ns.bb.b--black-20.justify-between.items-center.flex-wrap',
             m(
-                '.flex.flex-column.justify-center',
-                m(
-                    '.kosugi-maru.mr2.f3.f2-ns',
-                    [...word.variant.written]
-                      .map(character => m(WordChar, {character})),
-                ),
+                '.kosugi-maru.f2.f1-ns',
+                [...word.variant.written]
+                .map((character, index) => m(WordChar, {
+                    character,
+                    index,
+                    length: word.variant.written.length,
+                })),
             ),
             m(
-                '.flex.flex-column.justify-center.mr2.mr0-ns',
+                '.flex.flex-column.justify-center.items-end',
                 [
                     m(
-                        '.kosugi-maru',
+                        '.f5.f3-ns.ma1',
+                        {
+                            class: config.isRomaji ? 'avenir i' : 'kosugi-maru',
+                        },
                         Kana.formatReading(word.variant.pronounced),
                     ),
                     m(
-                        '.measure-narrow.avenir',
+                        '.measure-narrow.avenir.tr.ma1',
                         m(WordMeanings, {meanings: word.meanings}),
                     ),
                 ],
@@ -97,11 +100,16 @@ const Words = {
             Kanji.wordsForKanji(kanji.kanji, words)
             .slice(0, wordlimit)
             .map(word => m(Word, {word})),
-            words.length > wordlimit ? m('.f1', {
-                onclick : e => {
-                    m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
+            words.length > wordlimit ?
+            m(
+                '.mv3.self-center.avenir.pointer.link.dim.black-80.underline',
+                {
+                    onclick : e => {
+                        m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
+                    },
                 },
-            }, '...') : '',
+                'more words',
+            ) : '',
         ];
     },
 };
@@ -195,7 +203,7 @@ const KanjiInfo = {
                     'Words'
                 ),
                 m(
-                    '.fl.pa2.words.flex.flex-wrap.justify-center',
+                    '.fl.flex.flex-column.justify-start.flex-wrap-l',
                     words ? m(Words, {kanji, words, wordlimit}) : m(Loading),
                 ),
             ]),

@@ -39,7 +39,11 @@
 }
 
 .b--pale-purple {
-  border: 1px solid hsla(286, 65%, 77%, 1)
+  border-color: hsla(286, 65%, 85%, 1);
+}
+
+.bg-pale-purple {
+  background-color: hsl(286, 71%, 96%);
 }
 
 .kosugi-maru {
@@ -56,6 +60,10 @@
 
 .f-05 {
   font-size: 6rem;
+}
+
+.pa-01 {
+  padding; 0.1rem;
 }
 
 .loader {
