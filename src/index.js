@@ -1,12 +1,12 @@
 const m = require('mithril');
-const { isKana } = require('wanakana');
 const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
-const Kanji = require('./kanji');
+const { KanjiLiteral } = require('./kanji_literal');
 const Kana = require('./kana');
 const { config } = require('./config');
-const Random = require('./random');
-const { ON, KUN, NAME } = require('./constant');
+const { KanjiInfo } = require('./kanji_info');
+const { Reading } = require('./reading');
+const { Loading } = require('./loading');
 
 function isKanji(data) {
     if (!data) return false;
@@ -20,162 +20,6 @@ function isReading(data) {
     return data.reading !== undefined;
 }
 
-const Meaning = {
-    view: ({attrs: {meaning}}) => {
-        return m(
-            '.lh-solid.pa3.ma1.br-pill.f4.avenir.bg-pale-orange',
-            meaning,
-        );
-    },
-};
-
-const WordChar = {
-    view: ({attrs: {character}}) => {
-        return m(
-            '.di.dib-ns',
-            isKana(character) ?
-            {
-                class: '',
-            } :
-            {
-                class: 'pointer grow',
-                onclick: e => {
-                    m.route.set(`/${e.target.textContent}`, null);
-                },
-            },
-            character,
-        );
-    },
-};
-
-const WordMeanings = {
-    view: ({attrs: {meanings}}) => {
-        return meanings.map((meaning, index, arr) => {
-            return m(
-                '',
-                arr.length < 2 ?
-                meaning.glosses.join('; ') :
-                `${index + 1}. ${meaning.glosses.join('; ')}`,
-            );
-        });
-    },
-};
-
-const Word = {
-    _wordCardBackground: () => {
-        const jitteredHue = 286 * random.jitter(0.04);
-        const jitteredSaturation = 65 * random.jitter(0.04);
-        const jitteredLightness = 90 * random.jitter(0.04);
-        return `hsla(${jitteredHue}, ${jitteredSaturation}%, ${jitteredLightness}%, 1)`;
-    },
-    view: function ({attrs: {word}}) {
-        return m(
-            '.ma1.fl.br-5.shadow-4.flex.pv1.ph2.pv2-ns.ph3-ns.b--pale-purple',
-            {
-                style: {
-                    background: this._wordCardBackground(),
-                },
-            },
-            m(
-                '.flex.flex-column.justify-center',
-                m(
-                    '.kosugi-maru.mr2.f3.f2-ns',
-                    [...word.variant.written]
-                      .map(character => m(WordChar, {character})),
-                ),
-            ),
-            m(
-                '.flex.flex-column.justify-center.mr2.mr0-ns',
-                [
-                    m(
-                        '.kosugi-maru',
-                        Kana.formatReading(word.variant.pronounced),
-                    ),
-                    m(
-                        '.measure-narrow.avenir',
-                        m(WordMeanings, {meanings: word.meanings}),
-                    ),
-                ],
-            ),
-        );
-    },
-};
-
-const Reading = {
-    _borderClass: (type) => {
-        if (type === KUN) {
-            return 'b--pale-red';
-        } else if (type === ON) {
-            return 'b--pale-blue';
-        }
-        return 'b--pale-green';
-    },
-    _backgroundClass: (type) => {
-        if (type === KUN) {
-            return 'bg-pale-red';
-        } else if (type === ON) {
-            return 'bg-pale-blue';
-        }
-        return 'bg-pale-green';
-    },
-    view: function({attrs: {type, reading, size}}) {
-        return m(
-            '.lh-solid.pa1.ma1.br3.ba.pointer.grow',
-            {
-                class: [
-                    size,
-                    config.isRomaji ? 'avenir' : 'kosugi-maru',
-                    this._borderClass(type),
-                    this._backgroundClass(type),
-                ].join(' '),
-                onclick: () => m.route.set(`/${reading}`, null),
-            },
-            Kana.formatReading(reading),
-        );
-    },
-};
-
-const KanjiLiteral = {
-    _backgroundClass: (kanji) => {
-        if (dictionary.joyo().includes(kanji)) {
-            return 'bg-light-yellow';
-        } else if (dictionary.jinmeiyo().includes(kanji)) {
-            return 'bg-mid-red';
-        }
-        return 'bg-mid-blue';
-    },
-    _borderClass: (kanji) => {
-        if (dictionary.joyo().includes(kanji)) {
-            return 'b--yellow';
-        } else if (dictionary.jinmeiyo().includes(kanji)) {
-            return 'b--red';
-        }
-        return 'b--blue';
-    },
-    view: function({attrs: {kanji}}) {
-        return m(
-            '.pointer.grow.ma1.lh-solid.pa1.br3.f1.ba.kosugi-maru',
-            {
-                class: [
-                    this._backgroundClass(kanji),
-                    this._borderClass(kanji),
-                ].join(' '),
-                onclick: () => m.route.set(`/${kanji}`, null)
-            },
-            kanji,
-        );
-    },
-};
-
-const Row = {
-    view: function({attrs: {left, right}}) {
-        return m('.db.flex.justify-center.justify-start-ns', [
-            m('.fw6.flex.flex-wrap.items-center.justify-end.w-20-ns.pa1.avenir', left),
-            m('.flex.flex-wrap.items-center.justify-start.pa1', right),
-        ]);
-    },
-};
-
 const CollapsibleRow = {
     view: function({attrs: {left, right}}) {
         return m('.db.flex.flex-column.flex-row-ns', [
@@ -185,69 +29,8 @@ const CollapsibleRow = {
     }
 };
 
-const KanjiInfo = {
-    view: function ({attrs: {kanji, words, wordlimit}}) {
-        return m('',
-            m(CollapsibleRow, {left: 'Kanji', right: m(KanjiLiteral, {kanji: kanji.kanji})}),
-            Kanji.grade(kanji) ? m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}) : null,
-            Kanji.jlpt(kanji) ? m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}) : null,
-            m(Row, {left: 'Strokes', right: m('.avenir', kanji.stroke_count)}),
-            m(Row, {left: 'Unicode', right: m('.avenir', Kanji.unicode(kanji))}),
-            kanji.kun_readings.length ? m(CollapsibleRow, {
-                left: 'Kun',
-                right: kanji.kun_readings.map(reading => {
-                    return m(Reading, {type: KUN, reading, size: 'f4'});
-                }),
-            }) : null,
-            kanji.on_readings.length ? m(CollapsibleRow, {
-                left: 'On',
-                right: kanji.on_readings.map(reading => {
-                    return m(Reading, {type: ON, reading, size: 'f4'});
-                }),
-            }) : null,
-            kanji.name_readings.length ? m(CollapsibleRow, {
-                left: 'Nanori',
-                right: kanji.name_readings.map(reading => {
-                    return m(Reading, {type: NAME, reading, size: 'f4'});
-                }),
-            }) : null,
-            kanji.meanings.length ? m(CollapsibleRow, {
-                left: 'Meanings',
-                right: kanji.meanings.map(meaning => {
-                    return m(Meaning, {meaning});
-                }),
-            }) : null,
-            m('.db.flex.flex-column', [
-                m(
-                    '.fw6.flex.self-center.justify-end-ns.w-20.flex-wrap.self-start-ns.pa1.pb0.pa1-ns.avenir',
-                    'Words'
-                ),
-                m(
-                    '.fl.pa2.words.flex.flex-wrap.justify-center',
-                    words ? m(Words, {kanji, words, wordlimit}) : m(Loading),
-                ),
-            ]),
-        );
-    },
-};
-
-const Words = {
-    view: ({attrs: {kanji, words, wordlimit}}) => {
-        return [
-            Kanji.wordsForKanji(kanji.kanji, words)
-            .slice(0, wordlimit)
-            .map(word => m(Word, {word})),
-            words.length > wordlimit ? m('.f1', {
-                onclick : e => {
-                    m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
-                },
-            }, '...') : '',
-        ];
-    },
-};
-
 const ReadingInfo = {
-    view: ({attrs: {reading}}) => {
+    view: ({attrs: {dictionary, reading}}) => {
         return m('', [
             m(CollapsibleRow, {
                 left: 'Reading',
@@ -263,13 +46,13 @@ const ReadingInfo = {
             reading.main_kanji.length ? m(CollapsibleRow, {
                 left: 'Main Kanji',
                 right: m('.flex.flex-wrap.justify-center', reading.main_kanji.map(kanji => {
-                    return m(KanjiLiteral, {kanji});
+                    return m(KanjiLiteral, {dictionary, kanji, large: false});
                 })),
             }) : null,
             reading.name_kanji.length ? m(CollapsibleRow, {
                 left:  'Name Kanji',
                 right: m('.flex.flex-wrap.justify-center', reading.name_kanji.map(kanji => {
-                    return m(KanjiLiteral, {kanji});
+                    return m(KanjiLiteral, {dictionary, kanji, large: false});
                 })),
             }) : null,
         ]);
@@ -280,13 +63,22 @@ const Info = {
     view: function({attrs: {subject}}) {
         if (isKanji(subject)) {
             return m(
-                KanjiInfo, {
+                KanjiInfo,
+                {
+                    dictionary,
                     kanji: subject,
                     words: dictionary.wordsFor(subject),
                     wordlimit: m.route.param('wordlimit') || 20,
-                });
+                },
+            );
         } else if (isReading(subject)) {
-            return m(ReadingInfo, {reading: subject});
+            return m(
+                ReadingInfo,
+                {
+                    dictionary,
+                    reading: subject,
+                },
+            );
         }
     },
 };
@@ -322,12 +114,6 @@ const About = {
     },
 };
 
-const Loading = {
-    view: function() {
-        return m('.loader');
-    },
-};
-
 const BadSearch = {
     view: function() {
         return m('', 'Not Found');
@@ -336,8 +122,8 @@ const BadSearch = {
 
 const RandomKanji = {
     view: function() {
-        const joyo = dictionary.joyo()
-        const choice = Math.floor(Math.random() * joyo.length)
+        const joyo = dictionary.joyo();
+        const choice = Math.floor(Math.random() * joyo.length);
         const kanji = joyo[choice] || m.route.param('search');
         return m(
             '.link.dim.black-80.underline.avenir.flex-none',
@@ -353,10 +139,22 @@ const RomajiToggle = {
             '.flex.items-center.flex-auto',
             m(
                 'input[type=checkbox].mr2',
-                { onclick: _ => config.toggleRomaji() },
+                { onclick: e => config.toggleRomaji() },
                 'あ/a'
             ),
             m('label.avenir.lh-copy', 'Display readings in Roman alphabet'),
+        );
+    },
+};
+
+const SearchBar = {
+    view () {
+        return m(
+            'input[text].f2.flex-auto.w-100.avenir.fw3.mv2.pa1.dark-gray.br3.ba.b--moon-gray.bw1',
+            {
+                placeholder: 'search...',
+                onchange: e => m.route.set(`/${e.target.value}`, null),
+            },
         );
     },
 };
@@ -371,14 +169,9 @@ const Page = {
                 '.flex-auto.flex.flex-column.items-center.bg-white.pa2.w-100',
                 m(
                     '.w-80-m.w-60-l',
-                    m('input[text].f2.flex-auto.w-100.avenir.fw3.mb2.pa1.dark-gray.br3.ba.b--moon-gray.bw1', {
-                        placeholder: 'search...',
-                        onchange: e => {
-                            m.route.set(`/${e.target.value}`, null);
-                        },
-                    }),
+                    m(SearchBar),
                     m(
-                        '.flex.items-center', 
+                        '.flex.items-center.mv2', 
                         m(RomajiToggle),
                         m(RandomKanji),
                     ),
@@ -402,6 +195,5 @@ function init() {
 
 const api = new Api(m.request);
 const dictionary = new Dictionary(api, m.redraw);
-const random = new Random();
 
 init();

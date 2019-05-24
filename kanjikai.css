@@ -54,6 +54,10 @@
   border-radius: 2rem;
 }
 
+.f-05 {
+  font-size: 6rem;
+}
+
 .loader {
   color: #aed6c3;
   font-size: 90px;

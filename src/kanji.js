@@ -1,4 +1,3 @@
-const { config } = require('./config');
 const m = require('mithril');
 
 const JOYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji';
@@ -28,7 +27,7 @@ function grade({grade}) {
             `: ${grade}`,
         ];
     } else {
-        return null
+        return null;
     }
 }
 
@@ -102,7 +101,7 @@ function compareWords(word1, word2, kanji) {
 
 function prioritiseWords(kanji, words) {
     const wordsCopy = JSON.parse(JSON.stringify(words));
-    wordsCopy.sort((a, b) => compareWords(a, b, kanji))
+    wordsCopy.sort((a, b) => compareWords(a, b, kanji));
 
     return wordsCopy;
 }

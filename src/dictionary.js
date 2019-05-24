@@ -6,7 +6,7 @@ class Dictionary {
         this._searched = {};
         this._searchingWords = {};
         this._searchedWords = {};
-        this._failedSearches = {}
+        this._failedSearches = {};
 
         this._joyo_kanji = [];
         api.getJoyo()
@@ -38,7 +38,7 @@ class Dictionary {
     }
 
     wordsFor(kanji) {
-        return this._wordsFromApi(kanji) || null
+        return this._wordsFromApi(kanji) || null;
     }
 
     _wordsFromApi(kanji) {
