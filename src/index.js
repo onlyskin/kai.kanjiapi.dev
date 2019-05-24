@@ -23,7 +23,7 @@ function isReading(data) {
 const Meaning = {
     view: ({attrs: {meaning}}) => {
         return m(
-            '.lh-solid.pa1.ma1.br3.f4.ba.avenir.bg-pale-orange.b--pale-orange',
+            '.lh-solid.pa3.ma1.br-pill.f4.avenir.bg-pale-orange',
             meaning,
         );
     },
@@ -138,19 +138,19 @@ const Reading = {
 const KanjiLiteral = {
     _backgroundClass: (kanji) => {
         if (dictionary.joyo().includes(kanji)) {
-            return 'bg-washed-yellow';
+            return 'bg-light-yellow';
         } else if (dictionary.jinmeiyo().includes(kanji)) {
-            return 'bg-washed-red';
+            return 'bg-mid-red';
         }
-        return 'bg-washed-blue';
+        return 'bg-mid-blue';
     },
     _borderClass: (kanji) => {
         if (dictionary.joyo().includes(kanji)) {
-            return 'b--light-yellow';
+            return 'b--yellow';
         } else if (dictionary.jinmeiyo().includes(kanji)) {
-            return 'b--light-red';
+            return 'b--red';
         }
-        return 'b--lightest-blue';
+        return 'b--blue';
     },
     view: function({attrs: {kanji}}) {
         return m(
@@ -187,7 +187,7 @@ const CollapsibleRow = {
 
 const KanjiInfo = {
     view: function ({attrs: {kanji, words, wordlimit}}) {
-        return m('', [
+        return m('',
             m(CollapsibleRow, {left: 'Kanji', right: m(KanjiLiteral, {kanji: kanji.kanji})}),
             Kanji.grade(kanji) ? m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}) : null,
             Kanji.jlpt(kanji) ? m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}) : null,
@@ -227,7 +227,7 @@ const KanjiInfo = {
                     words ? m(Words, {kanji, words, wordlimit}) : m(Loading),
                 ),
             ]),
-        ]);
+        );
     },
 };
 

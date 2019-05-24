@@ -14,6 +14,14 @@
   border: 1px solid steelblue;
 }
 
+.bg-mid-red {
+  background: #ff9e8f;
+}
+
+.bg-mid-blue {
+  background: #b8dcff;
+}
+
 .bg-pale-green {
   background: lightgreen;
 }
@@ -23,7 +31,7 @@
 }
 
 .bg-pale-orange {
-  background: moccasin;
+  background: #fff8ed;
 }
 
 .b--pale-orange {
