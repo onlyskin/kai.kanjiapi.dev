@@ -19,12 +19,13 @@ const KanjiLiteral = {
     },
     view: function({attrs: {dictionary, kanji, large}}) {
         return m(
-            '.pointer.grow.ma1.lh-solid.pa1.br3.ba.kosugi-maru',
+            '.pointer.grow.ma1.lh-solid.br3.ba.kosugi-maru',
             {
                 class: [
                     this._backgroundClass(dictionary, kanji),
                     this._borderClass(dictionary, kanji),
                     large ? 'f-05' : 'f2',
+                    large ? 'pa2' : 'pa1',
                 ].join(' '),
                 onclick: () => m.route.set(`/${kanji}`, null)
             },

@@ -20,12 +20,13 @@ const Reading = {
         }
         return 'bg-pale-green';
     },
-    view: function({attrs: {type, reading, size}}) {
+    view: function({attrs: {type, reading, large}}) {
         return m(
-            '.lh-solid.pa1.ma1.br3.ba.pointer.grow',
+            '.lh-solid.ma1.br3.ba.pointer.grow',
             {
                 class: [
-                    size,
+                    large ? 'f1' : 'f4',
+                    large ? 'pa2' : 'pa1',
                     config.isRomaji ? 'avenir' : 'kosugi-maru',
                     this._borderClass(type),
                     this._backgroundClass(type),

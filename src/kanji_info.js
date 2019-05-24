@@ -123,40 +123,61 @@ const KanjiInfo = {
                 m(KanjiLiteral, {kanji: kanji.kanji, large: true, dictionary}),
                 m(
                     '.flex-grow',
-                    Kanji.grade(kanji) ? m(Row, {left: 'Grade', right: m('.avenir', Kanji.grade(kanji))}) : null,
-                    Kanji.jlpt(kanji) ? m(Row, {left: 'JLPT', right: m('.avenir', Kanji.jlpt(kanji))}) : null,
-                    m(Row, {left: 'Strokes', right: m('.avenir', kanji.stroke_count)}),
-                    m(Row, {left: 'Unicode', right: m('.avenir', Kanji.unicode(kanji))}),
+                    Kanji.grade(kanji) ? m(Row, {
+                        left: 'Grade',
+                        right: m('.avenir', Kanji.grade(kanji)),
+                    }) : null,
+                    Kanji.jlpt(kanji) ? m(Row, {
+                        left: 'JLPT',
+                        right: m('.avenir', Kanji.jlpt(kanji)),
+                    }) : null,
+                    m(Row, {
+                        left: 'Strokes',
+                        right: m('.avenir', kanji.stroke_count),
+                    }),
+                    m(Row, {
+                        left: 'Unicode',
+                        right: m('.avenir', Kanji.unicode(kanji)),
+                    }),
                 ),
             ),
-            kanji.kun_readings.length ? m(Row, {
-                left: m('.f5', 'Kun'),
-                right: m(
-                    '.flex.flex-wrap.items-center.justify-end.w-auto',
-                    kanji.kun_readings.map(reading => {
-                        return m(Reading, {type: KUN, reading, size: 'f4'});
-                    }),
-                ),
-            }) : null,
-            kanji.on_readings.length ? m(Row, {
-                left: m('.f5', 'On'),
-                right: m(
-                    '.flex.flex-wrap.items-center.justify-end.w-auto',
-                    kanji.on_readings.map(reading => {
-                        return m(Reading, {type: ON, reading, size: 'f4'});
-                    }),
-                ),
-            }) : null,
-            kanji.name_readings.length ? m(Row, {
-                left: m('.f5', 'Nanori'),
-                right: m(
-                    '.flex.flex-wrap.items-center.justify-end.w-auto',
-                    kanji.name_readings.map(reading => {
-                        return m(Reading, {type: NAME, reading, size: 'f4'});
-                    }),
-                ),
-            }) : null,
-            kanji.meanings.length ?  m(
+            kanji.kun_readings.length ? m(
+                '.mv1',
+                m(Row, {
+                    left: m('.f5', 'Kun'),
+                    right: m(
+                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        kanji.kun_readings.map(reading => {
+                            return m(Reading, {type: KUN, reading, large: false});
+                        }),
+                    ),
+                }),
+            ) : null,
+            kanji.on_readings.length ? m(
+                '.mv1',
+                m(Row, {
+                    left: m('.f5', 'On'),
+                    right: m(
+                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        kanji.on_readings.map(reading => {
+                            return m(Reading, {type: ON, reading, large: false});
+                        }),
+                    ),
+                }),
+            ) : null,
+            kanji.name_readings.length ? m(
+                '.mv1',
+                m(Row, {
+                    left: m('.f5', 'Nanori'),
+                    right: m(
+                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        kanji.name_readings.map(reading => {
+                            return m(Reading, {type: NAME, reading, large: false});
+                        }),
+                    ),
+                })
+            ) : null,
+            kanji.meanings.length ? m(
                 '.mv3',
                 m(Row, {
                     left: m('.f5', 'Meanings'),

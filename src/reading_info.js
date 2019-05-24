@@ -22,7 +22,7 @@ const ReadingInfo = {
                     {
                         type: Kana.readingType(reading.reading),
                         reading: reading.reading,
-                        size: 'f1',
+                        large: true,
                     },
                 ),
             }),
