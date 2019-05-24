@@ -14,3 +14,5 @@ Build with `./build`
 Test with `yarn test`
 
 Deploy with `gsutil -m rsync -c -d out gs://kanjikai`
+
+Lint with `yarn lint`
