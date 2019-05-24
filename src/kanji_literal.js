@@ -24,7 +24,7 @@ const KanjiLiteral = {
                 class: [
                     this._backgroundClass(dictionary, kanji),
                     this._borderClass(dictionary, kanji),
-                    large ? 'f-05' : 'f1',
+                    large ? 'f-05' : 'f2',
                 ].join(' '),
                 onclick: () => m.route.set(`/${kanji}`, null)
             },

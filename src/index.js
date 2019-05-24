@@ -1,11 +1,9 @@
 const m = require('mithril');
 const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
-const { KanjiLiteral } = require('./kanji_literal');
-const Kana = require('./kana');
 const { config } = require('./config');
 const { KanjiInfo } = require('./kanji_info');
-const { Reading } = require('./reading');
+const { ReadingInfo } = require('./reading_info');
 const { Loading } = require('./loading');
 
 function isKanji(data) {
@@ -19,45 +17,6 @@ function isReading(data) {
 
     return data.reading !== undefined;
 }
-
-const CollapsibleRow = {
-    view: function({attrs: {left, right}}) {
-        return m('.db.flex.flex-column.flex-row-ns', [
-            m('.fw6.flex.flex-wrap.justify-center.items-center-ns.justify-end-ns.w-20-ns.pa1.pb0.pa1-ns.avenir', left),
-            m('.flex.flex-wrap.justify-center.items-center-ns.justify-start-ns.pa1.pt0.pa1-ns', right),
-        ]);
-    }
-};
-
-const ReadingInfo = {
-    view: ({attrs: {dictionary, reading}}) => {
-        return m('', [
-            m(CollapsibleRow, {
-                left: 'Reading',
-                right: m(
-                    Reading,
-                    {
-                        type: Kana.readingType(reading.reading),
-                        reading: reading.reading,
-                        size: 'f1',
-                    },
-                ),
-            }),
-            reading.main_kanji.length ? m(CollapsibleRow, {
-                left: 'Main Kanji',
-                right: m('.flex.flex-wrap.justify-center', reading.main_kanji.map(kanji => {
-                    return m(KanjiLiteral, {dictionary, kanji, large: false});
-                })),
-            }) : null,
-            reading.name_kanji.length ? m(CollapsibleRow, {
-                left:  'Name Kanji',
-                right: m('.flex.flex-wrap.justify-center', reading.name_kanji.map(kanji => {
-                    return m(KanjiLiteral, {dictionary, kanji, large: false});
-                })),
-            }) : null,
-        ]);
-    },
-};
 
 const Info = {
     view: function({attrs: {subject}}) {
