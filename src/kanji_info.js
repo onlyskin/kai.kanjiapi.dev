@@ -115,15 +115,6 @@ const Row = {
     },
 };
 
-const LargeRow = {
-    view: function({attrs: {left, right}}) {
-        return m('.db.flex.flex-row', [
-            m('.fw6.flex.flex-wrap.justify-end.items-center.w-20.pa1.avenir', left),
-            m('.flex.flex-wrap.justify-start.items-center.pa1', right),
-        ]);
-    }
-};
-
 const KanjiInfo = {
     view: function ({attrs: {dictionary, kanji, words, wordlimit}}) {
         return m('',
@@ -138,31 +129,43 @@ const KanjiInfo = {
                     m(Row, {left: 'Unicode', right: m('.avenir', Kanji.unicode(kanji))}),
                 ),
             ),
-            kanji.kun_readings.length ? m(LargeRow, {
-                left: 'Kun',
-                right: kanji.kun_readings.map(reading => {
-                    return m(Reading, {type: KUN, reading, size: 'f4'});
-                }),
+            kanji.kun_readings.length ? m(Row, {
+                left: m('.f5', 'Kun'),
+                right: m(
+                    '.flex.flex-wrap.items-center.justify-end.w-auto',
+                    kanji.kun_readings.map(reading => {
+                        return m(Reading, {type: KUN, reading, size: 'f4'});
+                    }),
+                ),
             }) : null,
-            kanji.on_readings.length ? m(LargeRow, {
-                left: 'On',
-                right: kanji.on_readings.map(reading => {
-                    return m(Reading, {type: ON, reading, size: 'f4'});
-                }),
+            kanji.on_readings.length ? m(Row, {
+                left: m('.f5', 'On'),
+                right: m(
+                    '.flex.flex-wrap.items-center.justify-end.w-auto',
+                    kanji.on_readings.map(reading => {
+                        return m(Reading, {type: ON, reading, size: 'f4'});
+                    }),
+                ),
             }) : null,
-            kanji.name_readings.length ? m(LargeRow, {
-                left: 'Nanori',
-                right: kanji.name_readings.map(reading => {
-                    return m(Reading, {type: NAME, reading, size: 'f4'});
-                }),
+            kanji.name_readings.length ? m(Row, {
+                left: m('.f5', 'Nanori'),
+                right: m(
+                    '.flex.flex-wrap.items-center.justify-end.w-auto',
+                    kanji.name_readings.map(reading => {
+                        return m(Reading, {type: NAME, reading, size: 'f4'});
+                    }),
+                ),
             }) : null,
             kanji.meanings.length ?  m(
                 '.mv3',
-                m(LargeRow, {
-                    left: 'Meanings',
-                    right: kanji.meanings.map(meaning => {
-                        return m(Meaning, {meaning});
-                    }),
+                m(Row, {
+                    left: m('.f5', 'Meanings'),
+                    right: m(
+                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        kanji.meanings.map(meaning => {
+                            return m(Meaning, {meaning});
+                        }),
+                    ),
                 }),
             ) : null,
             m('.db.flex.flex-column', [
