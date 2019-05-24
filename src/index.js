@@ -85,7 +85,7 @@ const RandomKanji = {
         const choice = Math.floor(Math.random() * joyo.length);
         const kanji = joyo[choice] || m.route.param('search');
         return m(
-            '.link.dim.black-80.underline.avenir.flex-none',
+            '.pointer.link.dim.black-80.underline.avenir.flex-none',
             { onclick: e => m.route.set(`/${kanji}`, null), },
             'I\'m feeling lucky!',
         );
@@ -95,9 +95,9 @@ const RandomKanji = {
 const RomajiToggle = {
     view: function() {
         return m(
-            '.flex.items-center.flex-auto',
+            '.flex.items-center.flex-auto.mr2',
             m(
-                'input[type=checkbox].mr2',
+                'input[type=checkbox].mr2.pointer',
                 { onclick: e => config.toggleRomaji() },
                 'あ/a'
             ),
