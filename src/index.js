@@ -95,7 +95,7 @@ const RandomKanji = {
 const RomajiToggle = {
     view: function() {
         return m(
-            '.flex.items-center.flex-auto.mr2',
+            '.flex.items-center.flex-auto.mr2.f7.f5-ns',
             m(
                 'input[type=checkbox].mr2.pointer',
                 { onclick: e => config.toggleRomaji() },
