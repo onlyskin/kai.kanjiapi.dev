@@ -1,3 +1,6 @@
+global.window = require("mithril/test-utils/browserMock.js")();
+global.document = window.document;
+
 const o = require('ospec');
 const Kanji = require('../src/kanji');
 const util = require('util');

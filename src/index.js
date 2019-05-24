@@ -291,18 +291,6 @@ const Info = {
     },
 };
 
-const RomajiToggle = {
-    view: function() {
-        return m(
-            '.bg-dark-gray.white.mh1.pa2.br-pill.kosugi-maru.flex-none',
-            {
-                onclick: _ => config.toggleRomaji(),
-            },
-            'あ/a'
-        );
-    },
-};
-
 const Header = {
     view: function() {
         return m('header.white.bg-dark-purple.pa1.self-stretch', [
@@ -352,9 +340,23 @@ const RandomKanji = {
         const choice = Math.floor(Math.random() * joyo.length)
         const kanji = joyo[choice] || m.route.param('search');
         return m(
-            '.bg-dark-gray.white.pa2.mh1.br-pill.kosugi-maru.flex-none',
+            '.link.dim.black-80.underline.avenir.flex-none',
             { onclick: e => m.route.set(`/${kanji}`, null), },
-            'Random',
+            'I\'m feeling lucky!',
+        );
+    },
+};
+
+const RomajiToggle = {
+    view: function() {
+        return m(
+            '.flex.items-center.flex-auto',
+            m(
+                'input[type=checkbox].mr2',
+                { onclick: _ => config.toggleRomaji() },
+                'あ/a'
+            ),
+            m('label.avenir.lh-copy', 'Display readings in Roman alphabet'),
         );
     },
 };
@@ -369,14 +371,14 @@ const Page = {
                 '.flex-auto.flex.flex-column.items-center.bg-white.pa2.w-100',
                 m(
                     '.w-80-m.w-60-l',
+                    m('input[text].f2.flex-auto.w-100.avenir.fw3.mb2.pa1.dark-gray.br3.ba.b--moon-gray.bw1', {
+                        placeholder: 'search...',
+                        onchange: e => {
+                            m.route.set(`/${e.target.value}`, null);
+                        },
+                    }),
                     m(
-                        '.flex',
-                        m('input[text].kosugi-maru.flex-auto', {
-                            value: attrs.search,
-                            onchange: e => {
-                                m.route.set(`/${e.target.value}`, null);
-                            },
-                        }),
+                        '.flex.items-center', 
                         m(RomajiToggle),
                         m(RandomKanji),
                     ),

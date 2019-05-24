@@ -1,14 +1,34 @@
 const { config } = require('./config');
+const m = require('mithril');
+
+const JOYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji';
+const JINMEIYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Jinmeiy%C5%8D_kanji';
+
+const ExternalLink = {
+    view(vnode) {
+        return m(
+            'a.link.dim.black-80.underline',
+            vnode.attrs,
+            vnode.children,
+        );
+    },
+};
 
 function grade({grade}) {
     if (grade === 9 || grade === 10) {
-        return config.isRomaji ? 'Jinmeiyō' : '人名用';
+        return m(ExternalLink, { href: JINMEIYO_WIKIPEDIA_URL }, 'Jinmeiyō');
     } else if (grade === 8) {
-        return config.isRomaji ? 'Jōyō' : '常用';
+        return [
+            m(ExternalLink, { href: JOYO_WIKIPEDIA_URL }, 'Joyō'),
+            ': high school',
+        ];
     } else if (grade) {
-        return `${config.isRomaji ? 'Kyōiku' : '教育'}: ${grade}`;
+        return [
+            m(ExternalLink, { href: JOYO_WIKIPEDIA_URL }, 'Joyō'),
+            `: ${grade}`,
+        ];
     } else {
-        return '';
+        return null
     }
 }
 
