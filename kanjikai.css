@@ -1,3 +1,7 @@
+.no-select {
+  user-select: none;
+}
+
 .bg-pale-red {
   background: lightpink;
 }

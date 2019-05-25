@@ -6,7 +6,7 @@ const JINMEIYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Jinmeiy%C5%8D_kanj
 const ExternalLink = {
     view(vnode) {
         return m(
-            'a.link.dim.black-80.underline.pointer',
+            'a.link.dim.black-80.underline.pointer.no-select',
             vnode.attrs,
             vnode.children,
         );

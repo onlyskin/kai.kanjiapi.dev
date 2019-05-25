@@ -59,12 +59,12 @@ const About = {
                 m('p', [
                     'kanjikai is powered by ',
                     m(
-                        'a[href=https://kanjiapi.dev].link.dim.white-80',
+                        'a[href=https://kanjiapi.dev].link.dim.white-80.no-select',
                         'kanjiapi.dev',
                     ),
                     ' and ',
                     m(
-                        'a[href=https://mithril.js.org].link.dim.white-80',
+                        'a[href=https://mithril.js.org].link.dim.white-80.no-select',
                         'mithril.js',
                     ),
                 ]),
@@ -83,7 +83,7 @@ const RandomKanji = {
     view: function() {
         const kanji = dictionary.randomKanji() || m.route.param('search');
         return m(
-            '.pointer.link.dim.black-80.underline.avenir.flex-none',
+            '.pointer.link.dim.black-80.underline.avenir.flex-none.no-select',
             { onclick: e => m.route.set(`/${kanji}`, null), },
             'I\'m feeling lucky!',
         );
@@ -103,7 +103,7 @@ const RomajiToggle = {
                 'label.avenir.lh-copy',
                 'Display readings in Roman alphabet (',
                 m(
-                    'a.pointer.link.dim.black-80.underline.avenir',
+                    'a.pointer.link.dim.black-80.underline.avenir.no-select',
                     { href: 'https://en.wikipedia.org/wiki/Nihon-shiki_romanization' },
                     'Nihon-shiki Rōmaji',
                 ),

@@ -99,7 +99,7 @@ const Words = {
             .map(word => m(Word, {word})),
             words.length > wordlimit ?
             m(
-                '.mv3.self-center.avenir.pointer.link.dim.black-80.underline',
+                '.mv3.self-center.avenir.pointer.link.dim.black-80.underline.no-select',
                 {
                     onclick : e => {
                         m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
