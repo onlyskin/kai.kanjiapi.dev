@@ -101,7 +101,16 @@ const RomajiToggle = {
                 { onclick: e => config.toggleRomaji() },
                 'あ/a'
             ),
-            m('label.avenir.lh-copy', 'Display readings in Roman alphabet'),
+            m(
+                'label.avenir.lh-copy',
+                'Display readings in Roman alphabet (',
+                m(
+                    'a.pointer.link.dim.black-80.underline.avenir',
+                    { href: 'https://en.wikipedia.org/wiki/Nihon-shiki_romanization' },
+                    'Nihon-shiki Rōmaji',
+                ),
+                ')',
+            ),
         );
     },
 };
