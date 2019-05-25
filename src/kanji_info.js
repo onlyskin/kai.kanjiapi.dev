@@ -4,12 +4,9 @@ const { Loading } = require('./loading');
 const { KanjiLiteral } = require('./kanji_literal');
 const Kanji = require('./kanji');
 const Kana = require('./kana');
-const Random = require('./random');
 const { ON, KUN, NAME } = require('./constant');
 const { Reading } = require('./reading');
 const { config } = require('./config');
-
-const random = new Random();
 
 const Meaning = {
     view: ({attrs: {meaning}}) => {

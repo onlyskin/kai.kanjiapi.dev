@@ -13,7 +13,39 @@ const Row = {
 };
 
 const ReadingInfo = {
-    view: ({attrs: {dictionary, reading}}) => {
+    sortKanji: (dictionary, a, b) => {
+        const aIsJoyo = dictionary.isJoyo(a);
+        const bIsJoyo = dictionary.isJoyo(b);
+        const aIsJinmeiyo = dictionary.isJinmeiyo(a);
+        const bIsJinmeiyo = dictionary.isJinmeiyo(b);
+
+        if (aIsJoyo) {
+            if (bIsJoyo) {
+                return a.localeCompare(b);
+            }
+
+            return -1;
+        }
+
+        if (bIsJoyo) {
+            return 1;
+        }
+
+        if (aIsJinmeiyo) {
+            if (bIsJinmeiyo) {
+                return a.localeCompare(b);
+            }
+
+            return -1;
+        }
+
+        if (bIsJinmeiyo) {
+            return 1;
+        }
+
+        return a.localeCompare(b);
+    },
+    view: function ({attrs: {dictionary, reading}}) {
         return m('', [
             m(Row, {
                 left: 'Reading',
@@ -28,13 +60,17 @@ const ReadingInfo = {
             }),
             reading.main_kanji.length ? m(Row, {
                 left: 'Main Kanji',
-                right: reading.main_kanji.map(kanji => {
+                right: [...reading.main_kanji]
+                .sort(this.sortKanji.bind(null, dictionary))
+                .map(kanji => {
                     return m(KanjiLiteral, {dictionary, kanji, large: false});
                 }),
             }) : null,
             reading.name_kanji.length ? m(Row, {
                 left:  'Name Kanji',
-                right: reading.name_kanji.map(kanji => {
+                right: [...reading.name_kanji]
+                .sort(this.sortKanji.bind(null, dictionary))
+                .map(kanji => {
                     return m(KanjiLiteral, {dictionary, kanji, large: false});
                 }),
             }) : null,

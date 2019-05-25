@@ -81,9 +81,7 @@ const BadSearch = {
 
 const RandomKanji = {
     view: function() {
-        const joyo = dictionary.joyo();
-        const choice = Math.floor(Math.random() * joyo.length);
-        const kanji = joyo[choice] || m.route.param('search');
+        const kanji = dictionary.randomKanji() || m.route.param('search');
         return m(
             '.pointer.link.dim.black-80.underline.avenir.flex-none',
             { onclick: e => m.route.set(`/${kanji}`, null), },

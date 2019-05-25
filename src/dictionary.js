@@ -8,13 +8,21 @@ class Dictionary {
         this._searchedWords = {};
         this._failedSearches = {};
 
-        this._joyo_kanji = [];
+        this._joyo_kanji_map = {};
         api.getJoyo()
-            .then(response => this._joyo_kanji = response);
+            .then(response => {
+                for (let kanji of response) {
+                    this._joyo_kanji_map[kanji] = true;
+                }
+            });
 
-        this._jinmeiyo_kanji = [];
+        this._jinmeiyo_kanji_map = {};
         api.getJinmeiyo()
-            .then(response => this._jinmeiyo_kanji = response);
+            .then(response => {
+                for (let kanji of response) {
+                    this._jinmeiyo_kanji_map[kanji] = true;
+                }
+            });
     }
 
     lookup(searchTerm) {
@@ -37,6 +45,21 @@ class Dictionary {
         };
     }
 
+    randomKanji() {
+        const kanji = Object.keys(this._joyo_kanji_map)
+            .concat(Object.keys(this._jinmeiyo_kanji_map));
+        const choice = Math.floor(Math.random() * kanji.length);
+        return kanji[choice];
+    }
+
+    isJoyo(kanji) {
+        return this._joyo_kanji_map[kanji] || false;
+    }
+
+    isJinmeiyo(kanji) {
+        return this._jinmeiyo_kanji_map[kanji] || false;
+    }
+
     wordsFor(kanji) {
         return this._wordsFromApi(kanji) || null;
     }
@@ -56,14 +79,6 @@ class Dictionary {
                 });
         }
         return this._searchedWords[literal];
-    }
-
-    joyo() {
-        return this._joyo_kanji;
-    }
-
-    jinmeiyo() {
-        return this._jinmeiyo_kanji;
     }
 
     _searchApi(searchTerm) {
