@@ -75,7 +75,7 @@ const About = {
 
 const BadSearch = {
     view: function() {
-        return m('', 'Not Found');
+        return m('.avenir', 'Not Found');
     },
 };
 
