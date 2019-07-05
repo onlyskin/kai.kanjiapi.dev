@@ -63,7 +63,7 @@ const Word = {
         return m(
             '.fl.flex.pv1.pv2-ns.bb.b--black-20.justify-between.items-center.flex-wrap',
             m(
-                '.kosugi-maru.f2.f1-ns',
+                '.animate-in-left.kosugi-maru.f2.f1-ns',
                 [...word.variant.written]
                 .map((character, index) => m(WordChar, {
                     character,
@@ -72,7 +72,7 @@ const Word = {
                 })),
             ),
             m(
-                '.flex.flex-column.justify-center.items-end',
+                '.animate-in-right.flex.flex-column.justify-center.items-end',
                 [
                     m(
                         '.f5.f3-ns.ma1',
@@ -127,7 +127,7 @@ const KanjiInfo = {
                 '.flex.items-center.justify-around.mv4',
                 m(KanjiLiteral, {kanji: kanji.kanji, large: true, dictionary}),
                 m(
-                    '.flex-grow',
+                    '.animate-in-fade.flex-grow',
                     Kanji.grade(kanji) ? m(Row, {
                         left: 'Grade',
                         right: m('.avenir', Kanji.grade(kanji)),
@@ -151,7 +151,7 @@ const KanjiInfo = {
                 m(Row, {
                     left: m('.f5', 'Kun'),
                     right: m(
-                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        '.animate-in-fade.flex.flex-wrap.items-center.justify-end.w-auto',
                         kanji.kun_readings.map(reading => {
                             return m(Reading, {type: KUN, reading, large: false});
                         }),
@@ -163,7 +163,7 @@ const KanjiInfo = {
                 m(Row, {
                     left: m('.f5', 'On'),
                     right: m(
-                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        '.animate-in-fade.flex.flex-wrap.items-center.justify-end.w-auto',
                         kanji.on_readings.map(reading => {
                             return m(Reading, {type: ON, reading, large: false});
                         }),
@@ -175,7 +175,7 @@ const KanjiInfo = {
                 m(Row, {
                     left: m('.f5', 'Nanori'),
                     right: m(
-                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        '.animate-in-fade.flex.flex-wrap.items-center.justify-end.w-auto',
                         kanji.name_readings.map(reading => {
                             return m(Reading, {type: NAME, reading, large: false});
                         }),
@@ -187,7 +187,7 @@ const KanjiInfo = {
                 m(Row, {
                     left: m('.f5', 'Meanings'),
                     right: m(
-                        '.flex.flex-wrap.items-center.justify-end.w-auto',
+                        '.animate-in-fade.flex.flex-wrap.items-center.justify-end.w-auto',
                         kanji.meanings.map(meaning => {
                             return m(Meaning, {meaning});
                         }),

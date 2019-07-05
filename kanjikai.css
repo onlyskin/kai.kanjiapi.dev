@@ -1,3 +1,42 @@
+.animate-in-fade {
+  animation:in-fade 0.5s;
+  animation-timing-function: ease;
+}
+@keyframes in-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-in-right {
+  animation:in-right 0.5s;
+  animation-timing-function: ease;
+}
+@keyframes in-right {
+  from {
+    transform: translateX(1000px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+.animate-in-left {
+  animation:in-left 0.5s;
+  animation-timing-function: ease;
+}
+@keyframes in-left {
+  from {
+    transform: translateX(-1000px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
 .no-select {
   user-select: none;
 }
