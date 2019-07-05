@@ -31,8 +31,9 @@ class Api {
 
     async search(searchTerm) {
         try {
-            const kanji_data = await this._trySearchKanji(searchTerm[0]);
-            return kanji_data;
+            const firstKanji = this._firstKanjiFrom(searchTerm);
+            const kanjiData = await this._trySearchKanji(firstKanji);
+            return kanjiData;
         } catch(e) {
             try {
                 const reading_data = await this._trySearchReading(searchTerm);
@@ -41,6 +42,10 @@ class Api {
                 return Promise.reject(new Error('not found'));
             }
         }
+    }
+
+    _firstKanjiFrom(text) {
+        return String.fromCodePoint(text.codePointAt(0));
     }
 
     async _trySearchReading(searchTerm) {

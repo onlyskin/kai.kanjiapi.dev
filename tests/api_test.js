@@ -45,6 +45,19 @@ o.spec('search', () => {
         o(result).equals('kanji result');
     });
 
+    o('handles double-width UTF8 kanji', async () => {
+        const request_fake = kanji_request_fake();
+        const api = new Api(request_fake);
+
+        const result = await api.search('𠮟');
+
+        o(request_fake.args[0]).deepEquals({
+            method: 'GET',
+            url: 'https://kanjiapi.dev/v1/kanji/𠮟',
+        });
+        o(result).equals('kanji result');
+    });
+
     o('searches for whole string as reading if no kanji found', async () => {
         const request_fake = reading_request_fake();
         const api = new Api(request_fake);
