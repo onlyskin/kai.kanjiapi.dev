@@ -4,12 +4,19 @@ SRC=src
 OUT=out
 BROWSERIFY=node_modules/browserify/bin/cmd.js
 TACHYONS=node_modules/tachyons/css/tachyons.min.css
+EXORCIST=node_modules/.bin/exorcist
 
 rm -rf $OUT
 mkdir -p $OUT
 
-$BROWSERIFY $SRC/index.js -o $OUT/index.bundle.js --debug
+$BROWSERIFY $SRC/index.js --debug | $EXORCIST $OUT/index.bundle.js.map > \
+    $OUT/index.bundle.js
 
 cp index.html $OUT/index.html
 cp $TACHYONS $OUT/
 cp kanjikai.css $OUT/
+
+convert -size 128 x 128 -gravity center -background '#2F1758' -fill white \
+    -pointsize 50 -font /System/Library/Fonts/ヒラギノ丸ゴ\ ProN\ W4.ttc \
+    label:解 $OUT/favicon.png
+convert $OUT/favicon.png -size 32x32 $OUT/favicon.png

@@ -1,1 +1,1 @@
-gsutil -m rsync -c -d out gs://kanjikai
+gsutil -m rsync -c -d -x .*map out gs://kanjikai
