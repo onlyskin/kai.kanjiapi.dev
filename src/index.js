@@ -1,10 +1,10 @@
 const m = require('mithril');
-const { Api } = require('./api');
 const { Dictionary } = require('./dictionary');
 const { config } = require('./config');
 const { KanjiInfo } = require('./kanji_info');
 const { ReadingInfo } = require('./reading_info');
 const { Loading } = require('./loading');
+const { Kanjiapi} = require('kanjiapi-wrapper');
 
 function isKanji(data) {
     if (!data) return false;
@@ -19,14 +19,14 @@ function isReading(data) {
 }
 
 const Info = {
-    view: function({attrs: {subject}}) {
+    view: function({ attrs: { subject } }) {
         if (isKanji(subject)) {
             return m(
                 KanjiInfo,
                 {
                     dictionary,
                     kanji: subject,
-                    words: dictionary.wordsFor(subject),
+                    words: kanjiapi.getWordsForKanji(subject.kanji),
                     wordlimit: m.route.param('wordlimit') || 20,
                 },
             );
@@ -84,7 +84,7 @@ const RandomKanji = {
         const kanji = dictionary.randomKanji() || m.route.param('search');
         return m(
             '.pointer.link.dim.black-80.underline.avenir.flex-none.no-select',
-            { onclick: e => m.route.set(`/${kanji}`, null), },
+            { onclick: () => m.route.set(`/${kanji}`, null), },
             'I\'m feeling lucky!',
         );
     },
@@ -96,7 +96,7 @@ const RomajiToggle = {
             '.flex.items-center.flex-auto.mr2.f7.f5-ns',
             m(
                 'input[type=checkbox].mr2.pointer',
-                { onclick: e => config.toggleRomaji() },
+                { onclick: () => config.toggleRomaji() },
                 'あ/a'
             ),
             m(
@@ -141,9 +141,9 @@ const Page = {
                         m(RomajiToggle),
                         m(RandomKanji),
                     ),
-                    searchResult._status === 'ok' ?
-                    m(Info, {subject: searchResult.result}) :
-                    searchResult._status === 'pending' ?
+                    searchResult.status === Kanjiapi.SUCCESS ?
+                    m(Info, { subject: searchResult.value }) :
+                    searchResult.status === Kanjiapi.LOADING ?
                     m(Loading) :
                     m(BadSearch),
                 ),
@@ -159,7 +159,7 @@ function init() {
     });
 }
 
-const api = new Api(m.request);
-const dictionary = new Dictionary(api, m.redraw);
+const kanjiapi = Kanjiapi.build(m.redraw);
+const dictionary = new Dictionary(kanjiapi);
 
 init();

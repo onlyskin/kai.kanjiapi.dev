@@ -6,6 +6,7 @@
   "dependencies": {
     "japanese": "^1.2.0",
     "jshint": "^2.10.2",
+    "kanjiapi-wrapper": "^1.0.6",
     "mithril": "^1.1.6",
     "wanakana": "^4.0.2"
   },
@@ -16,6 +17,7 @@
     "tachyons": "^4.11.1"
   },
   "scripts": {
+    "build": "./build",
     "test": "ospec",
     "lint": "jshint src/"
   }

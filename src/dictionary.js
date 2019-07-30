@@ -1,102 +1,63 @@
+const { Kanjiapi: { ERROR, LOADING, SUCCESS } } = require('kanjiapi-wrapper');
+
 class Dictionary {
-    constructor(api, redraw) {
-        this._api = api;
-        this._redraw = redraw;
-        this._searching = {};
-        this._searched = {};
-        this._searchingWords = {};
-        this._searchedWords = {};
-        this._failedSearches = {};
-
-        this._joyo_kanji_map = {};
-        api.getJoyo()
-            .then(response => {
-                for (let kanji of response) {
-                    this._joyo_kanji_map[kanji] = true;
-                }
-            });
-
-        this._jinmeiyo_kanji_map = {};
-        api.getJinmeiyo()
-            .then(response => {
-                for (let kanji of response) {
-                    this._jinmeiyo_kanji_map[kanji] = true;
-                }
-            });
+    constructor(kanjiapi) {
+        this._kanjiapi = kanjiapi;
     }
 
     lookup(searchTerm) {
-        if (this._failedSearches[searchTerm]) {
-            return {
-                _status: 'failed',
-            };
+        const firstKanji = this._firstKanjiFrom(searchTerm);
+
+        const kanjiResult = this._kanjiapi.getKanji(firstKanji)
+        const readingResult = this._kanjiapi.getReading(searchTerm)
+
+        if ( kanjiResult.status === ERROR && readingResult.status === ERROR ) {
+            return { status: ERROR, value: null }
         }
 
-        const searchResult = this._searchApi(searchTerm);
-        if (searchResult) {
-            return {
-                _status: 'ok',
-                result: searchResult,
-            };
+        if ( kanjiResult.status === SUCCESS) {
+            return kanjiResult
         }
 
-        return {
-            _status: 'pending',
-        };
+        if ( readingResult.status === SUCCESS) {
+            return readingResult
+        }
+
+        if ( kanjiResult.status === LOADING || readingResult.status === LOADING ) {
+            return { status: LOADING, value: null }
+        }
     }
 
     randomKanji() {
-        const kanji = Object.keys(this._joyo_kanji_map)
-            .concat(Object.keys(this._jinmeiyo_kanji_map));
-        const choice = Math.floor(Math.random() * kanji.length);
-        return kanji[choice];
+        const kanji = [ ...this._joyoSet(), this._jinmeiyoSet() ]
+        const choice = Math.floor(Math.random() * kanji.length)
+        return kanji[choice]
     }
 
     isJoyo(kanji) {
-        return this._joyo_kanji_map[kanji] || false;
+        const { status, value } = this._kanjiapi.getJoyoSet()
+        return status === SUCCESS ? value.has(kanji) : false
     }
 
     isJinmeiyo(kanji) {
-        return this._jinmeiyo_kanji_map[kanji] || false;
+        const { status, value } = this._kanjiapi.getJinmeiyoSet()
+        return status === SUCCESS ? value.has(kanji) : false
     }
 
-    wordsFor(kanji) {
-        return this._wordsFromApi(kanji) || null;
+    _firstKanjiFrom(text) {
+        return String.fromCodePoint(text.codePointAt(0));
     }
 
-    _wordsFromApi(kanji) {
-        const literal = kanji.kanji;
-        if (!this._searchingWords[literal]) {
-            this._searchingWords[literal] = true;
-
-            this._api.wordsFor(literal)
-                .then(response => {
-                    this._searchedWords[literal] = response;
-                    this._redraw();
-                })
-                .catch(error => {
-                    this._searchingWords[literal] = undefined;
-                });
-        }
-        return this._searchedWords[literal];
+    _joyoSet() {
+        return this._kanjiapi.getJoyoSet().status === SUCCESS ?
+            this._kanjiapi.getJoyoSet().value.keys() :
+            []
     }
 
-    _searchApi(searchTerm) {
-        if (!this._searching[searchTerm]) {
-            this._searching[searchTerm] = true;
-
-            this._api.search(searchTerm)
-                .then(response => {
-                    this._searched[searchTerm] = response;
-                    this._redraw();
-                })
-                .catch(error => {
-                    this._searching[searchTerm] = undefined;
-                    this._failedSearches[searchTerm] = true;
-                    this._redraw();
-                });
-        }
-        return this._searched[searchTerm];
+    _jinmeiyoSet() {
+        return this._kanjiapi.getJinmeiyoSet().status === SUCCESS ?
+            this._kanjiapi.getJinmeiyoSet().value.keys() :
+            []
     }
 }
 

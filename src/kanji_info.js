@@ -101,7 +101,7 @@ const Words = {
             m(
                 '.mv3.self-center.avenir.pointer.link.dim.black-80.underline.no-select',
                 {
-                    onclick : e => {
+                    onclick : () => {
                         m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
                     },
                 },
@@ -201,7 +201,13 @@ const KanjiInfo = {
                 ),
                 m(
                     '.fl.flex.flex-column.justify-start.flex-wrap-l',
-                    words ? m(Words, {kanji, words, wordlimit}) : m(Loading),
+                    words.status === 'LOADING' ?
+                    m(Loading) :
+                    words.status === 'SUCCESS' ?
+                    m(Words, { kanji, words: words.value, wordlimit }) :
+                    words.status === 'ERROR' && words.value === 404 ?
+                    m('', 'No words') :
+                    m('', 'error')
                 ),
             ]),
         );
