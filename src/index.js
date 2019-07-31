@@ -6,16 +6,12 @@ const { ReadingInfo } = require('./reading_info');
 const { Loading } = require('./loading');
 const { Kanjiapi} = require('kanjiapi-wrapper');
 
-function isKanji(data) {
-    if (!data) return false;
-
-    return data.kanji !== undefined;
+function isKanji(value) {
+    return value.kanji !== undefined && value.words !== undefined;
 }
 
-function isReading(data) {
-    if (!data) return false;
-
-    return data.reading !== undefined;
+function isReading(value) {
+    return value.reading !== undefined;
 }
 
 const Info = {
@@ -25,8 +21,8 @@ const Info = {
                 KanjiInfo,
                 {
                     dictionary,
-                    kanji: subject,
-                    words: kanjiapi.getWordsForKanji(subject.kanji),
+                    kanji: subject.kanji,
+                    words: subject.words,
                     wordlimit: m.route.param('wordlimit') || 20,
                 },
             );
@@ -126,9 +122,7 @@ const SearchBar = {
 };
 
 const Page = {
-    view: function({attrs}) {
-        const searchResult = dictionary.lookup(attrs.search);
-
+    view: function({ attrs: { search } }) {
         return [
             m(Header),
             m(
@@ -141,11 +135,14 @@ const Page = {
                         m(RomajiToggle),
                         m(RandomKanji),
                     ),
-                    searchResult.status === Kanjiapi.SUCCESS ?
-                    m(Info, { subject: searchResult.value }) :
-                    searchResult.status === Kanjiapi.LOADING ?
-                    m(Loading) :
-                    m(BadSearch),
+                    dictionary.lookup(search).status === Kanjiapi.SUCCESS ?
+                        m(
+                            Info,
+                            { subject: dictionary.lookup(search).value },
+                        ) :
+                        dictionary.lookup(search).status === Kanjiapi.LOADING ?
+                        m(Loading) :
+                        m(BadSearch),
                 ),
             ),
             m('footer.white.bg-dark-purple.pa1.self-stretch', m(About)),
@@ -159,7 +156,8 @@ function init() {
     });
 }
 
-const kanjiapi = Kanjiapi.build(m.redraw);
+const kanjiapi = Kanjiapi.build();
+kanjiapi.addListener('app', m.redraw)
 const dictionary = new Dictionary(kanjiapi);
 
 init();

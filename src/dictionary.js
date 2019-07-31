@@ -15,11 +15,18 @@ class Dictionary {
             return { status: ERROR, value: null }
         }
 
-        if ( kanjiResult.status === SUCCESS) {
-            return kanjiResult
+        if ( kanjiResult.status === SUCCESS ) {
+            const { status: wordsStatus, value: wordsValue } = this._kanjiapi
+                .getWordsForKanji(firstKanji)
+
+            return {
+                status: wordsStatus,
+                value: wordsStatus === SUCCESS ?
+                    { kanji: kanjiResult.value, words: wordsValue } : null,
+            }
         }
 
-        if ( readingResult.status === SUCCESS) {
+        if ( readingResult.status === SUCCESS ) {
             return readingResult
         }
 

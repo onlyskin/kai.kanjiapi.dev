@@ -92,23 +92,21 @@ const Word = {
 };
 
 const Words = {
-    view: ({attrs: {kanji, words, wordlimit}}) => {
-        return [
-            Kanji.wordsForKanji(kanji.kanji, words)
-            .slice(0, wordlimit)
-            .map(word => m(Word, {word})),
-            words.length > wordlimit ?
-            m(
-                '.mv3.self-center.avenir.pointer.link.dim.black-80.underline.no-select',
-                {
-                    onclick : () => {
-                        m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
-                    },
+    view: ({ attrs: { kanji, words, wordlimit } }) => [
+        Kanji.wordsForKanji(kanji.kanji, words)
+        .slice(0, wordlimit)
+        .map(word => m(Word, {word})),
+        words.length > wordlimit ?
+        m(
+            '.mv3.self-center.avenir.pointer.link.dim.black-80.underline.no-select',
+            {
+                onclick : () => {
+                    m.route.set(m.route.get(), {wordlimit: Number(wordlimit) + 20});
                 },
-                'more words',
-            ) : '',
-        ];
-    },
+            },
+            'more words',
+        ) : '',
+    ],
 };
 
 const Row = {
@@ -201,13 +199,7 @@ const KanjiInfo = {
                 ),
                 m(
                     '.fl.flex.flex-column.justify-start.flex-wrap-l',
-                    words.status === 'LOADING' ?
-                    m(Loading) :
-                    words.status === 'SUCCESS' ?
-                    m(Words, { kanji, words: words.value, wordlimit }) :
-                    words.status === 'ERROR' && words.value === 404 ?
-                    m('', 'No words') :
-                    m('', 'error')
+                    m(Words, { kanji, words, wordlimit }),
                 ),
             ]),
         );
