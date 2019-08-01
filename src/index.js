@@ -5,14 +5,7 @@ const { KanjiInfo } = require('./kanji_info');
 const { ReadingInfo } = require('./reading_info');
 const { Loading } = require('./loading');
 const { Kanjiapi} = require('kanjiapi-wrapper');
-
-function isKanji(value) {
-    return value.kanji !== undefined && value.words !== undefined;
-}
-
-function isReading(value) {
-    return value.reading !== undefined;
-}
+const { isKanji, isReading } = require('./constant');
 
 const Info = {
     view: function({ attrs: { subject } }) {

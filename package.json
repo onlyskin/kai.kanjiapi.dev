@@ -8,6 +8,7 @@
     "jshint": "^2.10.2",
     "kanjiapi-wrapper": "^1.1.1",
     "mithril": "^1.1.6",
+    "ramda": "^0.26.1",
     "wanakana": "^4.0.2"
   },
   "devDependencies": {
