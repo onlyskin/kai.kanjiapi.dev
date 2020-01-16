@@ -39,6 +39,10 @@ function unicode({unicode}) {
     return unicode ? `U+${unicode.toUpperCase()}` : '';
 }
  
+function heisig({ heisig_en }) {
+    return heisig_en || '';
+}
+ 
 function validVariant(kanji, variant) {
     return variant.written.includes(kanji);
 }
@@ -134,4 +138,5 @@ module.exports = {
     unicode,
     prioritiseWords,
     wordsForKanji,
+    heisig,
 };

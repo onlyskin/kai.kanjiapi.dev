@@ -142,6 +142,10 @@ const KanjiInfo = {
                         left: 'Unicode',
                         right: m('.avenir', Kanji.unicode(kanji)),
                     }),
+                    Kanji.heisig(kanji) ? m(Row, {
+                        left: 'Heisig Keyword',
+                        right: m('.avenir', Kanji.heisig(kanji)),
+                    }) : null,
                 ),
             ),
             kanji.kun_readings.length ? m(
