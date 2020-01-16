@@ -13,6 +13,6 @@ Build with `./build`
 
 Test with `yarn test`
 
-Deploy with `gsutil -m rsync -c -d out gs://kanjikai`
+Deploy with `gsutil -m rsync -c -d out gs://kai.kanjiapi.dev`
 
 Lint with `yarn lint`
