@@ -16,7 +16,8 @@ cp index.html $OUT/index.html
 cp $TACHYONS $OUT/
 cp kanjikai.css $OUT/
 
-convert -size 128 x 128 -gravity center -background '#2F1758' -fill white \
-    -pointsize 50 -font /System/Library/Fonts/ヒラギノ丸ゴ\ ProN\ W4.ttc \
-    label:解 $OUT/favicon.png
-convert $OUT/favicon.png -size 32x32 $OUT/favicon.png
+convert -size 128x128 -gravity center -background '#2F1758' -fill white \
+    -font /System/Library/Fonts/ヒラギノ丸ゴ\ ProN\ W4.ttc label:解 \
+    $OUT/favicon.temp.png
+convert $OUT/favicon.temp.png -size 32x32 $OUT/favicon.png
+rm $OUT/favicon.temp.png
