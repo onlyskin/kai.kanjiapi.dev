@@ -102,18 +102,6 @@ const RomajiToggle = {
     },
 };
 
-const SearchBar = {
-    view () {
-        return m(
-            'input[text].f2.flex-auto.w-100.avenir.fw3.mv2.pa1.dark-gray.br3.ba.b--moon-gray.bw1',
-            {
-                placeholder: 'search...',
-                onchange: e => m.route.set(`/${e.target.value}`, null),
-            },
-        );
-    },
-};
-
 const Page = {
     view: function({ attrs: { search } }) {
         return [
@@ -122,7 +110,6 @@ const Page = {
                 '.flex-auto.flex.flex-column.items-center.bg-white.pa2.w-100',
                 m(
                     '.w-80-m.w-60-l',
-                    m(SearchBar),
                     m(
                         '.flex.items-center.mv2', 
                         m(RomajiToggle),
