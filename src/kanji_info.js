@@ -144,7 +144,7 @@ const KanjiInfo = {
                     }),
                     Kanji.heisig(kanji) ? m(Row, {
                         left: 'Heisig Keyword',
-                        right: m('.avenir', Kanji.heisig(kanji)),
+                        right: m('.avenir.bg-pale-orange.br-pill.ph2', Kanji.heisig(kanji)),
                     }) : null,
                 ),
             ),
