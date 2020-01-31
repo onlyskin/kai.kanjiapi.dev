@@ -1,5 +1,4 @@
 const m = require('mithril');
-const { isKana } = require('wanakana');
 const { Loading } = require('./loading');
 const { KanjiLiteral } = require('./kanji_literal');
 const Kanji = require('./kanji');
@@ -25,8 +24,8 @@ const WordChar = {
         return m(
             '.dib.db.br3.bg-pale-purple.b--pale-purple.lh-solid',
             {
-                class: isKana(character) ? '' : 'pointer grow bt bb',
-                style: isKana(character) ? {} : {
+                class: Kana.isKana(character) ? '' : 'pointer grow bt bb',
+                style: Kana.isKana(character) ? {} : {
                     borderRight: index === length - 1 ? CHAR_BORDER : undefined,
                     borderLeft: index === 0 ? CHAR_BORDER : undefined,
                     borderTop: CHAR_BORDER,

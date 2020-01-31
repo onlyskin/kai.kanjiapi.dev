@@ -4,16 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "japanese": "^1.2.0",
-    "jshint": "^2.10.2",
+    "kana-convert": "^1.0.7",
     "kanjiapi-wrapper": "^1.1.1",
     "mithril": "^1.1.6",
-    "ramda": "^0.26.1",
-    "wanakana": "^4.0.2"
+    "ramda": "^0.26.1"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
     "exorcist": "^1.0.1",
+    "jshint": "^2.10.2",
     "ospec": "^3.1.0",
     "tachyons": "^4.11.1"
   },
