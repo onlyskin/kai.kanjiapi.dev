@@ -12,13 +12,16 @@
   "devDependencies": {
     "browserify": "^16.2.3",
     "exorcist": "^1.0.1",
-    "jshint": "^2.10.2",
     "ospec": "^3.1.0",
-    "tachyons": "^4.11.1"
+    "tachyons": "^4.11.1",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
   },
   "scripts": {
     "build": "./build",
     "test": "ospec",
-    "lint": "jshint src/"
+    "lint": "eslint tests/*.js src/*.js"
   }
 }

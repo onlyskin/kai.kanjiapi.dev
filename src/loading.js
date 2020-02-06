@@ -1,11 +1,11 @@
-const m = require('mithril');
+const m = require('mithril')
 
 const Loading = {
-    view: function() {
-        return m('.loader');
-    },
-};
+  view: function() {
+    return m('.loader')
+  },
+}
 
 module.exports = {
-    Loading
-};
+  Loading,
+}
