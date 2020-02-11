@@ -43,7 +43,7 @@ class Dictionary {
   }
 
   randomKanji() {
-    const kanji = [...this._joyoSet(), this._jinmeiyoSet()]
+    const kanji = [...this._joyoSet(), ...this._jinmeiyoSet()]
     const choice = Math.floor(Math.random() * kanji.length)
     return kanji[choice]
   }
