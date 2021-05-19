@@ -39,8 +39,9 @@ const About = {
     return [
       m('h2.fw3.tc.avenir', 'About'),
       m('.tc.avenir', [
+        m('p', 'kanjikai is a rabbit-hole kanji dictionary: every character and every reading is clickable'),
         m('p', [
-          'kanjikai is powered by ',
+          'powered by ',
           m(
             'a[href=https://kanjiapi.dev].link.dim.white-80.no-select',
             'kanjiapi.dev',
