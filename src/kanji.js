@@ -1,18 +1,9 @@
 const m = require('mithril')
+const { ExternalLink } = require('./link')
 
 const JOYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji'
 const JINMEIYO_WIKIPEDIA_URL =
   'https://en.wikipedia.org/wiki/Jinmeiy%C5%8D_kanji'
-
-const ExternalLink = {
-  view(vnode) {
-    return m(
-      'a.link.dim.black-80.underline.pointer.no-select',
-      vnode.attrs,
-      vnode.children,
-    )
-  },
-}
 
 function grade({ grade }) {
   if (grade === 9 || grade === 10) {

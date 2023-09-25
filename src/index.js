@@ -6,6 +6,7 @@ const { ReadingInfo } = require('./reading_info')
 const { Loading } = require('./loading')
 const { Kanjiapi } = require('kanjiapi-wrapper')
 const { isKanji, isReading } = require('./constant')
+const { InternalTextLink, ExternalLink } = require('./link')
 
 const Info = {
   view: function({ attrs: { subject } }) {
@@ -67,8 +68,10 @@ const RandomKanji = {
   view: function() {
     const kanji = dictionary.randomKanji() || m.route.param('search')
     return m(
-      '.pointer.link.dim.black-80.underline.avenir.flex-none.no-select',
-      { onclick: () => m.route.set(`/${kanji}`, null) },
+        InternalTextLink, {
+          classes: ['flex-none'],
+          href: `/${kanji}`,
+        },
       "I'm feeling lucky!",
     )
   },
@@ -87,7 +90,7 @@ const RomajiToggle = {
         'label.avenir.lh-copy',
         'Display readings in Roman alphabet (',
         m(
-          'a.pointer.link.dim.black-80.underline.avenir.no-select',
+          ExternalLink,
           {
             href: 'https://en.wikipedia.org/wiki/Nihon-shiki_romanization',
           },

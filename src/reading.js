@@ -2,36 +2,24 @@ const m = require('mithril')
 const Kana = require('./kana')
 const { config } = require('./config')
 const { ON, KUN } = require('./constant')
+const { InternalLink } = require('./link')
 
 const Reading = {
-  _borderClass: type => {
-    if (type === KUN) {
-      return 'b--pale-red'
-    } else if (type === ON) {
-      return 'b--pale-blue'
-    }
-    return 'b--pale-green'
-  },
-  _backgroundClass: type => {
-    if (type === KUN) {
-      return 'bg-pale-red'
-    } else if (type === ON) {
-      return 'bg-pale-blue'
-    }
-    return 'bg-pale-green'
+  _linkClasses: function(type, large) {
+      return [
+        'ma1', 'br3', 'ba',
+        ...(large ? ['f1', 'pa2'] : ['f4', 'pa1']),
+        config.isRomaji ? 'avenir' : 'kosugi-maru',
+        ...(type === KUN ? ['b--pale-red', 'bg-pale-red']
+            : type === ON ? ['b--pale-blue', 'bg-pale-blue']
+            : ['b--pale-green', 'bg-pale-green'])
+      ];
   },
   view: function({ attrs: { type, reading, large } }) {
     return m(
-      '.lh-solid.ma1.br3.ba.pointer.grow',
-      {
-        class: [
-          large ? 'f1' : 'f4',
-          large ? 'pa2' : 'pa1',
-          config.isRomaji ? 'avenir' : 'kosugi-maru',
-          this._borderClass(type),
-          this._backgroundClass(type),
-        ].join(' '),
-        onclick: () => m.route.set(`/${reading}`, null),
+      InternalLink, {
+          classes: this._linkClasses(type, large),
+          href: `/${reading}`,
       },
       Kana.formatReading(reading),
     )

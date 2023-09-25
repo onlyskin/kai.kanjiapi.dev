@@ -5,6 +5,7 @@ const Kana = require('./kana')
 const { ON, KUN, NAME } = require('./constant')
 const { Reading } = require('./reading')
 const { config } = require('./config')
+const { InternalLink, InternalTextLink } = require('./link')
 
 const Meaning = {
   view: ({ attrs: { meaning } }) => {
@@ -16,26 +17,21 @@ const CHAR_BORDER = '0.1rem dashed hsla(286, 65%, 85%, 1)'
 const CHAR_PADDING = '0.25rem'
 
 const WordChar = {
-  view: ({ attrs: { character, index, length } }) => {
+  view: function({ attrs: { character, index, length } }) {
+    if (Kana.isKana(character)) {
+        return m('.dib.db.br3.bg-pale-purple.b--pale-purple.lh-solid', character)
+    }
+
     return m(
-      '.dib.db.br3.bg-pale-purple.b--pale-purple.lh-solid',
+      InternalLink,
       {
-        class: Kana.isKana(character) ? '' : 'pointer grow bt bb',
-        style: Kana.isKana(character)
-          ? {}
-          : {
-              borderRight: index === length - 1 ? CHAR_BORDER : undefined,
-              borderLeft: index === 0 ? CHAR_BORDER : undefined,
-              borderTop: CHAR_BORDER,
-              borderBottom: CHAR_BORDER,
-              paddingRight: index === length - 1 ? CHAR_PADDING : '0rem',
-              paddingLeft: index === 0 ? CHAR_PADDING : '0rem',
-              paddingTop: CHAR_PADDING,
-              paddingBottom: CHAR_PADDING,
-            },
-        onclick: e => {
-          m.route.set(`/${e.target.textContent}`, null)
-        },
+          classes: [
+              'br3', 'bg-pale-purple', 'b--pale-purple', 'char-bv', 'pv1',
+              ...(index === 0 ? ['char-bl', 'pl1']
+                  : index === length -1 ? ['char-br', 'pr1']
+                  : [])
+          ],
+        href: `/${character}`,
       },
       character,
     )
@@ -93,11 +89,11 @@ const Words = {
       .map(word => m(Word, { word })),
     words.length > wordlimit
       ? m(
-          '.mv3.self-center.avenir.pointer.link.dim.black-80.underline.no-select',
+          InternalTextLink,
           {
-            onclick: () => {
-              m.route.set(m.route.get(), { wordlimit: Number(wordlimit) + 20 })
-            },
+            classes: ['mv3', 'self-center'],
+            href: `/${kanji.kanji}`,
+            params: { wordlimit: Number(wordlimit) + 20 },
           },
           'more words',
         )

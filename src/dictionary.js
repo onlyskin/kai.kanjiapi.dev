@@ -16,7 +16,7 @@ class Dictionary {
   }
 
   lookup(searchTerm) {
-    if (this._joyoSet().length === 0 || this._jinmeiyoSet().length === 0) {
+    if (this._joyoSet().length === 0 || this._jinmeiyoSet().length === 0 || this._heisigSet().length === 0) {
       return { status: LOADING, value: null }
     }
 
@@ -43,7 +43,7 @@ class Dictionary {
   }
 
   randomKanji() {
-    const kanji = [...this._joyoSet(), ...this._jinmeiyoSet()]
+    const kanji = [...this._joyoSet(), ...this._jinmeiyoSet(), ...this._heisigSet()]
     const choice = Math.floor(Math.random() * kanji.length)
     return kanji[choice]
   }
@@ -58,6 +58,11 @@ class Dictionary {
     return status === SUCCESS ? value.has(kanji) : false
   }
 
+  isHeisig(kanji) {
+    const { status, value } = this._kanjiapi.getHeisigSet()
+    return status === SUCCESS ? value.has(kanji) : false
+  }
+
   _joyoSet() {
     return this._kanjiapi.getJoyoSet().status === SUCCESS
       ? this._kanjiapi.getJoyoSet().value.keys()
@@ -67,6 +72,12 @@ class Dictionary {
   _jinmeiyoSet() {
     return this._kanjiapi.getJinmeiyoSet().status === SUCCESS
       ? this._kanjiapi.getJinmeiyoSet().value.keys()
+      : []
+  }
+
+  _heisigSet() {
+    return this._kanjiapi.getHeisigSet().status === SUCCESS
+      ? this._kanjiapi.getHeisigSet().value.keys()
       : []
   }
 

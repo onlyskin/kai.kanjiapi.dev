@@ -13,6 +13,31 @@ const Row = {
 }
 
 const ReadingInfo = {
+  sortKanjiLiterals: (dictionary, kanjiLiterals) => {
+      const partitioned = {
+          'joyo': [],
+          'jinmeiyo': [],
+          'heisig': [],
+          'rest': [],
+      };
+      kanjiLiterals.forEach(kanji => {
+          if (dictionary.isJoyo(kanji)) {
+              partitioned['joyo'].push(kanji);
+          } else if (dictionary.isJinmeiyo(kanji)) {
+              partitioned['jinmeiyo'].push(kanji);
+          } else if (dictionary.isHeisig(kanji)) {
+              partitioned['heisig'].push(kanji);
+          } else {
+              partitioned['rest'].push(kanji);
+          }
+      });
+      return [
+          ...partitioned['joyo'].sort(),
+          ...partitioned['jinmeiyo'].sort(),
+          ...partitioned['heisig'].sort(),
+          ...partitioned['rest'].sort(),
+      ];
+  },
   sortKanji: (dictionary, a, b) => {
     const aIsJoyo = dictionary.isJoyo(a)
     const bIsJoyo = dictionary.isJoyo(b)
@@ -58,8 +83,7 @@ const ReadingInfo = {
       reading.main_kanji.length
         ? m(Row, {
             left: 'Main Kanji',
-            right: [...reading.main_kanji]
-              .sort(this.sortKanji.bind(null, dictionary))
+            right: this.sortKanjiLiterals(dictionary, [...reading.main_kanji])
               .map(kanji => {
                 return m(KanjiLiteral, {
                   dictionary,

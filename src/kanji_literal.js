@@ -1,33 +1,22 @@
 const m = require('mithril')
+const { InternalLink } = require('./link')
 
 const KanjiLiteral = {
-  _backgroundClass: (dictionary, kanji) => {
-    if (dictionary.isJoyo(kanji)) {
-      return 'bg-light-yellow'
-    } else if (dictionary.isJinmeiyo(kanji)) {
-      return 'bg-mid-red'
-    }
-    return 'bg-mid-blue'
-  },
-  _borderClass: (dictionary, kanji) => {
-    if (dictionary.isJoyo(kanji)) {
-      return 'b--yellow'
-    } else if (dictionary.isJinmeiyo(kanji)) {
-      return 'b--red'
-    }
-    return 'b--blue'
+  _linkClasses: function(dictionary, kanji, large) {
+    return [
+        'ma1', 'br3', 'ba', 'kosugi-maru',
+        ...(large ? ['f-05', 'pa2'] : ['f2', 'pa1']),
+        ...(dictionary.isJoyo(kanji) ? ['bg-light-yellow', 'b--yellow']
+            : dictionary.isJinmeiyo(kanji) ? ['bg-mid-red', 'b--red']
+            : dictionary.isHeisig(kanji) ? ['bg-mid-green', 'b--green']
+            : ['bg-mid-blue', 'b--blue'])
+    ]
   },
   view: function({ attrs: { dictionary, kanji, large } }) {
     return m(
-      '.pointer.grow.ma1.lh-solid.br3.ba.kosugi-maru',
-      {
-        class: [
-          this._backgroundClass(dictionary, kanji),
-          this._borderClass(dictionary, kanji),
-          large ? 'f-05' : 'f2',
-          large ? 'pa2' : 'pa1',
-        ].join(' '),
-        onclick: () => m.route.set(`/${kanji}`, null),
+      InternalLink, {
+          classes: this._linkClasses(dictionary, kanji, large),
+          href: `/${kanji}`,
       },
       kanji,
     )

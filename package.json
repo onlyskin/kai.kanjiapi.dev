@@ -5,19 +5,19 @@
   "license": "MIT",
   "dependencies": {
     "kana-convert": "^1.0.7",
-    "kanjiapi-wrapper": "^1.1.1",
-    "mithril": "^1.1.6",
+    "kanjiapi-wrapper": "^1.1.5",
+    "mithril": "^2",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
-    "exorcist": "^1.0.1",
-    "ospec": "^3.1.0",
-    "tachyons": "^4.11.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1"
+    "exorcist": "^1.0.1",
+    "ospec": "^3.1.0",
+    "prettier": "^1.19.1",
+    "tachyons": "^4.11.1"
   },
   "scripts": {
     "build": "./build",

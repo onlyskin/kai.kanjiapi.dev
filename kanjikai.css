@@ -2,6 +2,23 @@
   user-select: none;
 }
 
+.no-underline {
+  text-decoration: none;
+}
+
+.char-bv {
+  border-top: 0.1rem dashed hsla(286, 65%, 85%, 1);
+  border-bottom: 0.1rem dashed hsla(286, 65%, 85%, 1);
+}
+
+.char-br {
+  border-right: 0.1rem dashed hsla(286, 65%, 85%, 1);
+}
+
+.char-bl {
+  border-left: 0.1rem dashed hsla(286, 65%, 85%, 1);
+}
+
 .bg-pale-red {
   background: lightpink;
 }
@@ -28,6 +45,10 @@
 
 .bg-pale-green {
   background: lightgreen;
+}
+
+.bg-mid-green {
+  background: #8fe096;
 }
 
 .b--pale-green {
