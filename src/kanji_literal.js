@@ -4,7 +4,7 @@ const { InternalLink } = require('./link')
 const KanjiLiteral = {
   _linkClasses: function(dictionary, kanji, large) {
     return [
-        'ma1', 'br3', 'ba', 'kosugi-maru',
+        'br3', 'ba', 'kosugi-maru',
         ...(large ? ['f-05', 'pa2'] : ['f2', 'pa1']),
         ...(dictionary.isJoyo(kanji) ? ['bg-light-yellow', 'b--yellow']
             : dictionary.isJinmeiyo(kanji) ? ['bg-mid-red', 'b--red']
@@ -12,10 +12,10 @@ const KanjiLiteral = {
             : ['bg-mid-blue', 'b--blue'])
     ]
   },
-  view: function({ attrs: { dictionary, kanji, large } }) {
+  view: function({ attrs: { dictionary, kanji, large, classes = [] } }) {
     return m(
       InternalLink, {
-          classes: this._linkClasses(dictionary, kanji, large),
+          classes: [...this._linkClasses(dictionary, kanji, large), ...classes],
           href: `/${kanji}`,
       },
       kanji,

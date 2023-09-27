@@ -28,6 +28,10 @@ function unicode({ unicode }) {
   return unicode ? `U+${unicode.toUpperCase()}` : ''
 }
 
+function alternative({ unihan_cjk_compatibility_variant }) {
+  return unihan_cjk_compatibility_variant || ''
+}
+
 function heisig({ heisig_en }) {
   return heisig_en || ''
 }
@@ -120,4 +124,5 @@ module.exports = {
   prioritiseWords,
   wordsForKanji,
   heisig,
+  alternative,
 }

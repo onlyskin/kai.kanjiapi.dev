@@ -101,8 +101,10 @@ const Words = {
 }
 
 const Row = {
-  view: function({ attrs: { left, right } }) {
-    return m('.db.flex.items-center.justify-between.avenir', [
+  view: function({ attrs: { left, right, classes = [] } }) {
+    return m('.db.flex.items-center.justify-between.avenir', {
+        class: classes.join(' '),
+    }, [
       m('.fw6.pa1', left),
       m('.pa1', right),
     ])
@@ -138,6 +140,11 @@ const KanjiInfo = {
             left: 'Unicode',
             right: m('.avenir', Kanji.unicode(kanji)),
           }),
+          Kanji.alternative(kanji) ? m(Row, {
+            left: 'Alternative',
+            right: m(KanjiLiteral, { kanji: Kanji.alternative(kanji), dictionary }),
+            classes: ['mt4'],
+          }): null,
           Kanji.heisig(kanji)
             ? m(Row, {
                 left: 'Heisig Keyword',
