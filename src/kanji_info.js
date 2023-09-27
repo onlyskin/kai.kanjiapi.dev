@@ -27,9 +27,8 @@ const WordChar = {
       {
           classes: [
               'br3', 'bg-pale-purple', 'b--pale-purple', 'char-bv', 'pv1',
-              ...(index === 0 ? ['char-bl', 'pl1']
-                  : index === length -1 ? ['char-br', 'pr1']
-                  : [])
+              ...(index === 0 ? ['char-bl', 'pl1'] : []),
+              ...(index === length -1 ? ['char-br', 'pr1'] : []),
           ],
         href: `/${character}`,
       },
