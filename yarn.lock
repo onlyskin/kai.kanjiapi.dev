@@ -687,9 +687,9 @@ json-stable-stringify-without-jsonify@^1.0.1:
   integrity sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==
 
 kana-convert@^1.0.7:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/kana-convert/-/kana-convert-1.0.8.tgz#3a3642b0b86f4353c007cd147b9a05005ed46bda"
-  integrity sha512-CztMsf2HlSxHLljbT3lxj1JW9ownqfSe3L5RM0SYgpSpdkK4IaGiOEdZJgrprVXCZTuh3N1o67rCmwwg2Z+o4Q==
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/kana-convert/-/kana-convert-1.0.9.tgz#f380d6777fc64c47d421e9c34de44b1d7755a4ae"
+  integrity sha512-NWg4xLHzVqf2jdkv7MNJK/a1wxhT+h0N/al7zV0RsplAZQXl8hVczwBYze0aMfyXQ7YVA94pOkz84C4GimWL3Q==
 
 kanjiapi-wrapper@^1.1.5:
   version "1.1.5"
