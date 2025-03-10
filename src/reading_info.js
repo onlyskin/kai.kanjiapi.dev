@@ -6,7 +6,7 @@ const Kana = require('./kana')
 const Row = {
   view: function({ attrs: { left, right } }) {
     return m('.db.flex.flex-column', [
-      m('.fw6.flex.justify-start.pa1.pb0.avenir', left),
+      m('.fw6.flex.justify-start.pa1.pb0', left),
       m('.flex.flex-wrap.justify-start.pa1.pt0', right),
     ])
   },

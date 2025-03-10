@@ -9,7 +9,7 @@ const { InternalLink, InternalTextLink } = require('./link')
 
 const Meaning = {
   view: ({ attrs: { meaning } }) => {
-    return m('.lh-solid.pa3.ma1.br-pill.f4.avenir.bg-pale-orange', meaning)
+    return m('.lh-solid.pa3.ma1.br-pill.f4.bg-pale-orange', meaning)
   },
 }
 
@@ -68,12 +68,12 @@ const Word = {
         m(
           '.f5.f3-ns.ma1',
           {
-            class: config.isRomaji ? 'avenir i' : 'kosugi-maru',
+            class: config.isRomaji ? 'i' : 'kosugi-maru',
           },
           Kana.formatReading(word.variant.pronounced),
         ),
         m(
-          '.measure-narrow.avenir.tr.ma1',
+          '.measure-narrow.tr.ma1',
           m(WordMeanings, { meanings: word.meanings }),
         ),
       ]),
@@ -102,7 +102,7 @@ const Words = {
 
 const Row = {
   view: function({ attrs: { left, right, classes = [] } }) {
-    return m('.db.flex.items-center.justify-between.avenir', {
+    return m('.db.flex.items-center.justify-between', {
         class: classes.join(' '),
     }, [
       m('.fw6.pa1', left),
@@ -123,22 +123,22 @@ const KanjiInfo = {
           Kanji.grade(kanji)
             ? m(Row, {
                 left: 'Grade',
-                right: m('.avenir', Kanji.grade(kanji)),
+                right: m('', Kanji.grade(kanji)),
               })
             : null,
           Kanji.jlpt(kanji)
             ? m(Row, {
                 left: 'JLPT',
-                right: m('.avenir', Kanji.jlpt(kanji)),
+                right: m('', Kanji.jlpt(kanji)),
               })
             : null,
           m(Row, {
             left: 'Strokes',
-            right: m('.avenir', kanji.stroke_count),
+            right: m('', kanji.stroke_count),
           }),
           m(Row, {
             left: 'Unicode',
-            right: m('.avenir', Kanji.unicode(kanji)),
+            right: m('', Kanji.unicode(kanji)),
           }),
           Kanji.alternative(kanji) ? m(Row, {
             left: 'Alternative',
@@ -149,7 +149,7 @@ const KanjiInfo = {
             ? m(Row, {
                 left: 'Heisig Keyword',
                 right: m(
-                  '.avenir.bg-pale-orange.br-pill.ph2',
+                  '.bg-pale-orange.br-pill.ph2',
                   Kanji.heisig(kanji),
                 ),
               })
@@ -214,7 +214,7 @@ const KanjiInfo = {
         : null,
       m('.db.flex.flex-column', [
         m(
-          '.fw6.flex.self-center.justify-end-ns.w-20.flex-wrap.self-start-ns.pa1.pb0.pa1-ns.avenir',
+          '.fw6.flex.self-center.justify-end-ns.w-20.flex-wrap.self-start-ns.pa1.pb0.pa1-ns',
           'Words',
         ),
         m(

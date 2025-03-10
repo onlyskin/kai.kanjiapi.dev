@@ -30,7 +30,7 @@ const Header = {
   view: function() {
     return m('header.white.bg-dark-purple.pa1.self-stretch', [
       m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
-      m('h1.fw5.mv2.f2.tc.avenir', 'kanjikai'),
+      m('h1.fw5.mv2.f2.tc', 'kanjikai'),
     ])
   },
 }
@@ -38,8 +38,8 @@ const Header = {
 const About = {
   view: function() {
     return [
-      m('h2.fw3.tc.avenir', 'About'),
-      m('.tc.avenir', [
+      m('h2.fw3.tc', 'About'),
+      m('.tc', [
         m('p', 'kanjikai is a rabbit-hole kanji dictionary: every kanji and every reading is clickable'),
         m('p', [
           'powered by ',
@@ -60,7 +60,7 @@ const About = {
 
 const BadSearch = {
   view: function() {
-    return m('.avenir', 'Not Found')
+    return m('', 'Not Found')
   },
 }
 
@@ -87,7 +87,7 @@ const RomajiToggle = {
         'あ/a',
       ),
       m(
-        'label.avenir.lh-copy',
+        'label',
         'Display readings in Roman alphabet (',
         m(
           ExternalLink,
