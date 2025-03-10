@@ -6,6 +6,14 @@
   text-decoration: none;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
+.minw3 {
+  min-width: 4rem;
+}
+
 .char-bv {
   border-top: 0.1rem dashed hsla(286, 65%, 85%, 1);
   border-bottom: 0.1rem dashed hsla(286, 65%, 85%, 1);

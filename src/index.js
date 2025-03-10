@@ -80,7 +80,7 @@ const RandomKanji = {
 const RomajiToggle = {
   view: function() {
     return m(
-      '.flex.items-center.flex-auto.mr2.f7.f5-ns',
+      '.flex.items-center.flex-auto.f7.f5-ns',
       m(
         'input[type=checkbox].mr2.pointer',
         { onclick: () => config.toggleRomaji() },
@@ -102,6 +102,18 @@ const RomajiToggle = {
   },
 }
 
+const TextSearch = {
+  view: function({ attrs: { search } }) {
+    return m(
+      'input[type=text].kosugi-maru.flex-grow.mr2.minw3',
+      {
+        onchange: e => m.route.set(e.target.value),
+        value: search,
+      },
+    )
+  },
+}
+
 const Page = {
   view: function({ attrs: { search } }) {
     return [
@@ -109,8 +121,17 @@ const Page = {
       m(
         '.flex-auto.flex.flex-column.items-center.bg-white.pa2.w-100',
         m(
-          '.w-80-m.w-60-l',
-          m('.flex.items-center.mv2', m(RomajiToggle), m(RandomKanji)),
+          '.w-100.w-80-m.w-60-l',
+          m(
+            '.flex.flex-column.mv2',
+            m(
+              '.flex.mb2.lh-copy.w-100.items-center',
+              m('.mr1.nowrap', 'go to:'),
+              m(TextSearch, { search }),
+              m(RandomKanji),
+            ),
+            m(RomajiToggle),
+          ),
           dictionary.lookup(search).status === Kanjiapi.SUCCESS
             ? m(Info, { subject: dictionary.lookup(search).value })
             : dictionary.lookup(search).status === Kanjiapi.LOADING
