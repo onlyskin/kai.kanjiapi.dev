@@ -5,7 +5,7 @@ exploring Kanji, powered by [kanjiapi.dev](https://kanjiapi.dev).
 
 ## Development
 
-Requirements: `yarn/npm`
+Requirements: `yarn` or `npm`
 
 Install with `yarn`
 
