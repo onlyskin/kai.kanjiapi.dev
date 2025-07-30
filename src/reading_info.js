@@ -104,6 +104,7 @@ const ReadingInfo = {
                   dictionary,
                   kanji,
                   large: false,
+                  classes: ['ma1'],
                 })
               }),
           })
