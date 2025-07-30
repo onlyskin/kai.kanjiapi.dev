@@ -119,7 +119,7 @@ const KanjiInfo = {
         '.flex.items-center.justify-around.mv4',
         m(KanjiLiteral, { kanji: kanji.kanji, large: true, dictionary }),
         m(
-          '.flex-grow',
+          '.flex-grow.ml2',
           Kanji.grade(kanji)
             ? m(Row, {
                 left: 'Grade',
