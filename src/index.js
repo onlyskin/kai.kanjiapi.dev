@@ -82,12 +82,15 @@ const RomajiToggle = {
     return m(
       '.flex.items-center.flex-auto.f7.f5-ns',
       m(
-        'input[type=checkbox].mr2.pointer',
-        { onclick: () => config.toggleRomaji() },
+        'input[type=checkbox][name=romaji-toggle].mr2.pointer',
+        {
+          checked: config.getIsRomaji(),
+          onclick: () => config.toggleRomaji(),
+        },
         'あ/a',
       ),
       m(
-        'label',
+        'label[for=romaji-toggle]',
         'Display readings in Roman alphabet (',
         m(
           ExternalLink,

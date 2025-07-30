@@ -68,7 +68,7 @@ const Word = {
         m(
           '.f5.f3-ns.ma1',
           {
-            class: config.isRomaji ? 'i' : 'kosugi-maru',
+            class: config.getIsRomaji() ? 'i' : 'kosugi-maru',
           },
           Kana.formatReading(word.variant.pronounced),
         ),

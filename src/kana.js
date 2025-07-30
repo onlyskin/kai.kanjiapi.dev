@@ -7,7 +7,7 @@ function formatReading(reading) {
     return reading
   }
 
-  return config.isRomaji ? romanizeWithPunctuation(reading) : reading
+  return config.getIsRomaji() ? romanizeWithPunctuation(reading) : reading
 }
 
 function isCharInRange(char = '', start, end) {
