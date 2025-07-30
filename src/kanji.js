@@ -10,11 +10,11 @@ function grade({ grade }) {
     return m(ExternalLink, { href: JINMEIYO_WIKIPEDIA_URL }, 'Jinmeiyō')
   } else if (grade === 8) {
     return [
-      m(ExternalLink, { href: JOYO_WIKIPEDIA_URL }, 'Joyō'),
+      m(ExternalLink, { href: JOYO_WIKIPEDIA_URL }, 'Jōyō'),
       ': high school',
     ]
   } else if (grade) {
-    return [m(ExternalLink, { href: JOYO_WIKIPEDIA_URL }, 'Joyō'), `: ${grade}`]
+    return [m(ExternalLink, { href: JOYO_WIKIPEDIA_URL }, 'Jōyō'), `: ${grade}`]
   } else {
     return null
   }
