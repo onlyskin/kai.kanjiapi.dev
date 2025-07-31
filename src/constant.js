@@ -1,8 +1,14 @@
-const R = require('ramda')
+function isNotNil(x) {
+  return x !== null && x!== undefined;
+}
 
-const isNotNil = R.complement(R.isNil)
-const isKanji = R.propSatisfies(isNotNil, 'kanji')
-const isReading = R.propSatisfies(isNotNil, 'reading')
+function isKanji(x) {
+  return isNotNil(x) && isNotNil(x.kanji)
+}
+
+function isReading(x) {
+  return isNotNil(x) && isNotNil(x.reading)
+}
 
 module.exports = {
   ON: 'on-reading',

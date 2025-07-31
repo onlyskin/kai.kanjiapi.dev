@@ -1,14 +1,27 @@
-const R = require('ramda')
 const {
   Kanjiapi: { ERROR, LOADING, SUCCESS },
 } = require('kanjiapi-wrapper')
-
-const isLoading = R.propEq('status', LOADING)
-const isError = R.propEq('status', ERROR)
-const isSuccess = R.propEq('status', SUCCESS)
-const allErrored = R.all(isError)
-const anyLoading = R.any(isLoading)
 const { isKanji } = require('./constant')
+
+function isLoading(result) {
+  return result.status === LOADING
+}
+
+function isError(result) {
+  return result.status === ERROR
+}
+
+function isSuccess(result) {
+  return result.status === SUCCESS
+}
+
+function allErrored(results) {
+  return results.every(isError);
+}
+
+function anyLoading(results) {
+  return results.some(isLoading);
+}
 
 class Dictionary {
   constructor(kanjiapi) {
@@ -35,11 +48,9 @@ class Dictionary {
       return { status: ERROR, value: null }
     }
 
-    const successful = R.pipe(R.filter(isSuccess), R.head, result =>
-      isKanji(result.value) ? this._withWords(result) : result,
-    )(results)
-
-    return successful
+    const successes = results.filter(isSuccess)
+    const first = successes[0]
+    return isKanji(first.value) ? this._withWords(first) : first
   }
 
   randomKanji() {

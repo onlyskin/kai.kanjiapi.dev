@@ -27,6 +27,7 @@ o.spec('dictionary lookup', () => {
       getWordsForKanji: getWordsForKanjiSpy,
       getJoyoSet: () => success(new Set(['a'])),
       getJinmeiyoSet: () => success(new Set(['b'])),
+      getHeisigSet: () => success(new Set(['c'])),
     }
 
     return { kanjiapi, getKanjiSpy, getWordsForKanjiSpy }
