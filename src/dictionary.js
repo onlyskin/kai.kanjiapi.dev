@@ -29,7 +29,7 @@ class Dictionary {
   }
 
   lookup(searchTerm) {
-    if (this._joyoSet().length === 0 || this._jinmeiyoSet().length === 0 || this._heisigSet().length === 0) {
+    if (this._joyoSet().size === 0 || this._jinmeiyoSet().size === 0 || this._heisigSet().size === 0) {
       return { status: LOADING, value: null }
     }
 
@@ -60,36 +60,33 @@ class Dictionary {
   }
 
   isJoyo(kanji) {
-    const { status, value } = this._kanjiapi.getJoyoSet()
-    return status === SUCCESS ? value.has(kanji) : false
+    return this._joyoSet().has(kanji)
   }
 
   isJinmeiyo(kanji) {
-    const { status, value } = this._kanjiapi.getJinmeiyoSet()
-    return status === SUCCESS ? value.has(kanji) : false
+    return this._jinmeiyoSet().has(kanji)
   }
 
   isHeisig(kanji) {
-    const { status, value } = this._kanjiapi.getHeisigSet()
-    return status === SUCCESS ? value.has(kanji) : false
+    return this._heisigSet().has(kanji)
   }
 
   _joyoSet() {
     return this._kanjiapi.getJoyoSet().status === SUCCESS
-      ? this._kanjiapi.getJoyoSet().value.keys()
-      : []
+      ? this._kanjiapi.getJoyoSet().value
+      : new Set()
   }
 
   _jinmeiyoSet() {
     return this._kanjiapi.getJinmeiyoSet().status === SUCCESS
-      ? this._kanjiapi.getJinmeiyoSet().value.keys()
-      : []
+      ? this._kanjiapi.getJinmeiyoSet().value
+      : new Set()
   }
 
   _heisigSet() {
     return this._kanjiapi.getHeisigSet().status === SUCCESS
-      ? this._kanjiapi.getHeisigSet().value.keys()
-      : []
+      ? this._kanjiapi.getHeisigSet().value
+      : new Set()
   }
 
   _firstKanjiFrom(text) {
