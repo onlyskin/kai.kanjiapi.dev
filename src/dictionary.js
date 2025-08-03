@@ -26,10 +26,24 @@ function anyLoading(results) {
 class Dictionary {
   constructor(kanjiapi) {
     this._kanjiapi = kanjiapi
+    this.kanjiSets = [
+      {
+        name: 'joyo',
+        func: () => this._unwrap(this._kanjiapi.getJoyoSet()),
+      },
+      {
+        name: 'jinmeiyo',
+        func: () => this._unwrap(this._kanjiapi.getJinmeiyoSet()),
+      },
+      {
+        name: 'heisig',
+        func: () => this._unwrap(this._kanjiapi.getHeisigSet()),
+      },
+    ]
   }
 
   lookup(searchTerm) {
-    if (this._joyoSet().size === 0 || this._jinmeiyoSet().size === 0 || this._heisigSet().size === 0) {
+    if (['joyo', 'jinmeiyo', 'heisig'].some(name => this._kanjiSet(name).size === 0)) {
       return { status: LOADING, value: null }
     }
 
@@ -54,39 +68,32 @@ class Dictionary {
   }
 
   randomKanji() {
-    const kanji = [...this._joyoSet(), ...this._jinmeiyoSet(), ...this._heisigSet()]
+    const kanji = [...this._kanjiSet('joyo'), ...this._kanjiSet('jinmeiyo'), ...this._kanjiSet('heisig')]
     const choice = Math.floor(Math.random() * kanji.length)
     return kanji[choice]
   }
 
-  isJoyo(kanji) {
-    return this._joyoSet().has(kanji)
+  kanjiSetStrings() {
+    return this.kanjiSets.map(f => f.name);
   }
 
-  isJinmeiyo(kanji) {
-    return this._jinmeiyoSet().has(kanji)
-  }
-
-  isHeisig(kanji) {
-    return this._heisigSet().has(kanji)
-  }
-
-  _joyoSet() {
-    return this._kanjiapi.getJoyoSet().status === SUCCESS
-      ? this._kanjiapi.getJoyoSet().value
+  _unwrap(result) {
+    return result.status === SUCCESS
+      ? result.value
       : new Set()
   }
 
-  _jinmeiyoSet() {
-    return this._kanjiapi.getJinmeiyoSet().status === SUCCESS
-      ? this._kanjiapi.getJinmeiyoSet().value
-      : new Set()
+  inKanjiSet(name, kanji) {
+    return this._kanjiSet(name).has(kanji)
   }
 
-  _heisigSet() {
-    return this._kanjiapi.getHeisigSet().status === SUCCESS
-      ? this._kanjiapi.getHeisigSet().value
-      : new Set()
+  _kanjiSet(name) {
+    const kanjiSet = this.kanjiSets.find(kanjiSet => kanjiSet.name == name)
+    if (kanjiSet === undefined) {
+      return new Set()
+    } else {
+      return kanjiSet.func()
+    }
   }
 
   _firstKanjiFrom(text) {

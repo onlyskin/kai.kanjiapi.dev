@@ -6,9 +6,9 @@ const KanjiLiteral = {
     return [
         'br3', 'ba', 'kosugi-maru',
         ...(large ? ['f-05', 'pa2'] : ['f2', 'pa1']),
-        ...(dictionary.isJoyo(kanji) ? ['bg-light-yellow', 'b--yellow']
-            : dictionary.isJinmeiyo(kanji) ? ['bg-mid-red', 'b--red']
-            : dictionary.isHeisig(kanji) ? ['bg-mid-green', 'b--green']
+        ...(dictionary.inKanjiSet('joyo', kanji) ? ['bg-light-yellow', 'b--yellow']
+            : dictionary.inKanjiSet('jinmeiyo', kanji) ? ['bg-mid-red', 'b--red']
+            : dictionary.inKanjiSet('heisig', kanji) ? ['bg-mid-green', 'b--green']
             : ['bg-mid-blue', 'b--blue'])
     ]
   },

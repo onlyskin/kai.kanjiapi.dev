@@ -21,11 +21,11 @@ const ReadingInfo = {
           'rest': [],
       };
       kanjiLiterals.forEach(kanji => {
-          if (dictionary.isJoyo(kanji)) {
+          if (dictionary.inKanjiSet('joyo', kanji)) {
               partitioned['joyo'].push(kanji);
-          } else if (dictionary.isJinmeiyo(kanji)) {
+          } else if (dictionary.inKanjiSet('jinmeiyo', kanji)) {
               partitioned['jinmeiyo'].push(kanji);
-          } else if (dictionary.isHeisig(kanji)) {
+          } else if (dictionary.inKanjiSet('heisig', kanji)) {
               partitioned['heisig'].push(kanji);
           } else {
               partitioned['rest'].push(kanji);
@@ -39,10 +39,10 @@ const ReadingInfo = {
       ];
   },
   sortKanji: (dictionary, a, b) => {
-    const aIsJoyo = dictionary.isJoyo(a)
-    const bIsJoyo = dictionary.isJoyo(b)
-    const aIsJinmeiyo = dictionary.isJinmeiyo(a)
-    const bIsJinmeiyo = dictionary.isJinmeiyo(b)
+    const aIsJoyo = dictionary.inKanjiSet('joyo', a)
+    const bIsJoyo = dictionary.inKanjiSet('joyo', b)
+    const aIsJinmeiyo = dictionary.inKanjiSet('jinmeiyo', a)
+    const bIsJinmeiyo = dictionary.inKanjiSet('jinmeiyo', b)
 
     if (aIsJoyo) {
       if (bIsJoyo) {
