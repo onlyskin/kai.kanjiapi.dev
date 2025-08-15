@@ -29,17 +29,48 @@ class Dictionary {
     this.kanjiSets = [
       {
         name: 'joyo',
+        niceName: 'Jōyō',
         func: () => this._unwrap(this._kanjiapi.getJoyoSet()),
       },
       {
         name: 'jinmeiyo',
+        niceName: 'Jinmeiyō',
         func: () => this._unwrap(this._kanjiapi.getJinmeiyoSet()),
       },
       {
         name: 'heisig',
+        niceName: 'Heisig',
         func: () => this._unwrap(this._kanjiapi.getHeisigSet()),
       },
+      ...[...Array(6).keys()].map((i) => {
+        return {
+          name: `grade-${i+1}`,
+          niceName: `Grade ${i+1}`,
+          func: () => this._unwrap(this._kanjiapi.getListForGrade(i+1)),
+        }
+      }),
+      {
+        name: 'kyoiku',
+        niceName: 'Kyōiku',
+        func: () => this._unwrap(this._kanjiapi.getKyoikuSet()),
+      },
+      {
+        name: 'high-school',
+        niceName: 'High School',
+        func: () => this._unwrap(this._kanjiapi.getListForGrade(8)),
+      },
+      ...[...Array(5).keys()].map((i) => {
+        i = 5 - i
+        return {
+          name: `jlpt-${i}`,
+          niceName: `JLPT ${i}`,
+          func: () => this._unwrap(this._kanjiapi.getListForJlpt(i)),
+        }
+      }),
     ]
+    this.kanjiSets.forEach(kanjiSet => {
+      kanjiSet.func()
+    });
   }
 
   lookup(searchTerm) {
@@ -67,14 +98,47 @@ class Dictionary {
     return isKanji(first.value) ? this._withWords(first) : first
   }
 
-  randomKanji() {
-    const kanji = [...this._kanjiSet('joyo'), ...this._kanjiSet('jinmeiyo'), ...this._kanjiSet('heisig')]
+  randomKanji(lists) {
+    if (lists.length === 0) {
+      lists = ['joyo', 'jinmeiyo', 'heisig']
+    }
+
+    const kanji = [...lists.map(list => this._kanjiSet(list))
+      .reduce((acc, curr) => curr.union(acc), new Set())]
     const choice = Math.floor(Math.random() * kanji.length)
     return kanji[choice]
   }
 
-  kanjiSetStrings() {
-    return this.kanjiSets.map(f => f.name);
+  getKanjiSets() {
+    return this.kanjiSets.map(function(f) {
+      return { name: f.name, niceName: f.niceName };
+    });
+  }
+
+  validChar(lists, ch) {
+    if (lists.length === 0) {
+      return true
+    }
+
+    if (this._isNotKanji(ch)) {
+      return true
+    }
+
+    return lists.some(list => this.inKanjiSet(list, ch))
+  }
+
+  countKanjiInLists(lists) {
+    if (lists.length === 0) {
+      return this._unwrap(this._kanjiapi.getAllSet()).size;
+    } else {
+      const kanji = [...lists.map(list => this._kanjiSet(list))
+        .reduce((acc, curr) => curr.union(acc), new Set())]
+      return kanji.length;
+    }
+  }
+
+  _isNotKanji(ch) {
+    return !this._unwrap(this._kanjiapi.getAllSet()).has(ch)
   }
 
   _unwrap(result) {

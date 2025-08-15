@@ -2,6 +2,7 @@ const m = require('mithril')
 const { Reading } = require('./reading')
 const { KanjiLiteral } = require('./kanji_literal')
 const Kana = require('./kana')
+const { config } = require('./config')
 
 const Row = {
   view: function({ attrs: { left, right } }) {
@@ -20,8 +21,11 @@ const ReadingInfo = {
           'heisig': [],
           'rest': [],
       };
+      const filterLists = config.getFilterLists()
       kanjiLiterals.forEach(kanji => {
-          if (dictionary.inKanjiSet('joyo', kanji)) {
+          if (!dictionary.validChar(filterLists, kanji)) {
+            return
+          } else if (dictionary.inKanjiSet('joyo', kanji)) {
               partitioned['joyo'].push(kanji);
           } else if (dictionary.inKanjiSet('jinmeiyo', kanji)) {
               partitioned['jinmeiyo'].push(kanji);
@@ -97,8 +101,7 @@ const ReadingInfo = {
       reading.name_kanji.length
         ? m(Row, {
             left: 'Name Kanji',
-            right: [...reading.name_kanji]
-              .sort(this.sortKanji.bind(null, dictionary))
+            right: this.sortKanjiLiterals(dictionary, [...reading.name_kanji])
               .map(kanji => {
                 return m(KanjiLiteral, {
                   dictionary,

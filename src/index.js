@@ -66,7 +66,7 @@ const BadSearch = {
 
 const RandomKanji = {
   view: function() {
-    const kanji = dictionary.randomKanji() || m.route.param('search')
+    const kanji = dictionary.randomKanji(config.getFilterLists()) || m.route.param('search')
     return m(
         InternalTextLink, {
           classes: ['flex-none'],
@@ -77,38 +77,48 @@ const RandomKanji = {
   },
 }
 
+const ListFilter = {
+  view: function({ attrs: { kanjiSet } }) {
+    const classes = config.filterList(kanjiSet.name) ? ['bg-mid-purple', 'b--mid-purple', 'white'] : ['bg-near-white'];
+    return m(
+      'button',
+      {
+        class: ['nowrap', 'pointer', 'lh-solid', 'mr1', 'mr2-l', 'mb1', 'mb2-l', 'ba', 'b--dashed', 'br3', 'pa1', 'no-select', ...classes].join(' '),
+        onclick: () => config.toggleFilterList(kanjiSet.name),
+      },
+      kanjiSet.niceName,
+    )
+  },
+}
+
 const RomajiToggle = {
   view: function() {
+    const classes = config.getIsRomaji() ? ['bg-mid-purple', 'b--mid-purple', 'white'] : ['bg-near-white'];
     return m(
-      '.flex.items-center.flex-auto.f7.f5-ns',
+      '.flex.items-center.justify-end.mv3',
       m(
-        'input[type=checkbox][name=romaji-toggle].mr2.pointer',
+        ExternalLink,
         {
-          checked: config.getIsRomaji(),
+          href: 'https://en.wikipedia.org/wiki/Nihon-shiki_romanization',
+        },
+        '(Nihon-shiki Rōmaji)',
+      ),
+      m(
+        'button',
+        {
+          class: ['nowrap', 'pointer', 'b--dashed', 'lh-solid', 'ml2', 'ba', 'br3', 'pa1', 'no-select', ...classes].join(' '),
           onclick: () => config.toggleRomaji(),
         },
-        'あ/a',
+        'rōmaji',
       ),
-      m(
-        'label[for=romaji-toggle]',
-        'Display readings in Roman alphabet (',
-        m(
-          ExternalLink,
-          {
-            href: 'https://en.wikipedia.org/wiki/Nihon-shiki_romanization',
-          },
-          'Nihon-shiki Rōmaji',
-        ),
-        ')',
-      ),
-    )
+    );
   },
 }
 
 const TextSearch = {
   view: function({ attrs: { search } }) {
     return m(
-      'input[type=text].kosugi-maru.flex-grow.mr2.minw3',
+      'input[type=text]#text-search.kosugi-maru.flex-grow.mr2.minw3',
       {
         onchange: e => m.route.set(e.target.value),
         value: search,
@@ -129,11 +139,39 @@ const Page = {
             '.flex.flex-column.mv2',
             m(
               '.flex.mb2.lh-copy.w-100.items-center',
-              m('.mr1.nowrap', 'go to:'),
+              m('label.mr1.nowrap[for=text-search]', 'go to:'),
               m(TextSearch, { search }),
               m(RandomKanji),
             ),
             m(RomajiToggle),
+            m(
+              '.flex.flex-column.items-start',
+              m(
+                '.flex.flex-wrap.mb2.mb0-l',
+                dictionary.getKanjiSets()
+                .filter(kanjiSet => kanjiSet.name.includes('grade') || kanjiSet.name.includes('kyoiku') || kanjiSet.name.includes('high-school'))
+                .map(kanjiSet =>
+                  m(ListFilter, { kanjiSet }),
+                ),
+              ),
+              m(
+                '.flex.flex-wrap.mb2.mb0-l',
+                dictionary.getKanjiSets()
+                .filter(kanjiSet => kanjiSet.name.includes('jlpt'))
+                .map(kanjiSet =>
+                  m(ListFilter, { kanjiSet }),
+                ),
+              ),
+              m(
+                '.flex.flex-wrap',
+                dictionary.getKanjiSets()
+                .filter(kanjiSet => !kanjiSet.name.includes('jlpt') && !kanjiSet.name.includes('grade') && !kanjiSet.name.includes('high-school') && !kanjiSet.name.includes('kyoiku'))
+                .map(kanjiSet =>
+                  m(ListFilter, { kanjiSet }),
+                ),
+              ),
+              m('.self-end', `filtering to: ${new Intl.NumberFormat().format(dictionary.countKanjiInLists(config.getFilterLists()))} kanji`),
+            ),
           ),
           dictionary.lookup(search).status === Kanjiapi.SUCCESS
             ? m(Info, { subject: dictionary.lookup(search).value })

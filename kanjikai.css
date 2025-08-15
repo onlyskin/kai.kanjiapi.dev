@@ -27,6 +27,14 @@
   border-left: 0.1rem dashed hsla(286, 65%, 85%, 1);
 }
 
+.bg-mid-purple {
+  background-color: hsl(261deg 37% 70%);
+}
+
+.b--mid-purple {
+  border: 1px solid hsl(261deg 37% 50%);
+}
+
 .bg-pale-red {
   background: lightpink;
 }
@@ -81,6 +89,10 @@
 
 .kosugi-maru {
   font-family: 'Kosugi Maru', sans-serif;
+}
+
+.klee-one {
+  font-family: 'Klee One', cursive;
 }
 
 .bg-dark-purple {

@@ -82,22 +82,31 @@ const Word = {
 }
 
 const Words = {
-  view: ({ attrs: { kanji, words, wordlimit } }) => [
-    Kanji.wordsForKanji(kanji.kanji, words)
+  view: ({ attrs: { kanji, words, wordlimit } }) => {
+    const filterLists = config.getFilterLists()
+    const filteredForVariant = Kanji.wordsForKanji(kanji.kanji, words)
+      .filter(word => {
+        return [...word.variant.written]
+          .every(ch => dictionary.validChar(filterLists, ch) || ch === kanji.kanji)
+      })
+
+    return [
+      filteredForVariant
       .slice(0, wordlimit)
       .map(word => m(Word, { word })),
-    words.length > wordlimit
+      filteredForVariant.length > wordlimit
       ? m(
-          InternalTextLink,
-          {
-            classes: ['mv3', 'self-center'],
-            href: `/${kanji.kanji}`,
-            params: { wordlimit: Number(wordlimit) + 20 },
-          },
-          'more words',
-        )
+        InternalTextLink,
+        {
+          classes: ['mv3', 'self-center'],
+          href: `/${kanji.kanji}`,
+          params: { wordlimit: Number(wordlimit) + 20 },
+        },
+        'more words',
+      )
       : '',
-  ],
+    ]
+  }
 }
 
 const Row = {
