@@ -1,5 +1,6 @@
 const m = require('mithril')
 const { ExternalLink } = require('./link')
+const { isCharKana } = require('./kana')
 
 const JOYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji'
 const JINMEIYO_WIKIPEDIA_URL =
@@ -45,50 +46,34 @@ function priorityVariant(variant) {
 }
 
 function scoreWord(word, kanji) {
-  const variantsWithKanji = word.variants.filter(validVariant.bind(null, kanji))
+  const variantsWithKanji = word.variants.filter(
+    validVariant.bind(null, kanji),
+  )
+  .sort((a, b) => b.priorities.length - a.priorities.length)
 
-  const validPriorityVariant = variantsWithKanji.find(priorityVariant)
+  const hasPriorityVariant = variantsWithKanji.some(priorityVariant)
 
-  const validPriorityVariantLength = validPriorityVariant
-    ? validPriorityVariant.priorities.length
-    : 0
+  const kanjiCount = Array.from(variantsWithKanji[0].written).filter(ch => !isCharKana(ch)).length;
+  const variantLength = variantsWithKanji[0].written.length
 
-  const hasPriorityVariant = word.variants.some(priorityVariant)
-
-  const firstVariantIsValid = validVariant(kanji, word.variants[0])
-
-  const minWordLength = validPriorityVariant
-    ? validPriorityVariant.written.length
-    : variantsWithKanji.reduce(
-        (acc, curr) => Math.min(acc, curr.written.length),
-        Infinity,
-      )
-
-  return {
-    validPriorityVariantLength,
-    firstVariantIsValid,
-    minWordLength,
+  return [
     hasPriorityVariant,
-  }
+    kanjiCount,
+    variantLength,
+  ]
 }
 
 function compareWords(word1, word2, kanji) {
-  const score1 = scoreWord(word1, kanji)
-  const score2 = scoreWord(word2, kanji)
+  const aScore = scoreWord(word1, kanji)
+  const bScore = scoreWord(word2, kanji)
 
-  if (score1.validPriorityVariantLength !== score2.validPriorityVariantLength) {
-    return score2.validPriorityVariantLength - score1.validPriorityVariantLength
+  if (aScore[0] !== bScore[0]) {
+    return aScore[0] ? -1 : 1;
   }
-
-  if (score1.firstVariantIsValid !== score2.firstVariantIsValid) {
-    return score2.firstVariantIsValid - score1.firstVariantIsValid
+  if (aScore[1] !== bScore[1]) {
+    return aScore[1] - bScore[1];
   }
-
-  if (score1.hasPriorityVariant !== score2.hasPriorityVariant) {
-    return score2.hasPriorityVariant - score1.hasPriorityVariant
-  }
-
-  return score1.minWordLength - score2.minWordLength
+  return aScore[2] - bScore[2];
 }
 
 function prioritiseWords(kanji, words) {
@@ -104,13 +89,10 @@ function wordsForKanji(kanji, words) {
     const variantsWithKanji = word.variants.filter(
       validVariant.bind(null, kanji),
     )
-
-    const validPriorityVariant = variantsWithKanji.find(priorityVariant)
+    .sort((a, b) => b.priorities.length - a.priorities.length)
 
     return {
-      variant: validPriorityVariant
-        ? validPriorityVariant
-        : variantsWithKanji[0],
+      variant: variantsWithKanji[0],
       meanings: word.meanings,
     }
   })

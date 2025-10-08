@@ -85,4 +85,5 @@ module.exports = {
   formatReading,
   readingType,
   isKana,
+  isCharKana,
 }
