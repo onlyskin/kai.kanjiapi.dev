@@ -214,8 +214,8 @@
   font-family: 'Klee One', cursive;
 }
 
-.bg-dark-purple {
-  background-color: hsl(262 59% 14% / 1);
+.banner-color {
+  background-color: var(--banner-color);
 }
 
 .br-5 {

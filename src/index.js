@@ -28,9 +28,10 @@ const Info = {
 
 const Header = {
   view: function() {
-    return m('header.white.bg-dark-purple.pa1.self-stretch', [
+    return m('header.white.banner-color.pa1.self-stretch', [
       m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
       m('h1.fw5.mv2.f2.tc', 'kanjikai'),
+      m('p.tc.mv3', 'a rabbit-hole kanji dictionary: every kanji and every reading is clickable'),
     ])
   },
 }
@@ -180,7 +181,7 @@ const Page = {
             : m(BadSearch),
         ),
       ),
-      m('footer.white.bg-dark-purple.pa1.self-stretch', m(About)),
+      m('footer.white.banner-color.pa1.self-stretch', m(About)),
     ]
   },
 }
