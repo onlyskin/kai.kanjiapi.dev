@@ -82,7 +82,7 @@ const Word = {
 }
 
 const Words = {
-  view: ({ attrs: { kanji, words, wordlimit } }) => {
+  view: ({ attrs: { kanji, words, wordlimit, dictionary } }) => {
     const filterLists = config.getFilterLists()
     const filteredForVariant = Kanji.wordsForKanji(kanji.kanji, words)
       .filter(word => {
@@ -228,7 +228,7 @@ const KanjiInfo = {
         ),
         m(
           '.fl.flex.flex-column.justify-start.flex-wrap-l',
-          m(Words, { kanji, words, wordlimit }),
+          m(Words, { kanji, words, wordlimit, dictionary }),
         ),
       ]),
     )
