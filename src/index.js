@@ -79,11 +79,11 @@ const RandomKanji = {
 
 const ListFilter = {
   view: function({ attrs: { kanjiSet } }) {
-    const classes = config.filterList(kanjiSet.name) ? ['bg-mid-purple', 'b--mid-purple', 'white'] : ['bg-near-white'];
+    const classes = config.filterList(kanjiSet.name) ? ['c-toggle-on'] : ['c-toggle-off'];
     return m(
       'button',
       {
-        class: ['nowrap', 'pointer', 'lh-solid', 'mr1', 'mr2-l', 'mb1', 'mb2-l', 'ba', 'b--dashed', 'br3', 'pa1', 'no-select', ...classes].join(' '),
+        class: ['white', 'nowrap', 'pointer', 'lh-solid', 'mr1', 'mr2-l', 'mb1', 'mb2-l', 'ba', 'b--dashed', 'b--gray', 'br3', 'pa1', 'no-select', ...classes].join(' '),
         onclick: () => config.toggleFilterList(kanjiSet.name),
       },
       kanjiSet.niceName,
@@ -93,7 +93,7 @@ const ListFilter = {
 
 const RomajiToggle = {
   view: function() {
-    const classes = config.getIsRomaji() ? ['bg-mid-purple', 'b--mid-purple', 'white'] : ['bg-near-white'];
+    const classes = config.getIsRomaji() ? ['c-toggle-on'] : ['c-toggle-off'];
     return m(
       '.flex.items-center.justify-end.mv3',
       m(
@@ -106,7 +106,7 @@ const RomajiToggle = {
       m(
         'button',
         {
-          class: ['nowrap', 'pointer', 'b--dashed', 'lh-solid', 'ml2', 'ba', 'br3', 'pa1', 'no-select', ...classes].join(' '),
+          class: ['nowrap', 'pointer', 'b--dashed', 'b--gray', 'lh-solid', 'ml2', 'ba', 'br3', 'pa1', 'no-select', ...classes].join(' '),
           onclick: () => config.toggleRomaji(),
         },
         'rōmaji',
@@ -132,7 +132,7 @@ const Page = {
     return [
       m(Header),
       m(
-        '.flex-auto.flex.flex-column.items-center.bg-white.pa2.w-100',
+        '.flex-auto.flex.flex-column.items-center.bg-theme.color-theme.pa2.w-100',
         m(
           '.w-100.w-80-m.w-60-l',
           m(

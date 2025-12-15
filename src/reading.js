@@ -7,12 +7,12 @@ const { InternalLink } = require('./link')
 const Reading = {
   _linkClasses: function(type, large) {
       return [
-        'ma1', 'br3', 'ba',
+        'ma1', 'br3', 'ba', 'jumpable',
         ...(large ? ['f1', 'pa2'] : ['f4', 'pa1']),
         config.getIsRomaji() ? '' : 'kosugi-maru',
-        ...(type === KUN ? ['b--pale-red', 'bg-pale-red']
-            : type === ON ? ['b--pale-blue', 'bg-pale-blue']
-            : ['b--pale-green', 'bg-pale-green'])
+        ...(type === KUN ? ['c-red']
+            : type === ON ? ['c-blue']
+            : ['c-green'])
       ];
   },
   view: function({ attrs: { type, reading, large } }) {

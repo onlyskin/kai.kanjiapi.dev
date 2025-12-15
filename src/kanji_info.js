@@ -9,7 +9,7 @@ const { InternalLink, InternalTextLink } = require('./link')
 
 const Meaning = {
   view: ({ attrs: { meaning } }) => {
-    return m('.lh-solid.pa3.ma1.br-pill.f4.bg-pale-orange', meaning)
+    return m('.lh-solid.pa2.f5.ma1.br3.ba.c-meaning.black', meaning)
   },
 }
 
@@ -19,14 +19,14 @@ const CHAR_PADDING = '0.25rem'
 const WordChar = {
   view: function({ attrs: { character, index, length } }) {
     if (Kana.isKana(character)) {
-        return m('.dib.db.br3.bg-pale-purple.b--pale-purple.lh-solid', character)
+        return m('.dib.db.br3.black.word-char.lh-solid', character)
     }
 
     return m(
       InternalLink,
       {
           classes: [
-              'br3', 'bg-pale-purple', 'b--pale-purple', 'char-bv', 'pv1',
+              'br3', 'word-char', 'char-bv', 'pv1',
               ...(index === 0 ? ['char-bl', 'pl1'] : []),
               ...(index === length -1 ? ['char-br', 'pr1'] : []),
           ],
@@ -53,7 +53,7 @@ const WordMeanings = {
 const Word = {
   view: function({ attrs: { word } }) {
     return m(
-      '.fl.flex.pv1.pv2-ns.bb.b--black-20.justify-between.items-center.flex-wrap',
+      '.fl.flex.pv2.pv3-ns.bb.b--light-silver.justify-between.items-center.flex-wrap',
       m(
         '.kosugi-maru.f2.f1-ns',
         [...word.variant.written].map((character, index) =>
@@ -66,14 +66,14 @@ const Word = {
       ),
       m('.flex.flex-column.justify-center.items-end', [
         m(
-          '.f5.f3-ns.ma1',
+          '.f3',
           {
             class: config.getIsRomaji() ? 'i' : 'kosugi-maru',
           },
           Kana.formatReading(word.variant.pronounced),
         ),
         m(
-          '.measure-narrow.tr.ma1',
+          '.measure-narrow.tr',
           m(WordMeanings, { meanings: word.meanings }),
         ),
       ]),
@@ -111,11 +111,11 @@ const Words = {
 
 const Row = {
   view: function({ attrs: { left, right, classes = [] } }) {
-    return m('.db.flex.items-center.justify-between', {
+    return m('.db.flex.items-center.justify-between.pv1', {
         class: classes.join(' '),
     }, [
-      m('.fw6.pa1', left),
-      m('.pa1', right),
+      m('.fw6.pr2', left),
+      m('', right),
     ])
   },
 }
@@ -158,7 +158,7 @@ const KanjiInfo = {
             ? m(Row, {
                 left: 'Heisig Keyword',
                 right: m(
-                  '.bg-pale-orange.br-pill.ph2',
+                  '.c-meaning.br2.ph1.black',
                   Kanji.heisig(kanji),
                 ),
               })
@@ -209,7 +209,7 @@ const KanjiInfo = {
         : null,
       kanji.meanings.length
         ? m(
-            '.mv3',
+            '.mv1',
             m(Row, {
               left: m('.f5', 'Meanings'),
               right: m(

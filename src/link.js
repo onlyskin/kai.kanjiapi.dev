@@ -1,6 +1,6 @@
 const m = require('mithril')
 
-const textLinkClasses = ['dim', 'black-80', 'no-select', 'underline'];
+const textLinkClasses = ['dim', 'color-link', 'no-select', 'underline'];
 
 const ExternalLink = {
   view({ children, attrs }) {
