@@ -1,7 +1,7 @@
 const {
   Kanjiapi: { ERROR, LOADING, SUCCESS },
 } = require('kanjiapi-wrapper')
-const { isKanji } = require('./constant')
+const { isKanji, union } = require('./constant')
 
 function isLoading(result) {
   return result.status === LOADING
@@ -104,7 +104,7 @@ class Dictionary {
     }
 
     const kanji = [...lists.map(list => this._kanjiSet(list))
-      .reduce((acc, curr) => curr.union(acc), new Set())]
+      .reduce((acc, curr) => union(curr, acc), new Set())]
     const choice = Math.floor(Math.random() * kanji.length)
     return kanji[choice]
   }
@@ -132,7 +132,7 @@ class Dictionary {
       return this._unwrap(this._kanjiapi.getAllSet()).size;
     } else {
       const kanji = [...lists.map(list => this._kanjiSet(list))
-        .reduce((acc, curr) => curr.union(acc), new Set())]
+        .reduce((acc, curr) => union(curr, acc), new Set())]
       return kanji.length;
     }
   }
