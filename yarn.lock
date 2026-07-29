@@ -691,10 +691,10 @@ kana-convert@^1.0.9:
   resolved "https://registry.yarnpkg.com/kana-convert/-/kana-convert-1.0.9.tgz#f380d6777fc64c47d421e9c34de44b1d7755a4ae"
   integrity sha512-NWg4xLHzVqf2jdkv7MNJK/a1wxhT+h0N/al7zV0RsplAZQXl8hVczwBYze0aMfyXQ7YVA94pOkz84C4GimWL3Q==
 
-kanjiapi-wrapper@^1.1.5:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/kanjiapi-wrapper/-/kanjiapi-wrapper-1.1.8.tgz#91cfcb99b84e766caaca207dab656da7a5f5d75b"
-  integrity sha512-i3rIJpTU1DPBVZPGU5xTkaF+H/p4UciPYMRXmI3SJ+inggD+rF0SGrMzapecdM0yO5+v6xTRh2i6FfyhEC9WrA==
+kanjiapi-wrapper@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/kanjiapi-wrapper/-/kanjiapi-wrapper-1.1.9.tgz#7fd72e8bcc40b2acbbbc2169d1d873cbe48d9a15"
+  integrity sha512-BywNb2KuzxTBhn0nCBV3Ix+XEQNrFot84JjA5vMFwdPpozHnWS71Hodvmr2CW5wUVoQz/xkPRJRr+fIbetyuHw==
 
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
