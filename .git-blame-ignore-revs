@@ -1,0 +1,8 @@
+# Commits to skip when running git blame. These changed formatting only, never
+# behaviour, so blame should attribute their lines to whatever touched them
+# last. Set up locally with:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub reads this file automatically.
+
+# Format with prettier
+025cbca12919957fd23ac72e9cf8396bc553d17b
