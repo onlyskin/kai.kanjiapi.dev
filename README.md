@@ -13,6 +13,6 @@ Build with `./build`
 
 Test with `yarn test`
 
-Deploy with `gsutil -m rsync -c -d out gs://kai.kanjiapi.dev`
+Deploy with `gcloud storage rsync out gs://kai.kanjiapi.dev --exclude=".*\.map$" --checksums-only --dry-run`
 
 Lint with `yarn lint`
