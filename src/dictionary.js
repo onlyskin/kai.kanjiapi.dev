@@ -16,11 +16,11 @@ function isSuccess(result) {
 }
 
 function allErrored(results) {
-  return results.every(isError);
+  return results.every(isError)
 }
 
 function anyLoading(results) {
-  return results.some(isLoading);
+  return results.some(isLoading)
 }
 
 class Dictionary {
@@ -42,11 +42,11 @@ class Dictionary {
         niceName: 'Heisig',
         func: () => this._unwrap(this._kanjiapi.getHeisigSet()),
       },
-      ...[...Array(6).keys()].map((i) => {
+      ...[...Array(6).keys()].map(i => {
         return {
-          name: `grade-${i+1}`,
-          niceName: `Grade ${i+1}`,
-          func: () => this._unwrap(this._kanjiapi.getListForGrade(i+1)),
+          name: `grade-${i + 1}`,
+          niceName: `Grade ${i + 1}`,
+          func: () => this._unwrap(this._kanjiapi.getListForGrade(i + 1)),
         }
       }),
       {
@@ -59,7 +59,7 @@ class Dictionary {
         niceName: 'High School',
         func: () => this._unwrap(this._kanjiapi.getListForGrade(8)),
       },
-      ...[...Array(5).keys()].map((i) => {
+      ...[...Array(5).keys()].map(i => {
         i = 5 - i
         return {
           name: `jlpt-${i}`,
@@ -70,11 +70,15 @@ class Dictionary {
     ]
     this.kanjiSets.forEach(kanjiSet => {
       kanjiSet.func()
-    });
+    })
   }
 
   lookup(searchTerm) {
-    if (['joyo', 'jinmeiyo', 'heisig'].some(name => this._kanjiSet(name).size === 0)) {
+    if (
+      ['joyo', 'jinmeiyo', 'heisig'].some(
+        name => this._kanjiSet(name).size === 0,
+      )
+    ) {
       return { status: LOADING, value: null }
     }
 
@@ -103,16 +107,19 @@ class Dictionary {
       lists = ['joyo', 'jinmeiyo', 'heisig']
     }
 
-    const kanji = [...lists.map(list => this._kanjiSet(list))
-      .reduce((acc, curr) => union(curr, acc), new Set())]
+    const kanji = [
+      ...lists
+        .map(list => this._kanjiSet(list))
+        .reduce((acc, curr) => union(curr, acc), new Set()),
+    ]
     const choice = Math.floor(Math.random() * kanji.length)
     return kanji[choice]
   }
 
   getKanjiSets() {
     return this.kanjiSets.map(function(f) {
-      return { name: f.name, niceName: f.niceName };
-    });
+      return { name: f.name, niceName: f.niceName }
+    })
   }
 
   validChar(lists, ch) {
@@ -129,11 +136,14 @@ class Dictionary {
 
   countKanjiInLists(lists) {
     if (lists.length === 0) {
-      return this._unwrap(this._kanjiapi.getAllSet()).size;
+      return this._unwrap(this._kanjiapi.getAllSet()).size
     } else {
-      const kanji = [...lists.map(list => this._kanjiSet(list))
-        .reduce((acc, curr) => union(curr, acc), new Set())]
-      return kanji.length;
+      const kanji = [
+        ...lists
+          .map(list => this._kanjiSet(list))
+          .reduce((acc, curr) => union(curr, acc), new Set()),
+      ]
+      return kanji.length
     }
   }
 
@@ -142,9 +152,7 @@ class Dictionary {
   }
 
   _unwrap(result) {
-    return result.status === SUCCESS
-      ? result.value
-      : new Set()
+    return result.status === SUCCESS ? result.value : new Set()
   }
 
   inKanjiSet(name, kanji) {

@@ -1,5 +1,5 @@
 function isNotNil(x) {
-  return x !== null && x!== undefined;
+  return x !== null && x !== undefined
 }
 
 function isKanji(x) {
@@ -11,11 +11,11 @@ function isReading(x) {
 }
 
 function union(a, b) {
-  const unioned = new Set(a);
+  const unioned = new Set(a)
   for (const value of b) {
-    unioned.add(value);
+    unioned.add(value)
   }
-  return unioned;
+  return unioned
 }
 
 module.exports = {

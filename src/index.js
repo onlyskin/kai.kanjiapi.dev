@@ -31,7 +31,10 @@ const Header = {
     return m('header.white.banner-color.pa1.self-stretch', [
       m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
       m('h1.fw5.mv2.f2.tc', 'kanjikai'),
-      m('p.tc.mv3', 'a rabbit-hole kanji dictionary: every kanji and every reading is clickable'),
+      m(
+        'p.tc.mv3',
+        'a rabbit-hole kanji dictionary: every kanji and every reading is clickable',
+      ),
     ])
   },
 }
@@ -41,7 +44,10 @@ const About = {
     return [
       m('h2.fw3.tc', 'About'),
       m('.tc', [
-        m('p', 'kanjikai is a rabbit-hole kanji dictionary: every kanji and every reading is clickable'),
+        m(
+          'p',
+          'kanjikai is a rabbit-hole kanji dictionary: every kanji and every reading is clickable',
+        ),
         m('p', [
           'powered by ',
           m(
@@ -67,12 +73,14 @@ const BadSearch = {
 
 const RandomKanji = {
   view: function() {
-    const kanji = dictionary.randomKanji(config.getFilterLists()) || m.route.param('search')
+    const kanji =
+      dictionary.randomKanji(config.getFilterLists()) || m.route.param('search')
     return m(
-        InternalTextLink, {
-          classes: ['flex-none'],
-          href: `/${kanji}`,
-        },
+      InternalTextLink,
+      {
+        classes: ['flex-none'],
+        href: `/${kanji}`,
+      },
       "I'm feeling lucky!",
     )
   },
@@ -80,11 +88,29 @@ const RandomKanji = {
 
 const ListFilter = {
   view: function({ attrs: { kanjiSet } }) {
-    const classes = config.filterList(kanjiSet.name) ? ['c-toggle-on'] : ['c-toggle-off'];
+    const classes = config.filterList(kanjiSet.name)
+      ? ['c-toggle-on']
+      : ['c-toggle-off']
     return m(
       'button',
       {
-        class: ['white', 'nowrap', 'pointer', 'lh-solid', 'mr1', 'mr2-l', 'mb1', 'mb2-l', 'ba', 'b--dashed', 'b--gray', 'br3', 'pa1', 'no-select', ...classes].join(' '),
+        class: [
+          'white',
+          'nowrap',
+          'pointer',
+          'lh-solid',
+          'mr1',
+          'mr2-l',
+          'mb1',
+          'mb2-l',
+          'ba',
+          'b--dashed',
+          'b--gray',
+          'br3',
+          'pa1',
+          'no-select',
+          ...classes,
+        ].join(' '),
         onclick: () => config.toggleFilterList(kanjiSet.name),
       },
       kanjiSet.niceName,
@@ -94,7 +120,7 @@ const ListFilter = {
 
 const RomajiToggle = {
   view: function() {
-    const classes = config.getIsRomaji() ? ['c-toggle-on'] : ['c-toggle-off'];
+    const classes = config.getIsRomaji() ? ['c-toggle-on'] : ['c-toggle-off']
     return m(
       '.flex.items-center.justify-end.mv3',
       m(
@@ -107,24 +133,33 @@ const RomajiToggle = {
       m(
         'button',
         {
-          class: ['nowrap', 'pointer', 'b--dashed', 'b--gray', 'lh-solid', 'ml2', 'ba', 'br3', 'pa1', 'no-select', ...classes].join(' '),
+          class: [
+            'nowrap',
+            'pointer',
+            'b--dashed',
+            'b--gray',
+            'lh-solid',
+            'ml2',
+            'ba',
+            'br3',
+            'pa1',
+            'no-select',
+            ...classes,
+          ].join(' '),
           onclick: () => config.toggleRomaji(),
         },
         'rōmaji',
       ),
-    );
+    )
   },
 }
 
 const TextSearch = {
   view: function({ attrs: { search } }) {
-    return m(
-      'input[type=text]#text-search.kosugi-maru.flex-grow.mr2.minw3',
-      {
-        onchange: e => m.route.set(e.target.value),
-        value: search,
-      },
-    )
+    return m('input[type=text]#text-search.kosugi-maru.flex-grow.mr2.minw3', {
+      onchange: e => m.route.set(e.target.value),
+      value: search,
+    })
   },
 }
 
@@ -149,29 +184,42 @@ const Page = {
               '.flex.flex-column.items-start',
               m(
                 '.flex.flex-wrap.mb2.mb0-l',
-                dictionary.getKanjiSets()
-                .filter(kanjiSet => kanjiSet.name.includes('grade') || kanjiSet.name.includes('kyoiku') || kanjiSet.name.includes('high-school'))
-                .map(kanjiSet =>
-                  m(ListFilter, { kanjiSet }),
-                ),
+                dictionary
+                  .getKanjiSets()
+                  .filter(
+                    kanjiSet =>
+                      kanjiSet.name.includes('grade') ||
+                      kanjiSet.name.includes('kyoiku') ||
+                      kanjiSet.name.includes('high-school'),
+                  )
+                  .map(kanjiSet => m(ListFilter, { kanjiSet })),
               ),
               m(
                 '.flex.flex-wrap.mb2.mb0-l',
-                dictionary.getKanjiSets()
-                .filter(kanjiSet => kanjiSet.name.includes('jlpt'))
-                .map(kanjiSet =>
-                  m(ListFilter, { kanjiSet }),
-                ),
+                dictionary
+                  .getKanjiSets()
+                  .filter(kanjiSet => kanjiSet.name.includes('jlpt'))
+                  .map(kanjiSet => m(ListFilter, { kanjiSet })),
               ),
               m(
                 '.flex.flex-wrap',
-                dictionary.getKanjiSets()
-                .filter(kanjiSet => !kanjiSet.name.includes('jlpt') && !kanjiSet.name.includes('grade') && !kanjiSet.name.includes('high-school') && !kanjiSet.name.includes('kyoiku'))
-                .map(kanjiSet =>
-                  m(ListFilter, { kanjiSet }),
-                ),
+                dictionary
+                  .getKanjiSets()
+                  .filter(
+                    kanjiSet =>
+                      !kanjiSet.name.includes('jlpt') &&
+                      !kanjiSet.name.includes('grade') &&
+                      !kanjiSet.name.includes('high-school') &&
+                      !kanjiSet.name.includes('kyoiku'),
+                  )
+                  .map(kanjiSet => m(ListFilter, { kanjiSet })),
               ),
-              m('.self-end', `filtering to: ${new Intl.NumberFormat().format(dictionary.countKanjiInLists(config.getFilterLists()))} kanji`),
+              m(
+                '.self-end',
+                `filtering to: ${new Intl.NumberFormat().format(
+                  dictionary.countKanjiInLists(config.getFilterLists()),
+                )} kanji`,
+              ),
             ),
           ),
           dictionary.lookup(search).status === Kanjiapi.SUCCESS

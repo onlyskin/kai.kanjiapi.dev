@@ -46,21 +46,18 @@ function priorityVariant(variant) {
 }
 
 function scoreWord(word, kanji) {
-  const variantsWithKanji = word.variants.filter(
-    validVariant.bind(null, kanji),
-  )
-  .sort((a, b) => b.priorities.length - a.priorities.length)
+  const variantsWithKanji = word.variants
+    .filter(validVariant.bind(null, kanji))
+    .sort((a, b) => b.priorities.length - a.priorities.length)
 
   const hasPriorityVariant = variantsWithKanji.some(priorityVariant)
 
-  const kanjiCount = Array.from(variantsWithKanji[0].written).filter(ch => !isCharKana(ch)).length;
+  const kanjiCount = Array.from(variantsWithKanji[0].written).filter(
+    ch => !isCharKana(ch),
+  ).length
   const variantLength = variantsWithKanji[0].written.length
 
-  return [
-    hasPriorityVariant,
-    kanjiCount,
-    variantLength,
-  ]
+  return [hasPriorityVariant, kanjiCount, variantLength]
 }
 
 function compareWords(word1, word2, kanji) {
@@ -68,12 +65,12 @@ function compareWords(word1, word2, kanji) {
   const bScore = scoreWord(word2, kanji)
 
   if (aScore[0] !== bScore[0]) {
-    return aScore[0] ? -1 : 1;
+    return aScore[0] ? -1 : 1
   }
   if (aScore[1] !== bScore[1]) {
-    return aScore[1] - bScore[1];
+    return aScore[1] - bScore[1]
   }
-  return aScore[2] - bScore[2];
+  return aScore[2] - bScore[2]
 }
 
 function prioritiseWords(kanji, words) {
@@ -86,10 +83,9 @@ function prioritiseWords(kanji, words) {
 function wordsForKanji(kanji, words) {
   const prioritised = prioritiseWords(kanji, words)
   const converted = prioritised.map(word => {
-    const variantsWithKanji = word.variants.filter(
-      validVariant.bind(null, kanji),
-    )
-    .sort((a, b) => b.priorities.length - a.priorities.length)
+    const variantsWithKanji = word.variants
+      .filter(validVariant.bind(null, kanji))
+      .sort((a, b) => b.priorities.length - a.priorities.length)
 
     return {
       variant: variantsWithKanji[0],

@@ -19,17 +19,20 @@ const CHAR_PADDING = '0.25rem'
 const WordChar = {
   view: function({ attrs: { character, index, length } }) {
     if (Kana.isKana(character)) {
-        return m('.dib.db.br3.black.word-char.lh-solid', character)
+      return m('.dib.db.br3.black.word-char.lh-solid', character)
     }
 
     return m(
       InternalLink,
       {
-          classes: [
-              'br3', 'word-char', 'char-bv', 'pv1',
-              ...(index === 0 ? ['char-bl', 'pl1'] : []),
-              ...(index === length -1 ? ['char-br', 'pr1'] : []),
-          ],
+        classes: [
+          'br3',
+          'word-char',
+          'char-bv',
+          'pv1',
+          ...(index === 0 ? ['char-bl', 'pl1'] : []),
+          ...(index === length - 1 ? ['char-br', 'pr1'] : []),
+        ],
         href: `/${character}`,
       },
       character,
@@ -72,10 +75,7 @@ const Word = {
           },
           Kana.formatReading(word.variant.pronounced),
         ),
-        m(
-          '.measure-narrow.tr',
-          m(WordMeanings, { meanings: word.meanings }),
-        ),
+        m('.measure-narrow.tr', m(WordMeanings, { meanings: word.meanings })),
       ]),
     )
   },
@@ -84,39 +84,40 @@ const Word = {
 const Words = {
   view: ({ attrs: { kanji, words, wordlimit, dictionary } }) => {
     const filterLists = config.getFilterLists()
-    const filteredForVariant = Kanji.wordsForKanji(kanji.kanji, words)
-      .filter(word => {
-        return [...word.variant.written]
-          .every(ch => dictionary.validChar(filterLists, ch) || ch === kanji.kanji)
-      })
+    const filteredForVariant = Kanji.wordsForKanji(kanji.kanji, words).filter(
+      word => {
+        return [...word.variant.written].every(
+          ch => dictionary.validChar(filterLists, ch) || ch === kanji.kanji,
+        )
+      },
+    )
 
     return [
-      filteredForVariant
-      .slice(0, wordlimit)
-      .map(word => m(Word, { word })),
+      filteredForVariant.slice(0, wordlimit).map(word => m(Word, { word })),
       filteredForVariant.length > wordlimit
-      ? m(
-        InternalTextLink,
-        {
-          classes: ['mv3', 'self-center'],
-          href: `/${kanji.kanji}`,
-          params: { wordlimit: Number(wordlimit) + 20 },
-        },
-        'more words',
-      )
-      : '',
+        ? m(
+            InternalTextLink,
+            {
+              classes: ['mv3', 'self-center'],
+              href: `/${kanji.kanji}`,
+              params: { wordlimit: Number(wordlimit) + 20 },
+            },
+            'more words',
+          )
+        : '',
     ]
-  }
+  },
 }
 
 const Row = {
   view: function({ attrs: { left, right, classes = [] } }) {
-    return m('.db.flex.items-center.justify-between.pv1', {
+    return m(
+      '.db.flex.items-center.justify-between.pv1',
+      {
         class: classes.join(' '),
-    }, [
-      m('.fw6.pr2', left),
-      m('', right),
-    ])
+      },
+      [m('.fw6.pr2', left), m('', right)],
+    )
   },
 }
 
@@ -149,18 +150,20 @@ const KanjiInfo = {
             left: 'Unicode',
             right: m('', Kanji.unicode(kanji)),
           }),
-          Kanji.alternative(kanji) ? m(Row, {
-            left: 'Alternative',
-            right: m(KanjiLiteral, { kanji: Kanji.alternative(kanji), dictionary }),
-            classes: ['mt4'],
-          }): null,
+          Kanji.alternative(kanji)
+            ? m(Row, {
+                left: 'Alternative',
+                right: m(KanjiLiteral, {
+                  kanji: Kanji.alternative(kanji),
+                  dictionary,
+                }),
+                classes: ['mt4'],
+              })
+            : null,
           Kanji.heisig(kanji)
             ? m(Row, {
                 left: 'Heisig Keyword',
-                right: m(
-                  '.c-meaning.br2.ph1.black',
-                  Kanji.heisig(kanji),
-                ),
+                right: m('.c-meaning.br2.ph1.black', Kanji.heisig(kanji)),
               })
             : null,
         ),

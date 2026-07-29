@@ -15,32 +15,32 @@ const Row = {
 
 const ReadingInfo = {
   sortKanjiLiterals: (dictionary, kanjiLiterals) => {
-      const partitioned = {
-          'joyo': [],
-          'jinmeiyo': [],
-          'heisig': [],
-          'rest': [],
-      };
-      const filterLists = config.getFilterLists()
-      kanjiLiterals.forEach(kanji => {
-          if (!dictionary.validChar(filterLists, kanji)) {
-            return
-          } else if (dictionary.inKanjiSet('joyo', kanji)) {
-              partitioned['joyo'].push(kanji);
-          } else if (dictionary.inKanjiSet('jinmeiyo', kanji)) {
-              partitioned['jinmeiyo'].push(kanji);
-          } else if (dictionary.inKanjiSet('heisig', kanji)) {
-              partitioned['heisig'].push(kanji);
-          } else {
-              partitioned['rest'].push(kanji);
-          }
-      });
-      return [
-          ...partitioned['joyo'].sort(),
-          ...partitioned['jinmeiyo'].sort(),
-          ...partitioned['heisig'].sort(),
-          ...partitioned['rest'].sort(),
-      ];
+    const partitioned = {
+      joyo: [],
+      jinmeiyo: [],
+      heisig: [],
+      rest: [],
+    }
+    const filterLists = config.getFilterLists()
+    kanjiLiterals.forEach(kanji => {
+      if (!dictionary.validChar(filterLists, kanji)) {
+        return
+      } else if (dictionary.inKanjiSet('joyo', kanji)) {
+        partitioned['joyo'].push(kanji)
+      } else if (dictionary.inKanjiSet('jinmeiyo', kanji)) {
+        partitioned['jinmeiyo'].push(kanji)
+      } else if (dictionary.inKanjiSet('heisig', kanji)) {
+        partitioned['heisig'].push(kanji)
+      } else {
+        partitioned['rest'].push(kanji)
+      }
+    })
+    return [
+      ...partitioned['joyo'].sort(),
+      ...partitioned['jinmeiyo'].sort(),
+      ...partitioned['heisig'].sort(),
+      ...partitioned['rest'].sort(),
+    ]
   },
   sortKanji: (dictionary, a, b) => {
     const aIsJoyo = dictionary.inKanjiSet('joyo', a)
@@ -87,29 +87,31 @@ const ReadingInfo = {
       reading.main_kanji.length
         ? m(Row, {
             left: 'Main Kanji',
-            right: this.sortKanjiLiterals(dictionary, [...reading.main_kanji])
-              .map(kanji => {
-                return m(KanjiLiteral, {
-                  dictionary,
-                  kanji,
-                  large: false,
-                  classes: ['ma1'],
-                })
-              }),
+            right: this.sortKanjiLiterals(dictionary, [
+              ...reading.main_kanji,
+            ]).map(kanji => {
+              return m(KanjiLiteral, {
+                dictionary,
+                kanji,
+                large: false,
+                classes: ['ma1'],
+              })
+            }),
           })
         : null,
       reading.name_kanji.length
         ? m(Row, {
             left: 'Name Kanji',
-            right: this.sortKanjiLiterals(dictionary, [...reading.name_kanji])
-              .map(kanji => {
-                return m(KanjiLiteral, {
-                  dictionary,
-                  kanji,
-                  large: false,
-                  classes: ['ma1'],
-                })
-              }),
+            right: this.sortKanjiLiterals(dictionary, [
+              ...reading.name_kanji,
+            ]).map(kanji => {
+              return m(KanjiLiteral, {
+                dictionary,
+                kanji,
+                large: false,
+                classes: ['ma1'],
+              })
+            }),
           })
         : null,
     ])
