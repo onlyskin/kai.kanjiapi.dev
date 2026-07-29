@@ -6,21 +6,27 @@
   "dependencies": {
     "kana-convert": "^1.0.9",
     "kanjiapi-wrapper": "^1.1.9",
-    "mithril": "^2"
+    "mithril": "^2.3.8"
   },
   "devDependencies": {
-    "esbuild": "^0.19.3",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "ospec": "^3.1.0",
-    "prettier": "^1.19.1",
+    "@eslint/js": "^10.0.1",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.8.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "globals": "^17.0.0",
+    "ospec": "^4.2.1",
+    "prettier": "^3.9.6",
     "tachyons": "^4.11.1"
+  },
+  "//": "resolutions.glob: ospec pins glob ^9, whose minimatch/brace-expansion chain has DoS advisories with no backport to those majors. ospec only calls glob.globStream, which is unchanged across majors.",
+  "resolutions": {
+    "glob": "^13.0.6"
   },
   "scripts": {
     "build": "./build",
     "test": "ospec",
-    "lint": "eslint tests/*.js src/*.js",
-    "lint:fix": "eslint --fix tests/*.js src/*.js"
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   }
 }
