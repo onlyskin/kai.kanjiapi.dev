@@ -5,7 +5,7 @@ const Kana = require('./kana')
 const { config } = require('./config')
 
 const Row = {
-  view: function({ attrs: { left, right } }) {
+  view: function ({ attrs: { left, right } }) {
     return m('.db.flex.flex-column', [
       m('.fw6.flex.justify-start.pa1.pb0', left),
       m('.flex.flex-wrap.justify-start.pa1.pt0', right),
@@ -22,7 +22,7 @@ const ReadingInfo = {
       rest: [],
     }
     const filterLists = config.getFilterLists()
-    kanjiLiterals.forEach(kanji => {
+    kanjiLiterals.forEach((kanji) => {
       if (!dictionary.validChar(filterLists, kanji)) {
         return
       } else if (dictionary.inKanjiSet('joyo', kanji)) {
@@ -74,7 +74,7 @@ const ReadingInfo = {
 
     return a.localeCompare(b)
   },
-  view: function({ attrs: { dictionary, reading } }) {
+  view: function ({ attrs: { dictionary, reading } }) {
     return m('', [
       m(Row, {
         left: 'Reading',
@@ -89,7 +89,7 @@ const ReadingInfo = {
             left: 'Main Kanji',
             right: this.sortKanjiLiterals(dictionary, [
               ...reading.main_kanji,
-            ]).map(kanji => {
+            ]).map((kanji) => {
               return m(KanjiLiteral, {
                 dictionary,
                 kanji,
@@ -104,7 +104,7 @@ const ReadingInfo = {
             left: 'Name Kanji',
             right: this.sortKanjiLiterals(dictionary, [
               ...reading.name_kanji,
-            ]).map(kanji => {
+            ]).map((kanji) => {
               return m(KanjiLiteral, {
                 dictionary,
                 kanji,

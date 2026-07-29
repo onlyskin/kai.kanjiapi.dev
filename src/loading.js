@@ -1,7 +1,7 @@
 const m = require('mithril')
 
 const Loading = {
-  view: function() {
+  view: function () {
     return m('.loader')
   },
 }

@@ -5,7 +5,7 @@ const { ON, KUN } = require('./constant')
 const { InternalLink } = require('./link')
 
 const Reading = {
-  _linkClasses: function(type, large) {
+  _linkClasses: function (type, large) {
     return [
       'ma1',
       'br3',
@@ -16,7 +16,7 @@ const Reading = {
       ...(type === KUN ? ['c-red'] : type === ON ? ['c-blue'] : ['c-green']),
     ]
   },
-  view: function({ attrs: { type, reading, large } }) {
+  view: function ({ attrs: { type, reading, large } }) {
     return m(
       InternalLink,
       {

@@ -14,7 +14,7 @@ const Meaning = {
 }
 
 const WordChar = {
-  view: function({ attrs: { character, index, length } }) {
+  view: function ({ attrs: { character, index, length } }) {
     if (Kana.isKana(character)) {
       return m('.dib.db.br3.black.word-char.lh-solid', character)
     }
@@ -51,7 +51,7 @@ const WordMeanings = {
 }
 
 const Word = {
-  view: function({ attrs: { word } }) {
+  view: function ({ attrs: { word } }) {
     return m(
       '.fl.flex.pv2.pv3-ns.bb.b--light-silver.justify-between.items-center.flex-wrap',
       m(
@@ -82,15 +82,15 @@ const Words = {
   view: ({ attrs: { kanji, words, wordlimit, dictionary } }) => {
     const filterLists = config.getFilterLists()
     const filteredForVariant = Kanji.wordsForKanji(kanji.kanji, words).filter(
-      word => {
+      (word) => {
         return [...word.variant.written].every(
-          ch => dictionary.validChar(filterLists, ch) || ch === kanji.kanji,
+          (ch) => dictionary.validChar(filterLists, ch) || ch === kanji.kanji,
         )
       },
     )
 
     return [
-      filteredForVariant.slice(0, wordlimit).map(word => m(Word, { word })),
+      filteredForVariant.slice(0, wordlimit).map((word) => m(Word, { word })),
       filteredForVariant.length > wordlimit
         ? m(
             InternalTextLink,
@@ -107,7 +107,7 @@ const Words = {
 }
 
 const Row = {
-  view: function({ attrs: { left, right, classes = [] } }) {
+  view: function ({ attrs: { left, right, classes = [] } }) {
     return m(
       '.db.flex.items-center.justify-between.pv1',
       {
@@ -119,7 +119,7 @@ const Row = {
 }
 
 const KanjiInfo = {
-  view: function({ attrs: { dictionary, kanji, words, wordlimit } }) {
+  view: function ({ attrs: { dictionary, kanji, words, wordlimit } }) {
     return m(
       '',
       m(
@@ -172,7 +172,7 @@ const KanjiInfo = {
               left: m('.f5', 'Kun'),
               right: m(
                 '.flex.flex-wrap.items-center.justify-end.w-auto',
-                kanji.kun_readings.map(reading => {
+                kanji.kun_readings.map((reading) => {
                   return m(Reading, { type: KUN, reading, large: false })
                 }),
               ),
@@ -186,7 +186,7 @@ const KanjiInfo = {
               left: m('.f5', 'On'),
               right: m(
                 '.flex.flex-wrap.items-center.justify-end.w-auto',
-                kanji.on_readings.map(reading => {
+                kanji.on_readings.map((reading) => {
                   return m(Reading, { type: ON, reading, large: false })
                 }),
               ),
@@ -200,7 +200,7 @@ const KanjiInfo = {
               left: m('.f5', 'Nanori'),
               right: m(
                 '.flex.flex-wrap.items-center.justify-end.w-auto',
-                kanji.name_readings.map(reading => {
+                kanji.name_readings.map((reading) => {
                   return m(Reading, { type: NAME, reading, large: false })
                 }),
               ),
@@ -214,7 +214,7 @@ const KanjiInfo = {
               left: m('.f5', 'Meanings'),
               right: m(
                 '.flex.flex-wrap.items-center.justify-end.w-auto',
-                kanji.meanings.map(meaning => {
+                kanji.meanings.map((meaning) => {
                   return m(Meaning, { meaning })
                 }),
               ),

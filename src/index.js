@@ -9,7 +9,7 @@ const { isKanji, isReading } = require('./constant')
 const { InternalTextLink, ExternalLink } = require('./link')
 
 const Info = {
-  view: function({ attrs: { subject } }) {
+  view: function ({ attrs: { subject } }) {
     if (isKanji(subject)) {
       return m(KanjiInfo, {
         dictionary,
@@ -27,7 +27,7 @@ const Info = {
 }
 
 const Header = {
-  view: function() {
+  view: function () {
     return m('header.white.banner-color.pa1.self-stretch', [
       m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
       m('h1.fw5.mv2.f2.tc', 'kanjikai'),
@@ -40,7 +40,7 @@ const Header = {
 }
 
 const About = {
-  view: function() {
+  view: function () {
     return [
       m('h2.fw3.tc', 'About'),
       m('.tc', [
@@ -66,13 +66,13 @@ const About = {
 }
 
 const BadSearch = {
-  view: function() {
+  view: function () {
     return m('', 'Not Found')
   },
 }
 
 const RandomKanji = {
-  view: function() {
+  view: function () {
     const kanji =
       dictionary.randomKanji(config.getFilterLists()) || m.route.param('search')
     return m(
@@ -87,7 +87,7 @@ const RandomKanji = {
 }
 
 const ListFilter = {
-  view: function({ attrs: { kanjiSet } }) {
+  view: function ({ attrs: { kanjiSet } }) {
     const classes = config.filterList(kanjiSet.name)
       ? ['c-toggle-on']
       : ['c-toggle-off']
@@ -119,7 +119,7 @@ const ListFilter = {
 }
 
 const RomajiToggle = {
-  view: function() {
+  view: function () {
     const classes = config.getIsRomaji() ? ['c-toggle-on'] : ['c-toggle-off']
     return m(
       '.flex.items-center.justify-end.mv3',
@@ -155,16 +155,16 @@ const RomajiToggle = {
 }
 
 const TextSearch = {
-  view: function({ attrs: { search } }) {
+  view: function ({ attrs: { search } }) {
     return m('input[type=text]#text-search.kosugi-maru.flex-grow.mr2.minw3', {
-      onchange: e => m.route.set(e.target.value),
+      onchange: (e) => m.route.set(e.target.value),
       value: search,
     })
   },
 }
 
 const Page = {
-  view: function({ attrs: { search } }) {
+  view: function ({ attrs: { search } }) {
     return [
       m(Header),
       m(
@@ -187,32 +187,32 @@ const Page = {
                 dictionary
                   .getKanjiSets()
                   .filter(
-                    kanjiSet =>
+                    (kanjiSet) =>
                       kanjiSet.name.includes('grade') ||
                       kanjiSet.name.includes('kyoiku') ||
                       kanjiSet.name.includes('high-school'),
                   )
-                  .map(kanjiSet => m(ListFilter, { kanjiSet })),
+                  .map((kanjiSet) => m(ListFilter, { kanjiSet })),
               ),
               m(
                 '.flex.flex-wrap.mb2.mb0-l',
                 dictionary
                   .getKanjiSets()
-                  .filter(kanjiSet => kanjiSet.name.includes('jlpt'))
-                  .map(kanjiSet => m(ListFilter, { kanjiSet })),
+                  .filter((kanjiSet) => kanjiSet.name.includes('jlpt'))
+                  .map((kanjiSet) => m(ListFilter, { kanjiSet })),
               ),
               m(
                 '.flex.flex-wrap',
                 dictionary
                   .getKanjiSets()
                   .filter(
-                    kanjiSet =>
+                    (kanjiSet) =>
                       !kanjiSet.name.includes('jlpt') &&
                       !kanjiSet.name.includes('grade') &&
                       !kanjiSet.name.includes('high-school') &&
                       !kanjiSet.name.includes('kyoiku'),
                   )
-                  .map(kanjiSet => m(ListFilter, { kanjiSet })),
+                  .map((kanjiSet) => m(ListFilter, { kanjiSet })),
               ),
               m(
                 '.self-end',
@@ -225,8 +225,8 @@ const Page = {
           dictionary.lookup(search).status === Kanjiapi.SUCCESS
             ? m(Info, { subject: dictionary.lookup(search).value })
             : dictionary.lookup(search).status === Kanjiapi.LOADING
-            ? m(Loading)
-            : m(BadSearch),
+              ? m(Loading)
+              : m(BadSearch),
         ),
       ),
       m('footer.white.banner-color.pa1.self-stretch', m(About)),

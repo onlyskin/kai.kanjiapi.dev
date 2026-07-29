@@ -9,7 +9,7 @@ o.spec('dictionary lookup', () => {
   const kanjiResponse = () => ({ grade: 2, kanji: '漢' })
   const readingResponse = () => ({ main_kanji: [] })
   const wordsResponse = () => [{ variants: [] }]
-  const success = value => ({ status: SUCCESS, value })
+  const success = (value) => ({ status: SUCCESS, value })
   const loading = () => ({ status: LOADING, value: null })
   const error = () => ({ status: ERROR, value: null })
 

@@ -133,11 +133,11 @@ function rankWords(kanji, words) {
 }
 
 function prioritiseWords(kanji, words) {
-  return rankWords(kanji, words).map(ranked => ranked.word)
+  return rankWords(kanji, words).map((ranked) => ranked.word)
 }
 
 function wordsForKanji(kanji, words) {
-  return rankWords(kanji, words).map(ranked => ({
+  return rankWords(kanji, words).map((ranked) => ({
     variant: ranked.variant,
     meanings: ranked.word.meanings,
   }))

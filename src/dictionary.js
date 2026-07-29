@@ -42,7 +42,7 @@ class Dictionary {
         niceName: 'Heisig',
         func: () => this._unwrap(this._kanjiapi.getHeisigSet()),
       },
-      ...[...Array(6).keys()].map(i => {
+      ...[...Array(6).keys()].map((i) => {
         return {
           name: `grade-${i + 1}`,
           niceName: `Grade ${i + 1}`,
@@ -59,7 +59,7 @@ class Dictionary {
         niceName: 'High School',
         func: () => this._unwrap(this._kanjiapi.getListForGrade(8)),
       },
-      ...[...Array(5).keys()].map(i => {
+      ...[...Array(5).keys()].map((i) => {
         i = 5 - i
         return {
           name: `jlpt-${i}`,
@@ -68,7 +68,7 @@ class Dictionary {
         }
       }),
     ]
-    this.kanjiSets.forEach(kanjiSet => {
+    this.kanjiSets.forEach((kanjiSet) => {
       kanjiSet.func()
     })
   }
@@ -76,7 +76,7 @@ class Dictionary {
   lookup(searchTerm) {
     if (
       ['joyo', 'jinmeiyo', 'heisig'].some(
-        name => this._kanjiSet(name).size === 0,
+        (name) => this._kanjiSet(name).size === 0,
       )
     ) {
       return { status: LOADING, value: null }
@@ -109,7 +109,7 @@ class Dictionary {
 
     const kanji = [
       ...lists
-        .map(list => this._kanjiSet(list))
+        .map((list) => this._kanjiSet(list))
         .reduce((acc, curr) => union(curr, acc), new Set()),
     ]
     const choice = Math.floor(Math.random() * kanji.length)
@@ -117,7 +117,7 @@ class Dictionary {
   }
 
   getKanjiSets() {
-    return this.kanjiSets.map(function(f) {
+    return this.kanjiSets.map(function (f) {
       return { name: f.name, niceName: f.niceName }
     })
   }
@@ -131,7 +131,7 @@ class Dictionary {
       return true
     }
 
-    return lists.some(list => this.inKanjiSet(list, ch))
+    return lists.some((list) => this.inKanjiSet(list, ch))
   }
 
   countKanjiInLists(lists) {
@@ -140,7 +140,7 @@ class Dictionary {
     } else {
       const kanji = [
         ...lists
-          .map(list => this._kanjiSet(list))
+          .map((list) => this._kanjiSet(list))
           .reduce((acc, curr) => union(curr, acc), new Set()),
       ]
       return kanji.length
@@ -160,7 +160,7 @@ class Dictionary {
   }
 
   _kanjiSet(name) {
-    const kanjiSet = this.kanjiSets.find(kanjiSet => kanjiSet.name == name)
+    const kanjiSet = this.kanjiSets.find((kanjiSet) => kanjiSet.name == name)
     if (kanjiSet === undefined) {
       return new Set()
     } else {

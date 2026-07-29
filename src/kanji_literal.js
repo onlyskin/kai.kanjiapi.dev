@@ -2,7 +2,7 @@ const m = require('mithril')
 const { InternalLink } = require('./link')
 
 const KanjiLiteral = {
-  _linkClasses: function(dictionary, kanji, large) {
+  _linkClasses: function (dictionary, kanji, large) {
     return [
       'br3',
       'ba',
@@ -12,13 +12,13 @@ const KanjiLiteral = {
       ...(dictionary.inKanjiSet('joyo', kanji)
         ? ['c-joyo']
         : dictionary.inKanjiSet('jinmeiyo', kanji)
-        ? ['c-jinmeiyo']
-        : dictionary.inKanjiSet('heisig', kanji)
-        ? ['c-heisig']
-        : ['c-other']),
+          ? ['c-jinmeiyo']
+          : dictionary.inKanjiSet('heisig', kanji)
+            ? ['c-heisig']
+            : ['c-other']),
     ]
   },
-  view: function({ attrs: { dictionary, kanji, large, classes = [] } }) {
+  view: function ({ attrs: { dictionary, kanji, large, classes = [] } }) {
     return m(
       InternalLink,
       {

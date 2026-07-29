@@ -1,13 +1,13 @@
 const config = {
   storageKey: 'kanjikai-config',
-  clear: function() {
+  clear: function () {
     const emptyData = {
       isRomaji: false,
       filterLists: [],
     }
     localStorage.setItem(this.storageKey, JSON.stringify(emptyData))
   },
-  getData: function() {
+  getData: function () {
     let stored = localStorage.getItem(this.storageKey)
     if (stored === null) {
       this.clear()
@@ -16,19 +16,19 @@ const config = {
       return JSON.parse(stored)
     }
   },
-  saveData: function(data) {
+  saveData: function (data) {
     localStorage.setItem(this.storageKey, JSON.stringify(data))
   },
-  getIsRomaji: function() {
+  getIsRomaji: function () {
     return this.getData().isRomaji
   },
-  filterList: function(listName) {
+  filterList: function (listName) {
     return this.getData().filterLists.includes(listName)
   },
-  getFilterLists: function() {
+  getFilterLists: function () {
     return this.getData().filterLists
   },
-  toggleFilterList: function(listName) {
+  toggleFilterList: function (listName) {
     const current = this.getData()
     const index = current.filterLists.indexOf(listName)
     if (index !== -1) {
@@ -38,7 +38,7 @@ const config = {
     }
     this.saveData(current)
   },
-  toggleRomaji: function() {
+  toggleRomaji: function () {
     const current = this.getData()
     current.isRomaji = !current.isRomaji
     this.saveData(current)
