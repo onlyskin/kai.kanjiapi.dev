@@ -1,105 +1,135 @@
 const o = require('ospec')
 const Kanji = require('../src/kanji')
 
+// The sort keys, in order: has-any-priority, kanji count, priority tier,
+// nf frequency band, variant length. Every one ascending.
 o.spec('prioritiseWords', () => {
-  o('words where a variant with the kanji is a proprity sort higher', () => {
-    const priorityValid = {
-      variants: [{ written: 'お国', priorities: ['spec1'] }],
-    }
-
-    const nonPriorityValid = {
-      variants: [{ written: 'お国', priorities: [] }],
-    }
-
-    const apiWords = [nonPriorityValid, priorityValid]
-
-    const words = Kanji.prioritiseWords('国', apiWords)
-
-    const expected = [priorityValid, nonPriorityValid]
-    o(words).deepEquals(expected)
+  const word = (written, priorities = []) => ({
+    variants: [{ written, priorities }],
   })
 
-  o(
-    'the more priorities a variant with the kanji has the higher it sorts',
-    () => {
-      const onePriorityValid = {
-        variants: [{ written: 'お国', priorities: ['spec1'] }],
-      }
+  o('words where a variant with the kanji has a priority sort higher', () => {
+    const priorityValid = word('お国', ['spec1'])
+    const nonPriorityValid = word('お国')
 
-      const twoPrioritiesValid = {
-        variants: [{ written: 'お国', priorities: ['spec1', 'news1'] }],
-      }
+    const words = Kanji.prioritiseWords('国', [nonPriorityValid, priorityValid])
 
-      const apiWords = [onePriorityValid, twoPrioritiesValid]
-
-      const words = Kanji.prioritiseWords('国', apiWords)
-
-      const expected = [twoPrioritiesValid, onePriorityValid]
-      o(words).deepEquals(expected)
-    },
-  )
-
-  o('words where the first variant has the kanji sort higher', () => {
-    const firstValid = {
-      variants: [
-        { written: 'お国', priorities: [] },
-        { written: 'お', priorities: [] },
-      ],
-    }
-
-    const firstNonValid = {
-      variants: [
-        { written: 'お', priorities: [] },
-        { written: 'お国', priorities: [] },
-      ],
-    }
-
-    const apiWords = [firstNonValid, firstValid]
-
-    const words = Kanji.prioritiseWords('国', apiWords)
-
-    const expected = [firstValid, firstNonValid]
-    o(words).deepEquals(expected)
+    o(words).deepEquals([priorityValid, nonPriorityValid])
   })
 
-  o('words with any priority variant sort higher', () => {
-    const priorityNonValid = {
-      variants: [
-        { written: 'お', priorities: ['spec1'] },
-        { written: 'お国', priorities: [] },
-      ],
-    }
+  o('words written with fewer kanji sort higher', () => {
+    const oneKanji = word('お国')
+    const twoKanji = word('国語')
 
-    const noPriority = {
-      variants: [
-        { written: 'お', priorities: [] },
-        { written: 'お国', priorities: [] },
-      ],
-    }
+    const words = Kanji.prioritiseWords('国', [twoKanji, oneKanji])
 
-    const apiWords = [noPriority, priorityNonValid]
+    o(words).deepEquals([oneKanji, twoKanji])
+  })
 
-    const words = Kanji.prioritiseWords('国', apiWords)
+  o('kanji count outranks priority strength', () => {
+    const weakOneKanji = word('お国', ['news2'])
+    const strongCompound = word('国語', ['ichi1', 'news1', 'nf01'])
 
-    const expected = [priorityNonValid, noPriority]
-    o(words).deepEquals(expected)
+    const words = Kanji.prioritiseWords('国', [strongCompound, weakOneKanji])
+
+    o(words).deepEquals([weakOneKanji, strongCompound])
+  })
+
+  o('within a kanji count, a tier 1 priority beats a tier 2 one', () => {
+    const tierOne = word('外国', ['news1'])
+    const tierTwo = word('国語', ['news2'])
+
+    const words = Kanji.prioritiseWords('国', [tierTwo, tierOne])
+
+    o(words).deepEquals([tierOne, tierTwo])
+  })
+
+  o('within a tier, the lower nf frequency band sorts higher', () => {
+    const commoner = word('外国', ['news1', 'nf01'])
+    const rarer = word('国語', ['news1', 'nf10'])
+
+    const words = Kanji.prioritiseWords('国', [rarer, commoner])
+
+    o(words).deepEquals([commoner, rarer])
   })
 
   o('shorter words sort higher', () => {
-    const shorter = {
-      variants: [{ written: 'お国', priorities: [] }],
+    const shorter = word('お国')
+    const longer = word('お国お')
+
+    const words = Kanji.prioritiseWords('国', [longer, shorter])
+
+    o(words).deepEquals([shorter, longer])
+  })
+
+  o('priorities on a variant without the kanji do not count', () => {
+    const priorityOnOtherVariant = {
+      variants: [
+        { written: 'お', priorities: ['ichi1'] },
+        { written: 'お国', priorities: [] },
+      ],
     }
+    const priorityOnValidVariant = word('お国', ['ichi1'])
 
-    const longer = {
-      variants: [{ written: 'お国お', priorities: [] }],
-    }
+    const words = Kanji.prioritiseWords('国', [
+      priorityOnOtherVariant,
+      priorityOnValidVariant,
+    ])
 
-    const apiWords = [longer, shorter]
+    o(words).deepEquals([priorityOnValidVariant, priorityOnOtherVariant])
+  })
 
-    const words = Kanji.prioritiseWords('国', apiWords)
+  o('words with no variant written with the kanji are dropped', () => {
+    const withoutKanji = word('あい')
+    const withKanji = word('お国')
 
-    const expected = [shorter, longer]
-    o(words).deepEquals(expected)
+    const words = Kanji.prioritiseWords('国', [withoutKanji, withKanji])
+
+    o(words).deepEquals([withKanji])
+  })
+})
+
+o.spec('wordsForKanji', () => {
+  o('presents the variant with the most priorities', () => {
+    const apiWords = [
+      {
+        variants: [
+          { written: 'お国', pronounced: 'おくに', priorities: [] },
+          { written: '御国', pronounced: 'おくに', priorities: ['spec1'] },
+        ],
+        meanings: [{ glosses: ['country'] }],
+      },
+    ]
+
+    o(Kanji.wordsForKanji('国', apiWords)).deepEquals([
+      {
+        variant: {
+          written: '御国',
+          pronounced: 'おくに',
+          priorities: ['spec1'],
+        },
+        meanings: [{ glosses: ['country'] }],
+      },
+    ])
+  })
+
+  o('ignores variants that are not written with the kanji', () => {
+    const apiWords = [
+      {
+        variants: [
+          { written: 'おくに', pronounced: 'おくに', priorities: ['ichi1'] },
+          { written: 'お国', pronounced: 'おくに', priorities: [] },
+        ],
+        meanings: [{ glosses: ['country'] }],
+      },
+    ]
+
+    o(Kanji.wordsForKanji('国', apiWords)).deepEquals([
+      {
+        variant: { written: 'お国', pronounced: 'おくに', priorities: [] },
+        meanings: [{ glosses: ['country'] }],
+      },
+    ])
   })
 })
 

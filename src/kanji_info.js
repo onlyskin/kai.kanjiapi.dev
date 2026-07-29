@@ -13,9 +13,6 @@ const Meaning = {
   },
 }
 
-const CHAR_BORDER = '0.1rem dashed hsla(286, 65%, 85%, 1)'
-const CHAR_PADDING = '0.25rem'
-
 const WordChar = {
   view: function({ attrs: { character, index, length } }) {
     if (Kana.isKana(character)) {

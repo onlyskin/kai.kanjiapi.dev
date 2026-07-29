@@ -13,53 +13,56 @@ o.spec('dictionary lookup', () => {
   const loading = () => ({ status: LOADING, value: null })
   const error = () => ({ status: ERROR, value: null })
 
+  // Dictionary's constructor calls every kanji-set getter eagerly, so a fake
+  // that misses one throws before any assertion runs. Keep them all in here so
+  // adding a set to Dictionary only means touching this one place.
+  const kanjiSetGetters = () => ({
+    getAllSet: () => success(new Set(['漢'])),
+    getJoyoSet: () => success(new Set(['a'])),
+    getJinmeiyoSet: () => success(new Set(['b'])),
+    getHeisigSet: () => success(new Set(['c'])),
+    getKyoikuSet: () => success(new Set(['d'])),
+    getListForGrade: () => success(new Set(['e'])),
+    getListForJlpt: () => success(new Set(['f'])),
+  })
+
   const kanjiapiWithResults = (
     getKanjiResult,
     getReadingResult,
     getWordsForKanjiResult,
+    setOverrides = {},
   ) => {
     const getKanjiSpy = o.spy(() => getKanjiResult)
     const getReading = () => getReadingResult
     const getWordsForKanjiSpy = o.spy(() => getWordsForKanjiResult)
     const kanjiapi = {
+      ...kanjiSetGetters(),
       getKanji: getKanjiSpy,
       getReading,
       getWordsForKanji: getWordsForKanjiSpy,
-      getJoyoSet: () => success(new Set(['a'])),
-      getJinmeiyoSet: () => success(new Set(['b'])),
-      getHeisigSet: () => success(new Set(['c'])),
+      ...setOverrides,
     }
 
     return { kanjiapi, getKanjiSpy, getWordsForKanjiSpy }
   }
 
-  o('returns loading while kanjiapi joyo set is loading', () => {
-    const kanjiapi = {
-      getJoyoSet: () => loading(),
-      getJinmeiyoSet: () => success(new Set(['a'])),
-      getKanji: () => success(kanjiResponse),
-      getReading: () => error(),
-      getWordsForKanji: () => success(wordsResponse),
-    }
+  const loadingSetTest = (name, setOverrides) =>
+    o(`returns loading while kanjiapi ${name} set is loading`, () => {
+      const { kanjiapi } = kanjiapiWithResults(
+        success(kanjiResponse()),
+        error(),
+        success(wordsResponse()),
+        setOverrides,
+      )
 
-    const dictionary = new Dictionary(kanjiapi)
+      const dictionary = new Dictionary(kanjiapi)
 
-    o(dictionary.lookup('ジ')).deepEquals({ status: LOADING, value: null })
-  })
+      o(dictionary.lookup('ジ')).deepEquals({ status: LOADING, value: null })
+    })
 
-  o('returns loading while kanjiapi jinmeiyo set is loading', () => {
-    const kanjiapi = {
-      getJoyoSet: () => success(new Set(['a'])),
-      getJinmeiyoSet: () => loading(),
-      getKanji: () => success(kanjiResponse),
-      getReading: () => error(),
-      getWordsForKanji: () => success(wordsResponse),
-    }
-
-    const dictionary = new Dictionary(kanjiapi)
-
-    o(dictionary.lookup('ジ')).deepEquals({ status: LOADING, value: null })
-  })
+  loadingSetTest('joyo', { getJoyoSet: () => loading() })
+  loadingSetTest('jinmeiyo', { getJinmeiyoSet: () => loading() })
+  loadingSetTest('heisig', { getHeisigSet: () => loading() })
 
   o(
     'returns loading when kanjiapi returns loading for both kanji and reading',
@@ -90,7 +93,7 @@ o.spec('dictionary lookup', () => {
     'returns loading when kanjiapi returns kanji success and reading loading',
     () => {
       const { kanjiapi } = kanjiapiWithResults(
-        success(kanjiResponse),
+        success(kanjiResponse()),
         loading(),
       )
 

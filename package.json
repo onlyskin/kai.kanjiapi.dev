@@ -20,6 +20,7 @@
   "scripts": {
     "build": "./build",
     "test": "ospec",
-    "lint": "eslint tests/*.js src/*.js"
+    "lint": "eslint tests/*.js src/*.js",
+    "lint:fix": "eslint --fix tests/*.js src/*.js"
   }
 }
