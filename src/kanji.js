@@ -1,6 +1,6 @@
 const m = require('mithril')
 const { ExternalLink } = require('./link')
-const { isCharKana } = require('./kana')
+const { isCharKana, isKatakana } = require('./kana')
 
 const JOYO_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji'
 const JINMEIYO_WIKIPEDIA_URL =
@@ -57,13 +57,27 @@ function bestVariantFor(kanji, word) {
   return best
 }
 
-function kanjiCount(written) {
+// Okurigana is always hiragana, so a katakana run is an element of the compound
+// in its own right: 親バカ is 親 + バカ, not the kanji alone the way 親しむ is.
+function elementCount(written) {
   let count = 0
+  let inKatakanaRun = false
+
   for (const ch of written) {
+    if (isKatakana(ch)) {
+      if (!inKatakanaRun) {
+        count++
+      }
+      inKatakanaRun = true
+      continue
+    }
+
+    inKatakanaRun = false
     if (!isCharKana(ch)) {
       count++
     }
   }
+
   return count
 }
 
@@ -91,7 +105,7 @@ function priorityRank(priorities) {
 }
 
 // Lexicographic, every field ascending, so a score is just "smaller is better".
-// Kanji count outranks priority strength deliberately: words written with this
+// Element count outranks priority strength deliberately: words written with this
 // kanji alone stay above compounds, and strength only breaks ties within a
 // group. Without the strength keys every 2-kanji compound ties on length and
 // falls through to whatever order the API listed them in.
@@ -100,7 +114,7 @@ function scoreVariant(variant) {
 
   return [
     variant.priorities.length > 0 ? 0 : 1,
-    kanjiCount(variant.written),
+    elementCount(variant.written),
     tier,
     band,
     variant.written.length,

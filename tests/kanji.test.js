@@ -1,7 +1,7 @@
 const o = require('ospec')
 const Kanji = require('../src/kanji')
 
-// The sort keys, in order: has-any-priority, kanji count, priority tier,
+// The sort keys, in order: has-any-priority, element count, priority tier,
 // nf frequency band, variant length. Every one ascending.
 o.spec('prioritiseWords', () => {
   const word = (written, priorities = []) => ({
@@ -35,7 +35,34 @@ o.spec('prioritiseWords', () => {
     o(words).deepEquals([weakOneKanji, strongCompound])
   })
 
-  o('within a kanji count, a tier 1 priority beats a tier 2 one', () => {
+  o('a katakana run is an element, not okurigana', () => {
+    const okurigana = word('親しい', ['news2'])
+    const katakanaCompound = word('親バカ', ['spec1'])
+
+    const words = Kanji.prioritiseWords('親', [katakanaCompound, okurigana])
+
+    o(words).deepEquals([okurigana, katakanaCompound])
+  })
+
+  o('a katakana compound sorts among the two element words', () => {
+    const katakanaCompound = word('親バカ', ['spec1'])
+    const kanjiCompound = word('父親', ['ichi1', 'news1', 'nf02'])
+
+    const words = Kanji.prioritiseWords('親', [katakanaCompound, kanjiCompound])
+
+    o(words).deepEquals([kanjiCompound, katakanaCompound])
+  })
+
+  o('a long dash does not break a katakana run', () => {
+    const twoElements = word('親サーバー')
+    const threeElements = word('親子丼')
+
+    const words = Kanji.prioritiseWords('親', [threeElements, twoElements])
+
+    o(words).deepEquals([twoElements, threeElements])
+  })
+
+  o('within an element count, a tier 1 priority beats a tier 2 one', () => {
     const tierOne = word('外国', ['news1'])
     const tierTwo = word('国語', ['news2'])
 

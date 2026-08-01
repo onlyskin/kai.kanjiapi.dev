@@ -86,4 +86,5 @@ module.exports = {
   readingType,
   isKana,
   isCharKana,
+  isKatakana,
 }
