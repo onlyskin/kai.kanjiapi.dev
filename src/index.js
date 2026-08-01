@@ -240,7 +240,8 @@ function init() {
   })
 }
 
-const kanjiapi = Kanjiapi.build()
+// KANJIAPI_URL is substituted at build time by ./build. See README.md.
+const kanjiapi = Kanjiapi.build(KANJIAPI_URL)
 kanjiapi.addListener('app', m.redraw)
 const dictionary = new Dictionary(kanjiapi)
 

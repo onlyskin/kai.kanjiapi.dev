@@ -5,10 +5,16 @@ OUT=out
 ESBUILD=node_modules/.bin/esbuild
 TACHYONS=node_modules/tachyons/css/tachyons.min.css
 
+KANJIAPI_URL=${KANJIAPI_URL:-https://kanjiapi.dev}
+
 rm -rf $OUT
 mkdir -p $OUT
 
-$ESBUILD $SRC/index.js --bundle --minify --sourcemap --outfile=$OUT/index.bundle.js
+echo "Building against $KANJIAPI_URL"
+
+$ESBUILD $SRC/index.js --bundle --minify --sourcemap \
+    --define:KANJIAPI_URL="\"$KANJIAPI_URL\"" \
+    --outfile=$OUT/index.bundle.js
 
 cp index.html $OUT/index.html
 cp $TACHYONS $OUT/

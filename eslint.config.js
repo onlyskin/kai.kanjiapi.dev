@@ -15,6 +15,7 @@ module.exports = [
       globals: {
         ...globals.browser,
         ...globals.node,
+        KANJIAPI_URL: 'readonly',
       },
     },
   },
