@@ -101,6 +101,9 @@ const Words = {
               classes: ['mv3', 'self-center'],
               href: `/${kanji.kanji}`,
               params: { wordlimit: Number(wordlimit) + 20 },
+              // Widening the list is not a place you should be able to go back
+              // to, so it replaces the history entry rather than adding one.
+              options: { replace: true },
             },
             'more words',
           )

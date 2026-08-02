@@ -25,13 +25,14 @@ const InternalLink = {
 }
 
 const InternalTextLink = {
-  view: ({ children, attrs: { href, classes, params } }) =>
+  view: ({ children, attrs: { href, classes, params, options } }) =>
     m(
       m.route.Link,
       {
         href,
         class: [...textLinkClasses, ...classes].join(' '),
         params,
+        options,
       },
       children,
     ),

@@ -7,6 +7,7 @@ const { Loading } = require('./loading')
 const { Kanjiapi } = require('kanjiapi-wrapper')
 const { isKanji, isReading } = require('./constant')
 const { InternalTextLink, ExternalLink } = require('./link')
+const scroll = require('./scroll')
 
 const Info = {
   view: function ({ attrs: { subject } }) {
@@ -245,8 +246,16 @@ const Page = {
 }
 
 function init() {
+  scroll.init()
   m.route(document.body, '/字', {
-    '/:search': Page,
+    // onmatch fires once per navigation, unlike a redraw, so it is where the
+    // scroll position for the outgoing page is settled.
+    '/:search': {
+      onmatch: (params, path) => {
+        scroll.routeChanged(path, params.search)
+        return Page
+      },
+    },
   })
 }
 
