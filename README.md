@@ -17,6 +17,19 @@ Deploy with `gcloud storage rsync out gs://kai.kanjiapi.dev --exclude=".*\.map$"
 
 Lint with `yarn lint`
 
+### Favicon
+
+`./build` copies the committed `favicon.png` into `out/`, so a normal build needs
+nothing beyond `yarn`. The file is generated with
+[ImageMagick](https://imagemagick.org) and the macOS system font Hiragino Maru
+Gothic ProN W4, and only needs regenerating if the design changes:
+
+```sh
+magick -size 128x128 -gravity center -background '#2F1758' -fill white \
+    -font "/System/Library/Fonts/ヒラギノ丸ゴ ProN W4.ttc" label:解 \
+    -depth 8 -strip favicon.png
+```
+
 ### Running against a local kanjiapi
 
 `./build` bakes the API base URL into the bundle, defaulting to
