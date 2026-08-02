@@ -42,38 +42,6 @@ const ReadingInfo = {
       ...partitioned['rest'].sort(),
     ]
   },
-  sortKanji: (dictionary, a, b) => {
-    const aIsJoyo = dictionary.inKanjiSet('joyo', a)
-    const bIsJoyo = dictionary.inKanjiSet('joyo', b)
-    const aIsJinmeiyo = dictionary.inKanjiSet('jinmeiyo', a)
-    const bIsJinmeiyo = dictionary.inKanjiSet('jinmeiyo', b)
-
-    if (aIsJoyo) {
-      if (bIsJoyo) {
-        return a.localeCompare(b)
-      }
-
-      return -1
-    }
-
-    if (bIsJoyo) {
-      return 1
-    }
-
-    if (aIsJinmeiyo) {
-      if (bIsJinmeiyo) {
-        return a.localeCompare(b)
-      }
-
-      return -1
-    }
-
-    if (bIsJinmeiyo) {
-      return 1
-    }
-
-    return a.localeCompare(b)
-  },
   view: function ({ attrs: { dictionary, reading } }) {
     return m('', [
       m(Row, {

@@ -30,7 +30,7 @@ const Header = {
   view: function () {
     return m('header.white.banner-color.pa1.self-stretch', [
       m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
-      m('h1.fw5.mv2.f2.tc', 'kanjikai'),
+      m('p.fw5.mv2.f2.tc', 'kanjikai'),
       m(
         'p.tc.mv3',
         'a rabbit-hole kanji dictionary: every kanji and every reading is clickable',
@@ -88,9 +88,8 @@ const RandomKanji = {
 
 const ListFilter = {
   view: function ({ attrs: { kanjiSet } }) {
-    const classes = config.filterList(kanjiSet.name)
-      ? ['c-toggle-on']
-      : ['c-toggle-off']
+    const isOn = config.filterList(kanjiSet.name)
+    const classes = isOn ? ['c-toggle-on'] : ['c-toggle-off']
     return m(
       'button',
       {
@@ -111,6 +110,8 @@ const ListFilter = {
           'no-select',
           ...classes,
         ].join(' '),
+        // String, not a boolean: mithril renders true as aria-pressed="".
+        'aria-pressed': String(isOn),
         onclick: () => config.toggleFilterList(kanjiSet.name),
       },
       kanjiSet.niceName,
@@ -120,7 +121,8 @@ const ListFilter = {
 
 const RomajiToggle = {
   view: function () {
-    const classes = config.getIsRomaji() ? ['c-toggle-on'] : ['c-toggle-off']
+    const isOn = config.getIsRomaji()
+    const classes = isOn ? ['c-toggle-on'] : ['c-toggle-off']
     return m(
       '.flex.items-center.justify-end.mv3',
       m(
@@ -146,6 +148,7 @@ const RomajiToggle = {
             'no-select',
             ...classes,
           ].join(' '),
+          'aria-pressed': String(isOn),
           onclick: () => config.toggleRomaji(),
         },
         'rōmaji',
@@ -157,6 +160,13 @@ const RomajiToggle = {
 const TextSearch = {
   view: function ({ attrs: { search } }) {
     return m('input[type=text]#text-search.kosugi-maru.flex-grow.mr2.minw3', {
+      lang: 'ja',
+      autocapitalize: 'none',
+      // Booleans, not the "false"/"off" strings: mithril assigns these to the
+      // DOM property, where any non-empty string coerces to true.
+      autocorrect: false,
+      spellcheck: false,
+      enterkeyhint: 'go',
       onchange: (e) => m.route.set(e.target.value),
       value: search,
     })
