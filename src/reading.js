@@ -21,6 +21,8 @@ const Reading = {
       InternalLink,
       {
         classes: this._linkClasses(type, large),
+        // Romaji is still Japanese, only transliterated into Latin script.
+        lang: config.getIsRomaji() ? 'ja-Latn' : 'ja',
         href: `/${reading}`,
       },
       Kana.formatReading(reading),

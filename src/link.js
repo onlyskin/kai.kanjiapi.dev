@@ -9,7 +9,7 @@ const ExternalLink = {
 }
 
 const InternalLink = {
-  view: ({ children, attrs: { href, classes, params } }) =>
+  view: ({ children, attrs: { href, classes, params, lang } }) =>
     m(
       m.route.Link,
       {
@@ -18,6 +18,7 @@ const InternalLink = {
           ' ',
         ),
         params,
+        lang,
       },
       children,
     ),

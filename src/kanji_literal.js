@@ -23,6 +23,7 @@ const KanjiLiteral = {
       InternalLink,
       {
         classes: [...this._linkClasses(dictionary, kanji, large), ...classes],
+        lang: 'ja',
         href: `/${kanji}`,
       },
       kanji,

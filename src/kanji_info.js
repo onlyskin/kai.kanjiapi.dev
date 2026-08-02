@@ -56,6 +56,8 @@ const Word = {
       '.fl.flex.pv2.pv3-ns.bb.b--light-silver.justify-between.items-center.flex-wrap',
       m(
         '.kosugi-maru.f2.f1-ns',
+        // The per-character links inherit this rather than each repeating it.
+        { lang: 'ja' },
         [...word.variant.written].map((character, index) =>
           m(WordChar, {
             character,
@@ -69,6 +71,7 @@ const Word = {
           '.f3',
           {
             class: config.getIsRomaji() ? 'i' : 'kosugi-maru',
+            lang: config.getIsRomaji() ? 'ja-Latn' : 'ja',
           },
           Kana.formatReading(word.variant.pronounced),
         ),

@@ -29,7 +29,7 @@ const Info = {
 const Header = {
   view: function () {
     return m('header.white.banner-color.pa1.self-stretch', [
-      m('h1.fw5.mv3.f1.tc.kosugi-maru', '漢字解'),
+      m('h1.fw5.mv3.f1.tc.kosugi-maru', { lang: 'ja' }, '漢字解'),
       m('p.fw5.mv2.f2.tc', 'kanjikai'),
       m(
         'p.tc.mv3',
